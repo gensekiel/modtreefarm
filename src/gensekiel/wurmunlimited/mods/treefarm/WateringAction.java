@@ -27,16 +27,19 @@ public class WateringAction implements ModAction, BehaviourProvider, ActionPerfo
 //======================================================================
 	private static int wateringCost = 5000;
 	private static int wateringTime = 30;
+	private static int wateringItem = ItemList.water; // 128
 	private static boolean wateringCheck = true;
 	private static boolean treeAgeCheck = true;
 //======================================================================
 	public static void setWateringCost(int i){ wateringCost = i; }
 	public static void setWateringTime(int i){ wateringTime = i; }
+	public static void setWateringItem(int i){ wateringItem = i; }
 	public static void setWateringCheck(boolean b){ wateringCheck = b; }
 	public static void setTreeAgeCheck(boolean b){ treeAgeCheck = b; }
 //======================================================================
 	public static int getWateringCost(){ return wateringCost; }
 	public static int getWateringTime(){ return wateringTime; }
+	public static int getWateringItem(){ return wateringItem; }
 	public static boolean getWateringCheck(){ return wateringCheck; }
 	public static boolean getTreeAgeCheck(){ return treeAgeCheck; }
 //======================================================================
@@ -60,7 +63,7 @@ public class WateringAction implements ModAction, BehaviourProvider, ActionPerfo
 		if((theTile.isNormalTree() || theTile.isEnchantedTree() || theTile.isMyceliumTree())
 			&& performer instanceof Player
 			&& object != null
-			&& object.getTemplateId() == ItemList.water)
+			&& object.getTemplateId() == wateringItem)
 		{
 			return Arrays.asList(actionEntry);
 		}else{

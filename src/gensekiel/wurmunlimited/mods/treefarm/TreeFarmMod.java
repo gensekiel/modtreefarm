@@ -148,6 +148,7 @@ public class TreeFarmMod implements
 	{
 		WateringAction.setWateringCost(Integer.valueOf(properties.getProperty("WateringCost", Integer.toString(WateringAction.getWateringCost()))));
 		WateringAction.setWateringTime(Integer.valueOf(properties.getProperty("WateringTime", Integer.toString(WateringAction.getWateringTime()))));
+		WateringAction.setWateringItem(Integer.valueOf(properties.getProperty("WateringItem", Integer.toString(WateringAction.getWateringItem()))));
 		WateringAction.setWateringCheck(Boolean.valueOf(properties.getProperty("WateringCheck", Boolean.toString(WateringAction.getWateringCheck()))));
 		WateringAction.setTreeAgeCheck(Boolean.valueOf(properties.getProperty("TreeAgeCheck", Boolean.toString(WateringAction.getTreeAgeCheck()))));
 
