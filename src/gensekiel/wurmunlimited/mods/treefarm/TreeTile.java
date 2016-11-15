@@ -8,9 +8,9 @@ import java.io.Serializable;
 public class TreeTile implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-
+//======================================================================
 	private static long BaseGrowthTime = 600000;
-	
+	//----------------------------------------------------------------------
 	private static double GrowthModifierBirch = 1.0;
 	private static double GrowthModifierPine = 1.0;
 	private static double GrowthModifierOak = 2.0;
@@ -25,19 +25,19 @@ public class TreeTile implements Serializable
 	private static double GrowthModifierWalnut = 1.0;
 	private static double GrowthModifierFir = 1.0;
 	private static double GrowthModifierLinden = 1.0;
-
+//----------------------------------------------------------------------
 	private static double GrowthModifierNormal = 1.0;
 	private static double GrowthModifierEnchanted = 1.0;
 	private static double GrowthModifierMycelium = 1.0;
-
-	private static double[] GrowthModifierAge = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
-
+	//----------------------------------------------------------------------
+	private static double[] GrowthModifierAge = {1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5, 1.6, 1.6, 1.7};
+//======================================================================
 	private int tiledata;
 	private int x;
 	private int y;
 	private long timestamp;
 	private long growthtime;
-
+//======================================================================
 	public TreeTile(int tile, int tilex, int tiley)
 	{
 		tiledata = tile;
@@ -73,7 +73,7 @@ public class TreeTile implements Serializable
 		y = tiley;
 		timestamp = System.currentTimeMillis();
 	}
-
+//======================================================================
 	public final int getTile(){ return tiledata; }
 	public final void setTile(int i){ tiledata = i; }
 	public final int getX(){ return x; }
@@ -81,7 +81,7 @@ public class TreeTile implements Serializable
 	public final long getTimeStamp(){ return timestamp; }
 	public final long getGrowthTime(){ return growthtime; }
 	public final void setTimeStamp(long l){ timestamp = l; }
-
+//======================================================================
 	public static void setBaseGrowthTime(long l){ BaseGrowthTime = l; }
 	public static void setGrowthModifierBirch(double d){ GrowthModifierBirch = d; }
 	public static void setGrowthModifierPine(double d){ GrowthModifierPine = d; }
@@ -101,7 +101,7 @@ public class TreeTile implements Serializable
 	public static void setGrowthModifierEnchanted(double d){ GrowthModifierEnchanted = d; }
 	public static void setGrowthModifierMycelium(double d){ GrowthModifierMycelium = d; }
 	public static void setGrowthModifierAge(int age, double d){ GrowthModifierAge[age] = d; }
-	
+//======================================================================
 	public static long getBaseGrowthTime(){ return BaseGrowthTime; }
 	public static double getGrowthModifierBirch(){ return GrowthModifierBirch; }
 	public static double getGrowthModifierPine(){ return GrowthModifierPine; }
@@ -121,4 +121,5 @@ public class TreeTile implements Serializable
 	public static double getGrowthModifierEnchanted(){ return GrowthModifierEnchanted; }
 	public static double getGrowthModifierMycelium(){ return GrowthModifierMycelium; }
 	public static double getGrowthModifierAge(int age){ return GrowthModifierAge[age]; }
+//======================================================================
 }

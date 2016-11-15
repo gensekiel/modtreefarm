@@ -26,12 +26,13 @@ public class TreeTilePoller
 	private static volatile long lastPolledTiles = System.currentTimeMillis();
 	private static Logger logger = Logger.getLogger(TreeTilePoller.class.getName());
 	private static String fileName = "modTreeFarm.mtf";
+//======================================================================
 	private static byte ageLimit = 15;
 	private static long pollInterval = 300000;
 	private static boolean keepGrowing = false;
 	private static boolean useOriginalGrowthFunction = false;
-	private static boolean preserveTreeList = false;
-	private static boolean checkForWUPoll = false;
+	private static boolean preserveTreeList = true;
+	private static boolean checkForWUPoll = true;
 //======================================================================
 	public static void setPollInterval(long time){ pollInterval = time; }
 	public static void setAgeLimit(byte b){ ageLimit = b; }

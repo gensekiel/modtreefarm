@@ -22,14 +22,13 @@ import com.wurmonline.mesh.Tiles;
 public class WateringAction implements ModAction, BehaviourProvider, ActionPerformer
 {
 	private static Logger logger = Logger.getLogger(WateringAction.class.getName());
-
 	private final short actionId;
 	private final ActionEntry actionEntry;
-
-	private static int wateringCost = 1750;
+//======================================================================
+	private static int wateringCost = 5000;
 	private static int wateringTime = 30;
-	private static boolean wateringCheck = false;
-	private static boolean treeAgeCheck = false;
+	private static boolean wateringCheck = true;
+	private static boolean treeAgeCheck = true;
 //======================================================================
 	public static void setWateringCost(int i){ wateringCost = i; }
 	public static void setWateringTime(int i){ wateringTime = i; }
