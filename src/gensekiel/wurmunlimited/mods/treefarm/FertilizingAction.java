@@ -1,33 +1,42 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
+import com.wurmonline.mesh.FoliageAge;
+import com.wurmonline.mesh.Tiles;
+import com.wurmonline.mesh.TreeData;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
-import com.wurmonline.mesh.Tiles;
 
-public class WateringAction extends AbstractAction
+public class FertilizingAction extends AbstractAction 
 {
 //======================================================================
-	public WateringAction()
+	public FertilizingAction()
 	{
-		this("Water");
+		this("Fertilize");
 	}
 //======================================================================
-	public WateringAction(String s)
+	public FertilizingAction(String s)
 	{
-		super(s, "water", "watering", "Watering");
-		
-		cost = 5000;
-		time = 30;
-		item = ItemList.water;
+		super(s, "fertilize", "fertilizing", "Fertilizing");
+
+		cost = 1000;
+		time = 50;
+		item = ItemList.ash;
 	}
 //======================================================================
 	@Override
 	protected boolean checkConditions(Creature performer, int tile)
 	{
 		byte data = Tiles.decodeData(tile);
+		if(TreeData.hasFruit(data)){
+			performer.getCommunicator().sendNormalServerMessage("This tree already bears fruit.");
+			return true;
+		}
 		int age = TreeTile.getAge(data);
-		if(age >= GrowTask.getAgeLimit()){
-			performer.getCommunicator().sendNormalServerMessage("The tree is too old to make it grow by watering it.");
+		if(age <= FoliageAge.YOUNG_FOUR.getAgeId()){
+			performer.getCommunicator().sendNormalServerMessage("The tree is too young to bear fruit.");
+			return true;
+		}else if (age >= FoliageAge.OVERAGED.getAgeId()){
+			performer.getCommunicator().sendNormalServerMessage("The tree is too old to bear fruit.");
 			return true;
 		}
 		return false;
@@ -36,13 +45,13 @@ public class WateringAction extends AbstractAction
 	@Override
 	public void performTileAction(int tile, int tilex, int tiley)
 	{
-		TreeTilePoller.addTreeTile(tile, tilex, tiley, new GrowTask());
+		TreeTilePoller.addTreeTile(tile, tilex, tiley, new FruitTask());
 	}
 //======================================================================
 	@Override
 	protected boolean checkTileType(int tile)
 	{
-		return GrowTask.checkTileType(tile);
+		return FruitTask.checkTileType(tile);
 	}
 //======================================================================
 }

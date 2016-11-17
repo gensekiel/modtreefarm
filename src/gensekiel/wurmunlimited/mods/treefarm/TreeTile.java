@@ -2,12 +2,17 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import com.wurmonline.mesh.Tiles;
 import com.wurmonline.mesh.TreeData;
+import com.wurmonline.server.Server;
 
 import java.io.Serializable;
 
 public class TreeTile implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
+	// In the upper 16 bytes the tile integer encodes tile type
+	// and data, data being age (4 bit), fruit (1 bit),
+	// center (1 bit) and grass height (2 bit).
+	// Only compare type and age.
 //======================================================================
 	private static long BaseGrowthTime = 600000;
 	//----------------------------------------------------------------------
@@ -32,50 +37,94 @@ public class TreeTile implements Serializable
 	//----------------------------------------------------------------------
 	private static double[] GrowthModifierAge = {1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5, 1.6, 1.6, 1.7};
 //======================================================================
-	private int tiledata;
+	private AbstractTask task; 
+	private int rawtile;
 	private int x;
 	private int y;
 	private long timestamp;
 	private long growthtime;
 //======================================================================
-	public TreeTile(int tile, int tilex, int tiley)
+	public TreeTile(int tile, int tilex, int tiley, AbstractTask t)
 	{
-		tiledata = tile;
-		byte ttype = Tiles.decodeType(tile);
-		byte tdata = Tiles.decodeData(tile);
-		byte tage = TreeTilePoller.getAgeFromData(tdata);
-		Tiles.Tile theTile = Tiles.getTile(ttype);
+		task = t;
+		rawtile = tile;
+		x = tilex;
+		y = tiley;
+
+		byte tdata = getData();
+		byte tage = getAge();
+		Tiles.Tile tiletype = getTile(rawtile);
 		
+		// TODO separate times for growth and fruit
 		growthtime = BaseGrowthTime;
 		
-		     if(theTile.getTreeType(tdata) == TreeData.TreeType.BIRCH)    growthtime *= GrowthModifierBirch;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.PINE)     growthtime *= GrowthModifierPine;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.OAK)      growthtime *= GrowthModifierOak;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.CEDAR)    growthtime *= GrowthModifierCedar;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.WILLOW)   growthtime *= GrowthModifierWillow;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.MAPLE)    growthtime *= GrowthModifierMaple;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.APPLE)    growthtime *= GrowthModifierApple;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.LEMON)    growthtime *= GrowthModifierLemon;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.OLIVE)    growthtime *= GrowthModifierOlive;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.CHERRY)   growthtime *= GrowthModifierCherry;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.CHESTNUT) growthtime *= GrowthModifierChestnut;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.WALNUT)   growthtime *= GrowthModifierWalnut;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.FIR)      growthtime *= GrowthModifierFir;
-		else if(theTile.getTreeType(tdata) == TreeData.TreeType.LINDEN)   growthtime *= GrowthModifierLinden;
+		     if(tiletype.getTreeType(tdata) == TreeData.TreeType.BIRCH)    growthtime *= GrowthModifierBirch;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.PINE)     growthtime *= GrowthModifierPine;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.OAK)      growthtime *= GrowthModifierOak;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.CEDAR)    growthtime *= GrowthModifierCedar;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.WILLOW)   growthtime *= GrowthModifierWillow;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.MAPLE)    growthtime *= GrowthModifierMaple;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.APPLE)    growthtime *= GrowthModifierApple;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.LEMON)    growthtime *= GrowthModifierLemon;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.OLIVE)    growthtime *= GrowthModifierOlive;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.CHERRY)   growthtime *= GrowthModifierCherry;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.CHESTNUT) growthtime *= GrowthModifierChestnut;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.WALNUT)   growthtime *= GrowthModifierWalnut;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.FIR)      growthtime *= GrowthModifierFir;
+		else if(tiletype.getTreeType(tdata) == TreeData.TreeType.LINDEN)   growthtime *= GrowthModifierLinden;
 	
 		if(tage < 15) growthtime *= GrowthModifierAge[tage];
 	
-		     if(theTile.isNormalTree())    growthtime *= GrowthModifierNormal;
-		else if(theTile.isEnchantedTree()) growthtime *= GrowthModifierEnchanted;
-		else if(theTile.isMyceliumTree())  growthtime *= GrowthModifierMycelium;
+		     if(tiletype.isNormalTree())    growthtime *= GrowthModifierNormal;
+		else if(tiletype.isEnchantedTree()) growthtime *= GrowthModifierEnchanted;
+		else if(tiletype.isMyceliumTree())  growthtime *= GrowthModifierMycelium;
 		
-		x = tilex;
-		y = tiley;
 		timestamp = System.currentTimeMillis();
 	}
 //======================================================================
-	public final int getTile(){ return tiledata; }
-	public final void setTile(int i){ tiledata = i; }
+	public byte getType()
+	{
+		return Tiles.decodeType(rawtile);
+	}
+//======================================================================
+	public byte getData()
+	{
+		return Tiles.decodeData(rawtile);
+	}
+//======================================================================
+	public byte getAge()
+	{
+		return getAge(getData());
+	}
+//======================================================================
+	public static byte getAge(byte data)
+	{
+		return (byte)(data >> 4 & 0xF);
+	}
+//======================================================================
+	public static Tiles.Tile getTile(int x, int y)
+	{
+		return getTile(Server.surfaceMesh.getTile(x, y));
+	}
+//======================================================================
+	public static Tiles.Tile getTile(int rawtile)
+	{
+		return Tiles.getTile(Tiles.decodeType(rawtile));
+	}
+//======================================================================
+	public static byte convertTile(byte type, byte data)
+	{
+		Tiles.Tile ttile = Tiles.getTile(type);
+		TreeData.TreeType tt = ttile.getTreeType(data);
+		if(ttile.isNormalTree()) return tt.asNormalTree();
+		if(ttile.isMyceliumTree()) return tt.asMyceliumTree();
+		if(ttile.isEnchantedTree()) return tt.asEnchantedTree();
+		return 0;
+	}
+//======================================================================
+	public final AbstractTask getTask(){ return task; }
+	public final int getTile(){ return rawtile; }
+	public final void setTile(int i){ rawtile = i; }
 	public final int getX(){ return x; }
 	public final int getY(){ return y; }
 	public final long getTimeStamp(){ return timestamp; }
