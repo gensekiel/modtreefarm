@@ -17,9 +17,10 @@ public class FruitTask extends AbstractTask
 	public double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	@Override
-	public String getDescription()
+	public String getDescription(int tile)
 	{
-		return "The tree has already been fertilized.";
+		Tiles.Tile tt = Tiles.getTile(tile);
+		return "The " + tt.getName() + " has already been fertilized.";
 	}
 //======================================================================
 	public static boolean checkTileType(int tile)
@@ -32,9 +33,10 @@ public class FruitTask extends AbstractTask
 	@Override
 	public boolean performCheck(TreeTile treetile, int rawtile)
 	{
-		// TODO mycelium infected do not grow fruit
-		// Implies checkTileType(), if that method was used by the action
-		// that created the task.
+		if(!checkTileType(rawtile)) return true;
+		
+		if(Tiles.getTile(rawtile).isMycelium()) return true;
+		
 		if(checkForWUPoll){ // Check type and fruit state, ignore rest
 			if( (treetile.getTile() & 0xFF080000) != (rawtile & 0xFF080000) )
 				return true;

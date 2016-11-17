@@ -26,8 +26,10 @@ public class WateringAction extends AbstractAction
 	{
 		byte data = Tiles.decodeData(tile);
 		int age = TreeTile.getAge(data);
+		Tiles.Tile tt = Tiles.getTile(tile);
+		
 		if(age >= GrowTask.getAgeLimit()){
-			performer.getCommunicator().sendNormalServerMessage("The tree is too old to make it grow by watering it.");
+			performer.getCommunicator().sendNormalServerMessage("The " + tt.getName() + " is too old to make it grow by watering it.");
 			return true;
 		}
 		return false;

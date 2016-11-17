@@ -10,6 +10,7 @@ import org.gotti.wurmunlimited.modsupport.actions.BehaviourProvider;
 import org.gotti.wurmunlimited.modsupport.actions.ModAction;
 import org.gotti.wurmunlimited.modsupport.actions.ModActions;
 
+import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.behaviours.Action;
 import com.wurmonline.server.behaviours.ActionEntry;
@@ -77,47 +78,47 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	@Override
 	public ActionPerformer getActionPerformer(){ return this; }
 //======================================================================
-	public boolean checkItem(Creature performer, Item source)
+	public boolean checkItem(Creature performer, Item source, String tilename)
 	{
 		if(source == null){
-			performer.getCommunicator().sendNormalServerMessage("You have nothing to " + actionVerb + " a tree with.");
+			performer.getCommunicator().sendNormalServerMessage("You have nothing to " + actionVerb + " a " + tilename + " with.", (byte)1);
 			return true;
 		}
 		if(source.getTemplateId() != item){
 			// Get item name from ID:
 			// ItemTemplate.getInstance().getTemplate(item).getName()
-			performer.getCommunicator().sendNormalServerMessage("You cannot use " + source.getActualName() + " to " + actionVerb + " a tree.");
+			performer.getCommunicator().sendNormalServerMessage("You cannot use " + source.getActualName() + " to " + actionVerb + " a " + tilename + ".", (byte)1);
 			return true;
 		}
 		
 		int available = source.getWeightGrams();
 		if (available < cost){
-			performer.getCommunicator().sendNormalServerMessage("You carry too little " + source.getActualName() + " to " + actionVerb + " the tree.");
+			performer.getCommunicator().sendNormalServerMessage("You carry too little " + source.getActualName() + " to " + actionVerb + " the " + tilename + ".", (byte)1);
 			return true;
 		}
 
 		return false;
 	}
 //======================================================================
-	public void startAction(Creature performer) throws NoSuchActionException
+	public void startAction(Creature performer, String tilename) throws NoSuchActionException
 	{
-		performer.getCommunicator().sendNormalServerMessage("You start to " + actionVerb + " the tree.");
-		Server.getInstance().broadCastAction(performer.getName() + " starts to " + actionVerb + " a tree.", performer, 5);
+		performer.getCommunicator().sendNormalServerMessage("You start to " + actionVerb + " the " + tilename + ".");
+		Server.getInstance().broadCastAction(performer.getName() + " starts to " + actionVerb + " a " + tilename + ".", performer, 5);
 		performer.getCurrentAction().setTimeLeft(time);
 		performer.sendActionControl(actionDesc, true, time);
 	}
 //======================================================================
-	public void finishAction(Creature performer)
+	public void finishAction(Creature performer, String tilename)
 	{
-		performer.getCommunicator().sendNormalServerMessage("You finish " + actionDesc + " the tree.");
-		Server.getInstance().broadCastAction(performer.getName() + " finishes to " + actionVerb + " a tree.", performer, 5);
+		performer.getCommunicator().sendNormalServerMessage("You finish " + actionDesc + " the " + tilename + ".");
+		Server.getInstance().broadCastAction(performer.getName() + " finishes to " + actionVerb + " a " + tilename + ".", performer, 5);
 	}
 //======================================================================
-	private boolean checkStatus(Creature performer, int x, int y)
+	private boolean checkStatus(Creature performer, int x, int y, int tile)
 	{
 		AbstractTask aa = TreeTilePoller.containsTileAt(x, y);
 		if(aa != null){
-			performer.getCommunicator().sendNormalServerMessage(aa.getDescription());
+			performer.getCommunicator().sendNormalServerMessage(aa.getDescription(tile));
 			return true;
 		}
 		return false;
@@ -143,12 +144,13 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, int tile, short num, float counter)
 	{
 		try{
+			String tilename = Tiles.getTile(tile).getName();
 			if(counter == 1.0f){
 				if(!checkTileType(tile)) return true;
 				if(checkConditions) if(checkConditions(performer, tile)) return true;
-				if(checkIfPolled) if(checkStatus(performer, tilex, tiley)) return true;
-				if(item != 0) if(checkItem(performer, source)) return true;
-				startAction(performer);
+				if(checkIfPolled) if(checkStatus(performer, tilex, tiley, tile)) return true;
+				if(item != 0) if(checkItem(performer, source, tilename)) return true;
+				startAction(performer, tilename);
 			}else{
 				int timeLeft = performer.getCurrentAction().getTimeLeft();
 				// TODO Can the tile change while action is performed?
@@ -158,7 +160,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 					// Source item can not change.
 					if(item != 0) source.setWeight(source.getWeightGrams() - cost, true);
 
-					finishAction(performer);
+					finishAction(performer, tilename);
 					// What if item is moved to container while action is 
 					// performed?
 					// Tested: Used item cannot be moved.

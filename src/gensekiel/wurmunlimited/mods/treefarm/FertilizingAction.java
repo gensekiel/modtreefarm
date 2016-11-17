@@ -29,16 +29,23 @@ public class FertilizingAction extends AbstractAction
 		byte data = Tiles.decodeData(tile);
 		int age = TreeTile.getAge(data);
 
+		Tiles.Tile tt = Tiles.getTile(tile);
+		
 		if(age <= FoliageAge.YOUNG_FOUR.getAgeId()){
-			performer.getCommunicator().sendNormalServerMessage("The tree is too young to bear fruit.");
+			performer.getCommunicator().sendNormalServerMessage("The " + tt.getName() + " is too young to bear fruit.");
 			return true;
 		}else if (age >= FoliageAge.OVERAGED.getAgeId()){
-			performer.getCommunicator().sendNormalServerMessage("The tree is too old to bear fruit.");
+			performer.getCommunicator().sendNormalServerMessage("The " + tt.getName() + " is too old to bear fruit.");
 			return true;
 		}
 
 		if(TreeData.hasFruit(data)){
-			performer.getCommunicator().sendNormalServerMessage("This tree already bears fruit.");
+			performer.getCommunicator().sendNormalServerMessage("This " + tt.getName() + " already bears fruit.");
+			return true;
+		}
+
+		if(tt.isMycelium()){
+			performer.getCommunicator().sendNormalServerMessage("This " + tt.getName() + " already bears fruit.");
 			return true;
 		}
 

@@ -29,9 +29,10 @@ public class GrowTask extends AbstractTask
 	public double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	@Override
-	public String getDescription()
+	public String getDescription(int tile)
 	{
-		return "The tree has already been watered.";
+		Tiles.Tile tt = Tiles.getTile(tile);
+		return "The " + tt.getName() + " has already been watered.";
 	}
 //======================================================================
 	public static boolean checkTileType(int tile)
@@ -43,8 +44,8 @@ public class GrowTask extends AbstractTask
 	@Override
 	public boolean performCheck(TreeTile treetile, int rawtile)
 	{
-		// Implies checkTileType(), if that method was used by the action
-		// that created the task.
+		if(!checkTileType(rawtile)) return true;
+		
 		if(checkForWUPoll){
 			if(keepGrowing) // check type, ignore age
 				if( (treetile.getTile() & 0xFF000000) != (rawtile & 0xFF000000) ) 
