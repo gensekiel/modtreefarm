@@ -14,14 +14,19 @@ public class GrowTask extends AbstractTask
 	private static byte ageLimit = 15;
 	private static boolean keepGrowing = false;
 	private static boolean useOriginalGrowthFunction = false;
+	private static double growthMultiplier = 1.0;
 //======================================================================
 	public static void setAgeLimit(byte b){ ageLimit = b; }
 	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
 	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
+	public static void setGrowthModifier(double d){ growthMultiplier = d; }
 //======================================================================
 	public static byte getAgeLimit(){ return ageLimit; }
 	public static boolean getKeepGrowing(){ return keepGrowing; }
 	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
+	public static double getGrowthModifier(){ return growthMultiplier; }
+//======================================================================
+	public double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	@Override
 	public String getDescription()
@@ -31,7 +36,8 @@ public class GrowTask extends AbstractTask
 //======================================================================
 	public static boolean checkTileType(int tile)
 	{
-		return Tiles.getTile(Tiles.decodeType(tile)).isTree();
+		return (    Tiles.getTile(Tiles.decodeType(tile)).isTree()
+		         || Tiles.getTile(Tiles.decodeType(tile)).isBush() );
 	}
 //======================================================================
 	@Override

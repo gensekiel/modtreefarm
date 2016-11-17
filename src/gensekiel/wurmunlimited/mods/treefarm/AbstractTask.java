@@ -14,5 +14,6 @@ public abstract class AbstractTask implements Serializable{
 	public abstract boolean performCheck(TreeTile treetile, int tile);
 	public abstract boolean performTask(TreeTile treetile);
 	public abstract String getDescription();
+	public abstract double getGrowthMultiplier();
 //======================================================================
 }

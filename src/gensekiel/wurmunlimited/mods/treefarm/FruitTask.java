@@ -9,6 +9,13 @@ public class FruitTask extends AbstractTask
 {
 	private static final long serialVersionUID = 2L;
 //======================================================================
+	private static double growthMultiplier = 1.0;
+//======================================================================
+	public static void setGrowthModifier(double d){ growthMultiplier = d; }
+	public static double getGrowthModifier(){ return growthMultiplier; }
+//======================================================================
+	public double getGrowthMultiplier(){ return growthMultiplier; }
+//======================================================================
 	@Override
 	public String getDescription()
 	{
@@ -17,7 +24,9 @@ public class FruitTask extends AbstractTask
 //======================================================================
 	public static boolean checkTileType(int tile)
 	{
-		return Tiles.getTile(Tiles.decodeType(tile)).canBearFruit(); // Currently implies tree
+		Tiles.Tile tt = Tiles.getTile(Tiles.decodeType(tile));
+		return (     tt.canBearFruit() // Currently implies tree
+		         || (tt.isBush() && !tt.isThorn(Tiles.decodeData(tile))));
 	}
 //======================================================================
 	@Override
