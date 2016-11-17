@@ -27,11 +27,8 @@ public class FertilizingAction extends AbstractAction
 	protected boolean checkConditions(Creature performer, int tile)
 	{
 		byte data = Tiles.decodeData(tile);
-		if(TreeData.hasFruit(data)){
-			performer.getCommunicator().sendNormalServerMessage("This tree already bears fruit.");
-			return true;
-		}
 		int age = TreeTile.getAge(data);
+
 		if(age <= FoliageAge.YOUNG_FOUR.getAgeId()){
 			performer.getCommunicator().sendNormalServerMessage("The tree is too young to bear fruit.");
 			return true;
@@ -39,6 +36,12 @@ public class FertilizingAction extends AbstractAction
 			performer.getCommunicator().sendNormalServerMessage("The tree is too old to bear fruit.");
 			return true;
 		}
+
+		if(TreeData.hasFruit(data)){
+			performer.getCommunicator().sendNormalServerMessage("This tree already bears fruit.");
+			return true;
+		}
+
 		return false;
 	}
 //======================================================================

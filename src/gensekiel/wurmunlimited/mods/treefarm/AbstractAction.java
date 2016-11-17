@@ -79,8 +79,14 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 //======================================================================
 	public boolean checkItem(Creature performer, Item source)
 	{
-		if(source == null || source.getTemplateId() != item){
+		if(source == null){
 			performer.getCommunicator().sendNormalServerMessage("You have nothing to " + actionVerb + " a tree with.");
+			return true;
+		}
+		if(source.getTemplateId() != item){
+			// Get item name from ID:
+			// ItemTemplate.getInstance().getTemplate(item).getName()
+			performer.getCommunicator().sendNormalServerMessage("You cannot use " + source.getActualName() + " to " + actionVerb + " a tree.");
 			return true;
 		}
 		
@@ -120,16 +126,8 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int tile)
 	{
-		if(item == 0){
-			if(checkTileType(tile) && performer instanceof Player) 
-				return Arrays.asList(actionEntry);
-			else return null;
-		}
-		
 		if(   checkTileType(tile)
-			&& performer instanceof Player
-			&& object != null
-			&& object.getTemplateId() == item)
+			&& performer instanceof Player)
 		{
 			return Arrays.asList(actionEntry);
 		}else return null;
@@ -138,8 +136,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, int tile)
 	{
-		if(item == 0) return getBehavioursFor(performer, null, tilex, tiley, onSurface, tile);
-		return null;
+		return getBehavioursFor(performer, null, tilex, tiley, onSurface, tile);
 	}
 //======================================================================
 	@Override
@@ -178,8 +175,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	@Override
 	public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, int tile, short num, float counter)
 	{
-		if(item == 0) return action(action, performer, null, tilex, tiley, onSurface, 0, tile, num, counter);
-		return true;
+		return action(action, performer, null, tilex, tiley, onSurface, 0, tile, num, counter);
 	}
 //======================================================================
 }
