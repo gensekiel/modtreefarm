@@ -11,9 +11,9 @@ public abstract class AbstractTask implements Serializable{
 //======================================================================
 	public static boolean getCheckForWUPoll(){ return checkForWUPoll; }
 //======================================================================
-	public abstract boolean performCheck(TreeTile treetile, int tile);
+	public abstract boolean performCheck(TreeTile treetile, int rawtile);
 	public abstract boolean performTask(TreeTile treetile);
-	public abstract String getDescription(int tile);
+	public abstract String getDescription(int rawtile);
 	public abstract double getGrowthMultiplier();
 //======================================================================
 }

@@ -29,16 +29,15 @@ public class GrowTask extends AbstractTask
 	public double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	@Override
-	public String getDescription(int tile)
+	public String getDescription(int rawtile)
 	{
-		Tiles.Tile tt = Tiles.getTile(tile);
-		return "The " + tt.getName() + " has already been watered.";
+		return "This " + TreeTile.getTileName(rawtile) + " has already been watered.";
 	}
 //======================================================================
-	public static boolean checkTileType(int tile)
+	public static boolean checkTileType(int rawtile)
 	{
-		return (    Tiles.getTile(Tiles.decodeType(tile)).isTree()
-		         || Tiles.getTile(Tiles.decodeType(tile)).isBush() );
+		return (    TreeTile.getTile(rawtile).isTree()
+		         || TreeTile.getTile(rawtile).isBush() );
 	}
 //======================================================================
 	@Override
@@ -73,18 +72,18 @@ public class GrowTask extends AbstractTask
 		return false;
 	}
 //======================================================================
-	private static void callTreeGrowthWrapper(int tile, int tilex, int tiley, byte type, byte data)
+	private static void callTreeGrowthWrapper(int rawtile, int tilex, int tiley, byte type, byte data)
 	{
 		try{
 			Method method = TilePoller.class.getMethod("wrap_checkForTreeGrowth", int.class, int.class, int.class, byte.class, byte.class);
-			method.invoke(null, tile, tilex, tiley, type, data);
+			method.invoke(null, rawtile, tilex, tiley, type, data);
 		}catch(Exception e){
 			System.out.println(e);
 			e.printStackTrace();
 		}
 	}
 //======================================================================
-	private static void forceTreeGrowth(int tile, int tilex, int tiley, byte type, byte data)
+	private static void forceTreeGrowth(int rawtile, int tilex, int tiley, byte type, byte data)
 	{
 		Server.setWorldResource(tilex, tiley, 0);
 		byte age = TreeTile.getAge(data);
@@ -100,7 +99,7 @@ public class GrowTask extends AbstractTask
 		// want to use an injected method just for that.
 		byte new_type = TreeTile.convertTile(type, data);
 		
-		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(tile), new_type, new_data));
+		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), new_type, new_data));
 		Server.modifyFlagsByTileType(tilex, tiley, new_type);
 		Players.getInstance().sendChangedTile(tilex, tiley, true, false);
 	}

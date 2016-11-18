@@ -139,6 +139,12 @@ public class TreeTile implements Serializable
 		return Tiles.getTile(Tiles.decodeType(rawtile));
 	}
 //======================================================================
+	public static String getTileName(int rawtile)
+	{
+		Tiles.Tile tt = TreeTile.getTile(rawtile);
+		return tt.getTileName(Tiles.decodeData(rawtile));
+	}
+//======================================================================
 	public static byte convertTile(byte type, byte data)
 	{
 		Tiles.Tile ttile = Tiles.getTile(type);

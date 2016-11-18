@@ -64,22 +64,25 @@ public class TreeFarmMod implements
 		if(growTrees) ModActions.registerAction(wateringaction);
 		if(growFruit) ModActions.registerAction(fertilizingaction);
 		
-		WateringAction wa2 = new WateringAction("WaterEX");
-		FertilizingAction fa2 = new FertilizingAction("FertilizeEX");
-
-		wa2.setCost(0);
-		wa2.setTime(0);
-		wa2.setItem(0);
-
-		fa2.setCost(0);
-		fa2.setTime(0);
-		fa2.setItem(0);
-
-		wa2.registerAction();
-		fa2.registerAction();
-
-		ModActions.registerAction(wa2);
-		ModActions.registerAction(fa2);
+		boolean debug = false;
+		if(debug){
+			WateringAction wa2 = new WateringAction("WaterEX");
+			FertilizingAction fa2 = new FertilizingAction("FertilizeEX");
+	
+			wa2.setCost(0);
+			wa2.setTime(0);
+			wa2.setItem(0);
+	
+			fa2.setCost(0);
+			fa2.setTime(0);
+			fa2.setItem(0);
+	
+			wa2.registerAction();
+			fa2.registerAction();
+	
+			ModActions.registerAction(wa2);
+			ModActions.registerAction(fa2);
+		}
 		
 		logger.log(Level.INFO, "Actions registered.");
 	}

@@ -24,28 +24,29 @@ public class FertilizingAction extends AbstractAction
 	}
 //======================================================================
 	@Override
-	protected boolean checkConditions(Creature performer, int tile)
+	protected boolean checkConditions(Creature performer, int rawtile)
 	{
-		byte data = Tiles.decodeData(tile);
+		byte data = Tiles.decodeData(rawtile);
 		int age = TreeTile.getAge(data);
 
-		Tiles.Tile tt = Tiles.getTile(tile);
+		Tiles.Tile tt = TreeTile.getTile(rawtile);
+		String tilename = TreeTile.getTileName(rawtile);
 		
 		if(age <= FoliageAge.YOUNG_FOUR.getAgeId()){
-			performer.getCommunicator().sendNormalServerMessage("The " + tt.getName() + " is too young to bear fruit.");
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too young to bear fruit.", (byte)1);
 			return true;
 		}else if (age >= FoliageAge.OVERAGED.getAgeId()){
-			performer.getCommunicator().sendNormalServerMessage("The " + tt.getName() + " is too old to bear fruit.");
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too old to bear fruit.", (byte)1);
 			return true;
 		}
 
 		if(TreeData.hasFruit(data)){
-			performer.getCommunicator().sendNormalServerMessage("This " + tt.getName() + " already bears fruit.");
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " already bears fruit.", (byte)1);
 			return true;
 		}
 
 		if(tt.isMycelium()){
-			performer.getCommunicator().sendNormalServerMessage("This " + tt.getName() + " already bears fruit.");
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " already bears fruit.", (byte)1);
 			return true;
 		}
 
@@ -53,15 +54,15 @@ public class FertilizingAction extends AbstractAction
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int tile, int tilex, int tiley)
+	public void performTileAction(int rawtile, int tilex, int tiley)
 	{
-		TreeTilePoller.addTreeTile(tile, tilex, tiley, new FruitTask());
+		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new FruitTask());
 	}
 //======================================================================
 	@Override
-	protected boolean checkTileType(int tile)
+	protected boolean checkTileType(int rawtile)
 	{
-		return FruitTask.checkTileType(tile);
+		return FruitTask.checkTileType(rawtile);
 	}
 //======================================================================
 }

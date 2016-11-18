@@ -38,11 +38,11 @@ public class TreeTilePoller
 		return Long.valueOf(Tiles.getTileId(x, y, 0, true));
 	}
 //======================================================================
-	public static void addTreeTile(int tileData, int x, int y, AbstractTask task)
+	public static void addTreeTile(int rawtile, int x, int y, AbstractTask task)
 	{
 		synchronized(tiles){
-			TreeTile tTile = new TreeTile(tileData, x, y, task);
-			tiles.put(getTileKey(x, y), tTile);
+			TreeTile ttile = new TreeTile(rawtile, x, y, task);
+			tiles.put(getTileKey(x, y), ttile);
 		}
 	}
 //======================================================================
@@ -74,8 +74,7 @@ public class TreeTilePoller
 			
 			for(TreeTile treetile : tiles.values()){
 				int rawtile = Server.surfaceMesh.getTile(treetile.getX(), treetile.getY());
-				byte type = Tiles.decodeType(rawtile);
-				Tiles.Tile tile = Tiles.getTile(type);
+				Tiles.Tile tile = TreeTile.getTile(rawtile);
 				
 				// Generic check
 				if(tile == null){

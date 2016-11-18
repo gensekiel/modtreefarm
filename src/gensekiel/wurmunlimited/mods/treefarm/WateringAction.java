@@ -22,29 +22,29 @@ public class WateringAction extends AbstractAction
 	}
 //======================================================================
 	@Override
-	protected boolean checkConditions(Creature performer, int tile)
+	protected boolean checkConditions(Creature performer, int rawtile)
 	{
-		byte data = Tiles.decodeData(tile);
+		byte data = Tiles.decodeData(rawtile);
 		int age = TreeTile.getAge(data);
-		Tiles.Tile tt = Tiles.getTile(tile);
+		String tilename = TreeTile.getTileName(rawtile);
 		
 		if(age >= GrowTask.getAgeLimit()){
-			performer.getCommunicator().sendNormalServerMessage("The " + tt.getName() + " is too old to make it grow by watering it.");
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too old to make it grow by watering it.", (byte)1);
 			return true;
 		}
 		return false;
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int tile, int tilex, int tiley)
+	public void performTileAction(int rawtile, int tilex, int tiley)
 	{
-		TreeTilePoller.addTreeTile(tile, tilex, tiley, new GrowTask());
+		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new GrowTask());
 	}
 //======================================================================
 	@Override
-	protected boolean checkTileType(int tile)
+	protected boolean checkTileType(int rawtile)
 	{
-		return GrowTask.checkTileType(tile);
+		return GrowTask.checkTileType(rawtile);
 	}
 //======================================================================
 }

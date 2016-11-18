@@ -10,7 +10,6 @@ import org.gotti.wurmunlimited.modsupport.actions.BehaviourProvider;
 import org.gotti.wurmunlimited.modsupport.actions.ModAction;
 import org.gotti.wurmunlimited.modsupport.actions.ModActions;
 
-import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.behaviours.Action;
 import com.wurmonline.server.behaviours.ActionEntry;
@@ -63,13 +62,13 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 		ModActions.registerAction(actionEntry);
 	}
 //======================================================================
-	protected abstract void performTileAction(int tile, int tilex, int tiley);
+	protected abstract void performTileAction(int rawtile, int tilex, int tiley);
 //======================================================================
 	// Called when action is started.
-	protected abstract boolean checkConditions(Creature performer, int tile);
+	protected abstract boolean checkConditions(Creature performer, int rawtile);
 //======================================================================
 	// Called when behavior is provided.
-	protected abstract boolean checkTileType(int tile);
+	protected abstract boolean checkTileType(int rawtile);
 //======================================================================
 	@Override
 	public short getActionId(){ return actionId; }
@@ -81,19 +80,19 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public boolean checkItem(Creature performer, Item source, String tilename)
 	{
 		if(source == null){
-			performer.getCommunicator().sendNormalServerMessage("You have nothing to " + actionVerb + " a " + tilename + " with.", (byte)1);
+			performer.getCommunicator().sendNormalServerMessage("You have nothing in your hands to " + actionVerb + " the " + tilename + " with.", (byte)1);
 			return true;
 		}
 		if(source.getTemplateId() != item){
 			// Get item name from ID:
 			// ItemTemplate.getInstance().getTemplate(item).getName()
-			performer.getCommunicator().sendNormalServerMessage("You cannot use " + source.getActualName() + " to " + actionVerb + " a " + tilename + ".", (byte)1);
+			performer.getCommunicator().sendNormalServerMessage("You cannot use " + source.getNameWithGenus() + " to " + actionVerb + " the " + tilename + ".", (byte)1);
 			return true;
 		}
 		
 		int available = source.getWeightGrams();
 		if (available < cost){
-			performer.getCommunicator().sendNormalServerMessage("You carry too little " + source.getActualName() + " to " + actionVerb + " the " + tilename + ".", (byte)1);
+			performer.getCommunicator().sendNormalServerMessage("You have too little " + source.getActualName() + " to " + actionVerb + " the " + tilename + ".", (byte)1);
 			return true;
 		}
 
@@ -103,31 +102,31 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public void startAction(Creature performer, String tilename) throws NoSuchActionException
 	{
 		performer.getCommunicator().sendNormalServerMessage("You start to " + actionVerb + " the " + tilename + ".");
-		Server.getInstance().broadCastAction(performer.getName() + " starts to " + actionVerb + " a " + tilename + ".", performer, 5);
+		Server.getInstance().broadCastAction(performer.getName() + " starts to " + actionVerb + " some " + tilename + ".", performer, 5);
 		performer.getCurrentAction().setTimeLeft(time);
 		performer.sendActionControl(actionDesc, true, time);
 	}
 //======================================================================
 	public void finishAction(Creature performer, String tilename)
 	{
-		performer.getCommunicator().sendNormalServerMessage("You finish " + actionDesc + " the " + tilename + ".");
-		Server.getInstance().broadCastAction(performer.getName() + " finishes to " + actionVerb + " a " + tilename + ".", performer, 5);
+		performer.getCommunicator().sendNormalServerMessage("You finish " + actionVerbIng + " the " + tilename + ".");
+		Server.getInstance().broadCastAction(performer.getName() + " finishes to " + actionVerb + " some " + tilename + ".", performer, 5);
 	}
 //======================================================================
-	private boolean checkStatus(Creature performer, int x, int y, int tile)
+	private boolean checkStatus(Creature performer, int x, int y, int rawtile)
 	{
 		AbstractTask aa = TreeTilePoller.containsTileAt(x, y);
 		if(aa != null){
-			performer.getCommunicator().sendNormalServerMessage(aa.getDescription(tile));
+			performer.getCommunicator().sendNormalServerMessage(aa.getDescription(rawtile), (byte)1);
 			return true;
 		}
 		return false;
 	}
 //======================================================================
 	@Override
-	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int tile)
+	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
-		if(   checkTileType(tile)
+		if(   checkTileType(rawtile)
 			&& performer instanceof Player)
 		{
 			return Arrays.asList(actionEntry);
@@ -135,27 +134,27 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	}
 //======================================================================
 	@Override
-	public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, int tile)
+	public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
-		return getBehavioursFor(performer, null, tilex, tiley, onSurface, tile);
+		return getBehavioursFor(performer, null, tilex, tiley, onSurface, rawtile);
 	}
 //======================================================================
 	@Override
-	public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, int tile, short num, float counter)
+	public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, int rawtile, short num, float counter)
 	{
 		try{
-			String tilename = Tiles.getTile(tile).getName();
+			String tilename = TreeTile.getTileName(rawtile);
 			if(counter == 1.0f){
-				if(!checkTileType(tile)) return true;
-				if(checkConditions) if(checkConditions(performer, tile)) return true;
-				if(checkIfPolled) if(checkStatus(performer, tilex, tiley, tile)) return true;
+				if(!checkTileType(rawtile)) return true;
+				if(checkConditions) if(checkConditions(performer, rawtile)) return true;
+				if(checkIfPolled) if(checkStatus(performer, tilex, tiley, rawtile)) return true;
 				if(item != 0) if(checkItem(performer, source, tilename)) return true;
 				startAction(performer, tilename);
 			}else{
 				int timeLeft = performer.getCurrentAction().getTimeLeft();
 				// TODO Can the tile change while action is performed?
 				if(counter * 10.0F > timeLeft){
-					performTileAction(tile, tilex, tiley);
+					performTileAction(rawtile, tilex, tiley);
 
 					// Source item can not change.
 					if(item != 0) source.setWeight(source.getWeightGrams() - cost, true);
@@ -175,9 +174,9 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	}
 //======================================================================
 	@Override
-	public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, int tile, short num, float counter)
+	public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, int rawtile, short num, float counter)
 	{
-		return action(action, performer, null, tilex, tiley, onSurface, 0, tile, num, counter);
+		return action(action, performer, null, tilex, tiley, onSurface, 0, rawtile, num, counter);
 	}
 //======================================================================
 }

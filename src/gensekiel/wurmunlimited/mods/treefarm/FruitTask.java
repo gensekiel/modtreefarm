@@ -17,17 +17,16 @@ public class FruitTask extends AbstractTask
 	public double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	@Override
-	public String getDescription(int tile)
+	public String getDescription(int rawtile)
 	{
-		Tiles.Tile tt = Tiles.getTile(tile);
-		return "The " + tt.getName() + " has already been fertilized.";
+		return "This " + TreeTile.getTileName(rawtile) + " has already been fertilized.";
 	}
 //======================================================================
-	public static boolean checkTileType(int tile)
+	public static boolean checkTileType(int rawtile)
 	{
-		Tiles.Tile tt = Tiles.getTile(Tiles.decodeType(tile));
+		Tiles.Tile tt = TreeTile.getTile(rawtile);
 		return (     tt.canBearFruit() // Currently implies tree
-		         || (tt.isBush() && !tt.isThorn(Tiles.decodeData(tile))));
+		         || (tt.isBush() && !tt.isThorn(Tiles.decodeData(rawtile))));
 	}
 //======================================================================
 	@Override
@@ -35,7 +34,7 @@ public class FruitTask extends AbstractTask
 	{
 		if(!checkTileType(rawtile)) return true;
 		
-		if(Tiles.getTile(rawtile).isMycelium()) return true;
+		if(TreeTile.getTile(rawtile).isMycelium()) return true;
 		
 		if(checkForWUPoll){ // Check type and fruit state, ignore rest
 			if( (treetile.getTile() & 0xFF080000) != (rawtile & 0xFF080000) )
@@ -55,7 +54,7 @@ public class FruitTask extends AbstractTask
 		return plantSeed(treetile.getTile(), treetile.getX(), treetile.getY(), treetile.getType(), treetile.getData());
 	}
 //======================================================================
-	private static boolean plantSeed(int tile, int tilex, int tiley, byte type, byte data)
+	private static boolean plantSeed(int rawtile, int tilex, int tiley, byte type, byte data)
 	{
 		Server.setWorldResource(tilex, tiley, 0);
 
@@ -63,7 +62,7 @@ public class FruitTask extends AbstractTask
 		byte new_type = TreeTile.convertTile(type, data);
 		
 		if(type != new_type) Server.modifyFlagsByTileType(tilex, tiley, new_type);
-		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(tile), new_type, new_data));
+		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), new_type, new_data));
 		Players.getInstance().sendChangedTile(tilex, tiley, true, false);
 		
 		return true;
