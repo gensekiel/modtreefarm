@@ -29,6 +29,8 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	protected int item;
 	protected static boolean checkIfPolled;
 	protected static boolean checkConditions;
+	protected static boolean allowTrees;
+	protected static boolean allowBushes;
 //======================================================================
 	protected String menuEntry;
 	protected String actionVerb;
@@ -40,12 +42,16 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public void setItem(int i){ item = i; }
 	public static void setCheckIfPolled(boolean b){ checkIfPolled = b; }
 	public static void setCheckConditions(boolean b){ checkConditions = b; }
+	public static void setAllowTrees(boolean b){ allowTrees = b; }
+	public static void setAllowBushes(boolean b){ allowBushes = b; }
 //======================================================================
 	public int getCost(){ return cost; }
 	public int getTime(){ return time; }
 	public int getItem(){ return item; }
 	public static boolean getCheckIfPolled(){ return checkIfPolled; }
 	public static boolean getCheckConditions(){ return checkConditions; }
+	public static boolean getAllowTrees(){ return allowTrees; }
+	public static boolean getAllowBushes(){ return allowBushes; }
 //======================================================================
 	protected AbstractAction(String menu, String verb, String verbing, String desc)
 	{

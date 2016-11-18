@@ -51,9 +51,8 @@ public class TreeFarmMod implements
 	private static Logger logger = Logger.getLogger(TreeFarmMod.class.getName());
 	private static WateringAction wateringaction = new WateringAction();
 	private static FertilizingAction fertilizingaction = new FertilizingAction();
-	private static boolean growTrees = true;
-	private static boolean growFruit = true;
-	private static boolean growBushes = true;
+	private static boolean allowGrow = true;
+	private static boolean allowFertilize = true;
 //======================================================================
 	@Override
 	public void onServerStarted()
@@ -61,8 +60,8 @@ public class TreeFarmMod implements
 		wateringaction.registerAction();
 		fertilizingaction.registerAction();
 		
-		if(growTrees) ModActions.registerAction(wateringaction);
-		if(growFruit) ModActions.registerAction(fertilizingaction);
+		if(allowGrow) ModActions.registerAction(wateringaction);
+		if(allowFertilize) ModActions.registerAction(fertilizingaction);
 		
 		boolean debug = false;
 		if(debug){
@@ -180,10 +179,12 @@ public class TreeFarmMod implements
 	@Override
 	public void configure(Properties properties)
 	{
-		growTrees = getOption("GrowTrees", growTrees, properties);
-		growFruit = getOption("GrowFruit", growFruit, properties);
-		growBushes = getOption("GrowBushes", growBushes, properties);
+		allowGrow = getOption("AllowGrow", allowGrow, properties);
+		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
 
+		AbstractAction.setAllowTrees(getOption("AllowTrees", AbstractAction.getAllowTrees(), properties));
+		AbstractAction.setAllowBushes(getOption("AllowBushes", AbstractAction.getAllowBushes(), properties));
+		
 		wateringaction.setCost(getOption("WateringCost", wateringaction.getCost(), properties));
 		wateringaction.setTime(getOption("WateringTime", wateringaction.getTime(), properties));
 		wateringaction.setItem(getOption("WateringItem", wateringaction.getItem(), properties));
