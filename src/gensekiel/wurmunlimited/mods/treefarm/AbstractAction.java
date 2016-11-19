@@ -132,6 +132,9 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
+		if(!allowTrees && TreeTile.getTile(rawtile).isTree()) return null;
+		if(!allowBushes && TreeTile.getTile(rawtile).isBush()) return null;
+
 		if(   checkTileType(rawtile)
 			&& performer instanceof Player)
 		{

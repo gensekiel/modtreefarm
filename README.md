@@ -53,7 +53,7 @@ Modifiers can be tweaked separately for all tree/bush types and ages 0 to 14.
 
 For more information, see the mod's properties file.
 
-Things to do:
+Planned features:
 
 * Incorporate forestry/gardening skill; watering time, amount of water
 and growth time are reduced and the skill is improved
