@@ -77,7 +77,7 @@ As always with modded content, I rid me of all liability. Although the
 mod in non-invasive and can be removed at any time without any effect on 
 the world, make a backup. Just to be sure.
 
-[0.9-beta](https://github.com/gensekiel/modtreefarm/releases/tag/0.9-beta)
+[0.9.1-beta](https://github.com/gensekiel/modtreefarm/releases/tag/0.9.1-beta)
 
 [GitHub page](https://github.com/gensekiel/modtreefarm)
 
