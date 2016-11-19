@@ -26,6 +26,7 @@ would be invoked when a tree or bush grows\*
 * Age limit for growth by watering
 * Persistent tracked tile list when shutting down the server
 * Optional continuous growth until the age limit is reached
+* Disable single actions or plant types
 * Optionally use the original growth function will all related 
 effects and chances
 

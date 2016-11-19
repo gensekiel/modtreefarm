@@ -153,6 +153,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	{
 		try{
 			String tilename = TreeTile.getTileName(rawtile);
+			int timeLeft = time;
 			if(counter == 1.0f){
 				if(!checkTileType(rawtile)) return true;
 				if(checkConditions) if(checkConditions(performer, rawtile)) return true;
@@ -160,21 +161,21 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 				if(item != 0) if(checkItem(performer, source, tilename)) return true;
 				startAction(performer, tilename);
 			}else{
-				int timeLeft = performer.getCurrentAction().getTimeLeft();
+				timeLeft = performer.getCurrentAction().getTimeLeft();
+			}
+			if(counter * 10.0F > timeLeft){
 				// Can the tile change while action is performed?
 				// There seems to be a flag that could lock a tile.
-				if(counter * 10.0F > timeLeft){
-					performTileAction(rawtile, tilex, tiley);
+				performTileAction(rawtile, tilex, tiley);
 
-					// Source item can not change.
-					if(item != 0) source.setWeight(source.getWeightGrams() - cost, true);
+				// Source item can not change.
+				if(item != 0) source.setWeight(source.getWeightGrams() - cost, true);
 
-					finishAction(performer, tilename);
-					// What if item is moved to container while action is 
-					// performed?
-					// Tested: Used item cannot be moved.
-					return true;
-				}
+				finishAction(performer, tilename);
+				// What if item is moved to container while action is 
+				// performed?
+				// Tested: Used item cannot be moved.
+				return true;
 			}
 			return false;
 		}catch(Exception e){

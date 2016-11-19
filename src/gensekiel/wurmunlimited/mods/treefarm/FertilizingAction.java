@@ -18,7 +18,7 @@ public class FertilizingAction extends AbstractAction
 	{
 		super(s, "fertilize", "fertilizing", "Fertilizing");
 
-		cost = 1000;
+		cost = 100;
 		time = 50;
 		item = ItemList.ash;
 	}
