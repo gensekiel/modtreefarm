@@ -58,6 +58,9 @@ public class FruitTask extends AbstractTask
 	{
 		Server.setWorldResource(tilex, tiley, 0);
 
+		// The server checks the calendar and batch-sets all trees/bushes
+		// to be harvestable. The calendar seems to have its own thread,
+		// and the status seems to be checked every 125 milliseconds.
 		byte new_data = (byte)(data | 0x8);
 		byte new_type = TreeTile.convertTile(type, data);
 		

@@ -158,7 +158,8 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 				startAction(performer, tilename);
 			}else{
 				int timeLeft = performer.getCurrentAction().getTimeLeft();
-				// TODO Can the tile change while action is performed?
+				// Can the tile change while action is performed?
+				// There seems to be a flag that could lock a tile.
 				if(counter * 10.0F > timeLeft){
 					performTileAction(rawtile, tilex, tiley);
 
