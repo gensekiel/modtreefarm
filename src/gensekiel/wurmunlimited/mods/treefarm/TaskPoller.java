@@ -18,9 +18,9 @@ public class TaskPoller
 {
 //======================================================================
 	private static final Map<Long, AbstractTask> tiles = new HashMap<Long, AbstractTask>();
-	private static volatile long lastPolledTiles = System.currentTimeMillis();
 	private static Logger logger = Logger.getLogger(TaskPoller.class.getName());
 	private static String fileName = "modTreeFarm.mtf";
+	private static volatile long lastPolled = System.currentTimeMillis();
 //======================================================================
 	private static long pollInterval = 300000;
 	private static boolean preserveList = true;
@@ -56,12 +56,12 @@ public class TaskPoller
 	public static void poll()
 	{
 		long now = System.currentTimeMillis();
-		if(now - lastPolledTiles < pollInterval) return;
+		if(now - lastPolled < pollInterval) return;
 
 		List<AbstractTask> toRemove = new ArrayList<AbstractTask>();
 		
 		synchronized(tiles){
-			lastPolledTiles = System.currentTimeMillis();
+			lastPolled = System.currentTimeMillis();
 			
 			for(AbstractTask task : tiles.values()){
 				// Check task relevant stuff
@@ -79,7 +79,10 @@ public class TaskPoller
 			}
 			
 			for(AbstractTask t : toRemove){
-				tiles.remove(t.getTaskKey());
+				if(CoolDownTask.getCoolDownMultiplier() > 0.0 && !(t instanceof CoolDownTask))
+					tiles.put(t.getTaskKey(), new CoolDownTask(t.getTaskKey(), t.getTaskTime()));
+				else
+					tiles.remove(t.getTaskKey());
 			}
 		}
 	}

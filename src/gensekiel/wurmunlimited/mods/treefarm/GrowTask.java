@@ -100,7 +100,7 @@ public class GrowTask extends TreeTileTask
 	{
 		Server.setWorldResource(tilex, tiley, 0);
 		byte age = getAge(data);
-		byte new_data = (byte)(((age+1) & 0xF << 4) | (data & 0xF));
+		byte new_data = (byte)((((age+1) & 0xF) << 4) | (data & 0xF));
 		// It seems that originally the tree type was stored in the lower
 		// nibble of the data byte. The new storage scheme stores the
 		// grass height and whether the tree is a fruit tree and/or is

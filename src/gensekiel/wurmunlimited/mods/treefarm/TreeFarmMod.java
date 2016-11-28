@@ -203,6 +203,8 @@ public class TreeFarmMod implements
 		AbstractAction.setCheckIfPolled(getOption("CheckIfPolled", AbstractAction.getCheckIfPolled(), properties));
 		AbstractAction.setCheckConditions(getOption("CheckConditions", AbstractAction.getCheckConditions(), properties));
 
+		CoolDownTask.setCoolDownMultiplier(getOption("CoolDownMultiplier", CoolDownTask.getCoolDownMultiplier(), properties));
+
 		TaskPoller.setPollInterval(getOption("PollInterval", TaskPoller.getPollInterval(), properties));
 		TaskPoller.setPreserveList(getOption("PreserveList", TaskPoller.getPreserveList(), properties));
 
