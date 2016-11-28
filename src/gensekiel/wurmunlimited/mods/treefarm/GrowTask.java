@@ -7,66 +7,79 @@ import com.wurmonline.server.Players;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.zones.TilePoller;
 
-public class GrowTask extends AbstractTask
+public class GrowTask extends TreeTileTask
 {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 //======================================================================
 	private static byte ageLimit = 15;
-	private static boolean keepGrowing = false;
-	private static boolean useOriginalGrowthFunction = false;
-	private static double growthMultiplier = 1.0;
-//======================================================================
 	public static void setAgeLimit(byte b){ ageLimit = b; }
-	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
-	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
-	public static void setGrowthModifier(double d){ growthMultiplier = d; }
-//======================================================================
 	public static byte getAgeLimit(){ return ageLimit; }
+//======================================================================
+	private static boolean keepGrowing = false;
+	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
 	public static boolean getKeepGrowing(){ return keepGrowing; }
+//======================================================================
+	private static boolean useOriginalGrowthFunction = false;
+	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
 	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
+//======================================================================
+	private static double growthMultiplier = 1.0;
+	public static void setGrowthModifier(double d){ growthMultiplier = d; }
 	public static double getGrowthModifier(){ return growthMultiplier; }
 //======================================================================
-	public double getGrowthMultiplier(){ return growthMultiplier; }
+	public GrowTask(int rawtile, int tilex, int tiley, double multiplier)
+	{
+		super(rawtile, tilex, tiley, multiplier);
+		tasktime *= growthMultiplier;
+	}
 //======================================================================
 	@Override
-	public String getDescription(int rawtile)
+	public String getDescription()
 	{
-		return "This " + TreeTile.getTileName(rawtile) + " has already been watered.";
+		int rawtile = Server.surfaceMesh.getTile(x, y);
+		return "This " + getTileName(rawtile) + " has already been watered.";
 	}
 //======================================================================
 	public static boolean checkTileType(int rawtile)
 	{
-		return (    TreeTile.getTile(rawtile).isTree()
-		         || TreeTile.getTile(rawtile).isBush() );
+		return (    getTile(rawtile).isTree()
+		         || getTile(rawtile).isBush() );
 	}
 //======================================================================
 	@Override
-	public boolean performCheck(TreeTile treetile, int rawtile)
+	public boolean performCheck()
 	{
+		int rawtile = Server.surfaceMesh.getTile(x, y);
+		Tiles.Tile ttile = getTile(rawtile);
+		
+		// Generic check
+		if(ttile == null) return true;
+		
 		if(!checkTileType(rawtile)) return true;
 		
 		if(checkForWUPoll){
 			if(keepGrowing) // check type, ignore age
-				if( (treetile.getTile() & 0xFF000000) != (rawtile & 0xFF000000) ) 
+				if( (tile & 0xFF000000) != (rawtile & 0xFF000000) ) 
 					return true;
 			else // check type and age
-				if( (treetile.getTile() & 0xFFF00000) != (rawtile & 0xFFF00000) )
+				if( (tile & 0xFFF00000) != (rawtile & 0xFFF00000) )
 					return true;
 		}
 		
-		byte age = TreeTile.getAge(Tiles.decodeData(rawtile));
+		byte age = getAge(Tiles.decodeData(rawtile));
 		if(age >= ageLimit) return true;
 		
 		return false;
 	}
 //======================================================================
 	@Override
-	public boolean performTask(TreeTile treetile)
+	public boolean performTask()
 	{
+		int rawtile = Server.surfaceMesh.getTile(x, y);
 		if(useOriginalGrowthFunction)
-			callTreeGrowthWrapper(treetile.getTile(), treetile.getX(), treetile.getY(), treetile.getType(), treetile.getData());
+			callTreeGrowthWrapper(rawtile, x, y, getType(), getData());
 		else
-			forceTreeGrowth(treetile.getTile(), treetile.getX(), treetile.getY(), treetile.getType(), treetile.getData());
+			forceTreeGrowth(rawtile, x, y, getType(), getData());
 		
 		if(!keepGrowing) return true;
 		return false;
@@ -86,8 +99,8 @@ public class GrowTask extends AbstractTask
 	private static void forceTreeGrowth(int rawtile, int tilex, int tiley, byte type, byte data)
 	{
 		Server.setWorldResource(tilex, tiley, 0);
-		byte age = TreeTile.getAge(data);
-		byte new_data = (byte)(((age+1) << 4) + (data & 0xF) & 0xFF);
+		byte age = getAge(data);
+		byte new_data = (byte)(((age+1) & 0xF << 4) | (data & 0xF));
 		// It seems that originally the tree type was stored in the lower
 		// nibble of the data byte. The new storage scheme stores the
 		// grass height and whether the tree is a fruit tree and/or is
@@ -97,7 +110,7 @@ public class GrowTask extends AbstractTask
 		
 		// Manual conversion as the above method is private and I don't
 		// want to use an injected method just for that.
-		byte new_type = TreeTile.convertTile(type, data);
+		byte new_type = convertTile(type, data);
 		
 		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), new_type, new_data));
 		Server.modifyFlagsByTileType(tilex, tiley, new_type);

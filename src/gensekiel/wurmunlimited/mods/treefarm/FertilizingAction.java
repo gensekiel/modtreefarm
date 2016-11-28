@@ -27,10 +27,10 @@ public class FertilizingAction extends AbstractAction
 	protected boolean checkConditions(Creature performer, int rawtile)
 	{
 		byte data = Tiles.decodeData(rawtile);
-		int age = TreeTile.getAge(data);
+		int age = TreeTileTask.getAge(data);
 
-		Tiles.Tile tt = TreeTile.getTile(rawtile);
-		String tilename = TreeTile.getTileName(rawtile);
+		Tiles.Tile tt = TileTask.getTile(rawtile);
+		String tilename = TileTask.getTileName(rawtile);
 		
 		if(age <= FoliageAge.YOUNG_FOUR.getAgeId()){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too young to bear fruit.", (byte)1);
@@ -56,7 +56,7 @@ public class FertilizingAction extends AbstractAction
 	@Override
 	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
 	{
-		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new FruitTask(), multiplier);
+		TaskPoller.addTask(new FruitTask(rawtile, tilex, tiley, multiplier));
 	}
 //======================================================================
 	@Override

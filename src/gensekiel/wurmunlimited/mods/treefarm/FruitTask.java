@@ -5,43 +5,49 @@ import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.Players;
 import com.wurmonline.server.Server;
 
-public class FruitTask extends AbstractTask
+public class FruitTask extends TreeTileTask
 {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 //======================================================================
 	private static double growthMultiplier = 1.0;
-//======================================================================
 	public static void setGrowthModifier(double d){ growthMultiplier = d; }
 	public static double getGrowthModifier(){ return growthMultiplier; }
 //======================================================================
-	public double getGrowthMultiplier(){ return growthMultiplier; }
+	public FruitTask(int rawtile, int tilex, int tiley, double multiplier)
+	{
+		super(rawtile, tilex, tiley, multiplier);
+		tasktime *= growthMultiplier;
+	}
 //======================================================================
 	@Override
-	public String getDescription(int rawtile)
+	public String getDescription()
 	{
-		return "This " + TreeTile.getTileName(rawtile) + " has already been fertilized.";
+		int rawtile = Server.surfaceMesh.getTile(x, y);
+		return "This " + getTileName(rawtile) + " has already been fertilized.";
 	}
 //======================================================================
 	public static boolean checkTileType(int rawtile)
 	{
-		Tiles.Tile tt = TreeTile.getTile(rawtile);
+		Tiles.Tile tt = getTile(rawtile);
 		return (     tt.canBearFruit() // Currently implies tree
 		         || (tt.isBush() && !tt.isThorn(Tiles.decodeData(rawtile))));
 	}
 //======================================================================
 	@Override
-	public boolean performCheck(TreeTile treetile, int rawtile)
+	public boolean performCheck()
 	{
+		int rawtile = Server.surfaceMesh.getTile(x, y);
+
 		if(!checkTileType(rawtile)) return true;
 		
-		if(TreeTile.getTile(rawtile).isMycelium()) return true;
+		if(getTile(rawtile).isMycelium()) return true;
 		
 		if(checkForWUPoll){ // Check type and fruit state, ignore rest
-			if( (treetile.getTile() & 0xFF080000) != (rawtile & 0xFF080000) )
+			if( (tile & 0xFF080000) != (rawtile & 0xFF080000) )
 				return true;
 		}
 
-		byte age = TreeTile.getAge(Tiles.decodeData(rawtile));
+		byte age = getAge(Tiles.decodeData(rawtile));
 		if(   age <= FoliageAge.YOUNG_FOUR.getAgeId()
 		   || age >= FoliageAge.OVERAGED.getAgeId()) return true;
 
@@ -49,9 +55,10 @@ public class FruitTask extends AbstractTask
 	}
 //======================================================================
 	@Override
-	public boolean performTask(TreeTile treetile)
+	public boolean performTask()
 	{
-		return plantSeed(treetile.getTile(), treetile.getX(), treetile.getY(), treetile.getType(), treetile.getData());
+		int rawtile = Server.surfaceMesh.getTile(x, y);
+		return plantSeed(rawtile, x, y, getType(), getData());
 	}
 //======================================================================
 	private static boolean plantSeed(int rawtile, int tilex, int tiley, byte type, byte data)
@@ -62,7 +69,7 @@ public class FruitTask extends AbstractTask
 		// to be harvestable. The calendar seems to have its own thread,
 		// and the status seems to be checked every 125 milliseconds.
 		byte new_data = (byte)(data | 0x8);
-		byte new_type = TreeTile.convertTile(type, data);
+		byte new_type = convertTile(type, data);
 		
 		if(type != new_type) Server.modifyFlagsByTileType(tilex, tiley, new_type);
 		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), new_type, new_data));

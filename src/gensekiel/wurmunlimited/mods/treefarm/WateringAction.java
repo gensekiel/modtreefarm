@@ -25,8 +25,8 @@ public class WateringAction extends AbstractAction
 	protected boolean checkConditions(Creature performer, int rawtile)
 	{
 		byte data = Tiles.decodeData(rawtile);
-		int age = TreeTile.getAge(data);
-		String tilename = TreeTile.getTileName(rawtile);
+		int age = TreeTileTask.getAge(data);
+		String tilename = TileTask.getTileName(rawtile);
 		
 		if(age >= GrowTask.getAgeLimit()){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too old to make it grow by watering it.", (byte)1);
@@ -38,7 +38,7 @@ public class WateringAction extends AbstractAction
 	@Override
 	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
 	{
-		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new GrowTask(), multiplier);
+		TaskPoller.addTask(new GrowTask(rawtile, tilex, tiley, multiplier));
 	}
 //======================================================================
 	@Override

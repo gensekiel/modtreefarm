@@ -14,7 +14,6 @@ import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.behaviours.Action;
 import com.wurmonline.server.behaviours.ActionEntry;
-import com.wurmonline.server.behaviours.Actions;
 import com.wurmonline.server.behaviours.NoSuchActionException;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
@@ -175,9 +174,9 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 //======================================================================
 	private boolean checkStatus(Creature performer, int x, int y, int rawtile)
 	{
-		AbstractTask aa = TreeTilePoller.containsTileAt(x, y);
+		AbstractTask aa = TaskPoller.containsTileAt(TileTask.getTaskKey(x, y));
 		if(aa != null){
-			performer.getCommunicator().sendNormalServerMessage(aa.getDescription(rawtile), (byte)1);
+			performer.getCommunicator().sendNormalServerMessage(aa.getDescription(), (byte)1);
 			return true;
 		}
 		return false;
@@ -186,8 +185,8 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
-		if(!allowTrees && TreeTile.getTile(rawtile).isTree()) return null;
-		if(!allowBushes && TreeTile.getTile(rawtile).isBush()) return null;
+		if(!allowTrees && TileTask.getTile(rawtile).isTree()) return null;
+		if(!allowBushes && TileTask.getTile(rawtile).isBush()) return null;
 
 		if(   checkTileType(rawtile)
 			&& performer instanceof Player)
@@ -206,11 +205,11 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, int rawtile, short num, float counter)
 	{
 		try{
-			String tilename = TreeTile.getTileName(rawtile);
+			String tilename = TileTask.getTileName(rawtile);
 			byte tiledata = Tiles.decodeData(rawtile);
 			Skill skill = performer.getSkills().getSkillOrLearn(10048);
 			int timeLeft = getActionTime(skill.knowledge);
-			int actioncost = getActionCost(skill.knowledge, TreeTile.getAge(tiledata));
+			int actioncost = getActionCost(skill.knowledge, TreeTileTask.getAge(tiledata));
 			
 			if(counter == 1.0f){
 				if(!checkTileType(rawtile)) return true;

@@ -106,7 +106,7 @@ public class TreeFarmMod implements
 		}
 		
 		// We need the server paths to be set properly before initializing
-		// the TreeTilePoller.
+		// the TaskPoller.
 		// TODO Should be okay to do that in preinit.
 		try{
 			HookManager.getInstance().registerHook("com.wurmonline.server.zones.CropTilePoller", "initializeFields", Descriptor.ofMethod(CtPrimitiveType.voidType, null), new InvocationHandlerFactory(){
@@ -115,7 +115,7 @@ public class TreeFarmMod implements
 					return new InvocationHandler() {
 						@Override
 						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
-							TreeTilePoller.initialize();
+							TaskPoller.initialize();
 							return method.invoke(object, args);
 						}
 					};
@@ -132,14 +132,14 @@ public class TreeFarmMod implements
 					return new InvocationHandler() {
 						@Override
 						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
-							TreeTilePoller.pollTreeTiles();
+							TaskPoller.poll();
 							return method.invoke(object, args);
 						}
 					};
 				}
 			});
 		}catch(Exception e){
-			logger.log(Level.SEVERE, "Polling hook failed. TreeTilePoller will not run. Exception: " + e);
+			logger.log(Level.SEVERE, "Polling hook failed. TaskPoller will not run. Exception: " + e);
 		}
 		
 		try{
@@ -153,7 +153,7 @@ public class TreeFarmMod implements
 					return new InvocationHandler() {
 						@Override
 						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
-							TreeTilePoller.dumpTreeList();
+							TaskPoller.dumpTreeList();
 							return method.invoke(object, args);
 						}
 					};
@@ -203,63 +203,51 @@ public class TreeFarmMod implements
 		AbstractAction.setCheckIfPolled(getOption("CheckIfPolled", AbstractAction.getCheckIfPolled(), properties));
 		AbstractAction.setCheckConditions(getOption("CheckConditions", AbstractAction.getCheckConditions(), properties));
 
-		TreeTilePoller.setPollInterval(getOption("PollInterval", TreeTilePoller.getPollInterval(), properties));
-		TreeTilePoller.setPreserveTreeList(getOption("PreserveTreeList", TreeTilePoller.getPreserveTreeList(), properties));
+		TaskPoller.setPollInterval(getOption("PollInterval", TaskPoller.getPollInterval(), properties));
+		TaskPoller.setPreserveList(getOption("PreserveList", TaskPoller.getPreserveList(), properties));
 
 		GrowTask.setAgeLimit(getOption("AgeLimit", GrowTask.getAgeLimit(), properties));
 		GrowTask.setKeepGrowing(getOption("KeepGrowing", GrowTask.getKeepGrowing(), properties));
 		GrowTask.setCheckForWUPoll(getOption("CheckForWUPoll", GrowTask.getCheckForWUPoll(), properties));
 		GrowTask.setUseOriginalGrowthFunction(getOption("UseOriginalGrowthFunction", GrowTask.getUseOriginalGrowthFunction(), properties));
 		
-		TreeTile.setBaseGrowthTime(getOption("BaseGrowthTime", TreeTile.getBaseGrowthTime(), properties));
-
-		TreeTile.setGrowthModifierTree    (getOption("GrowthModifierTree",     TreeTile.getGrowthModifierTree(),     properties));
-		TreeTile.setGrowthModifierBush    (getOption("GrowthModifierBush",     TreeTile.getGrowthModifierBush(),     properties));
+		AbstractTask.setBaseGrowthTime(getOption("BaseGrowthTime", AbstractTask.getBaseGrowthTime(), properties));
 		
 		GrowTask .setGrowthModifier(getOption("GrowthModifierGrow",  GrowTask .getGrowthModifier(), properties));
 		FruitTask.setGrowthModifier(getOption("GrowthModifierFruit", FruitTask.getGrowthModifier(), properties));
 
-		TreeTile.setGrowthModifierBirch   (getOption("GrowthModifierBirch",    TreeTile.getGrowthModifierBirch(),    properties));
-		TreeTile.setGrowthModifierPine    (getOption("GrowthModifierPine",     TreeTile.getGrowthModifierPine(),     properties));
-		TreeTile.setGrowthModifierOak     (getOption("GrowthModifierOak",      TreeTile.getGrowthModifierOak(),      properties));
-		TreeTile.setGrowthModifierCedar   (getOption("GrowthModifierCedar",    TreeTile.getGrowthModifierCedar(),    properties));
-		TreeTile.setGrowthModifierWillow  (getOption("GrowthModifierWillow",   TreeTile.getGrowthModifierWillow(),   properties));
-		TreeTile.setGrowthModifierMaple   (getOption("GrowthModifierMaple",    TreeTile.getGrowthModifierMaple(),    properties));
-		TreeTile.setGrowthModifierApple   (getOption("GrowthModifierApple",    TreeTile.getGrowthModifierApple(),    properties));
-		TreeTile.setGrowthModifierLemon   (getOption("GrowthModifierLemon",    TreeTile.getGrowthModifierLemon(),    properties));
-		TreeTile.setGrowthModifierOlive   (getOption("GrowthModifierOlive",    TreeTile.getGrowthModifierOlive(),    properties));
-		TreeTile.setGrowthModifierCherry  (getOption("GrowthModifierCherry",   TreeTile.getGrowthModifierCherry(),   properties));
-		TreeTile.setGrowthModifierChestnut(getOption("GrowthModifierChestnut", TreeTile.getGrowthModifierChestnut(), properties));
-		TreeTile.setGrowthModifierWalnut  (getOption("GrowthModifierWalnut",   TreeTile.getGrowthModifierWalnut(),   properties));
-		TreeTile.setGrowthModifierFir     (getOption("GrowthModifierFir",      TreeTile.getGrowthModifierFir(),      properties));
-		TreeTile.setGrowthModifierLinden  (getOption("GrowthModifierLinden",   TreeTile.getGrowthModifierLinden(),   properties));
+		TreeTileTask.setGrowthModifierTree(getOption("GrowthModifierTree", TreeTileTask.getGrowthModifierTree(), properties));
+		TreeTileTask.setGrowthModifierBush(getOption("GrowthModifierBush", TreeTileTask.getGrowthModifierBush(), properties));
 
-		TreeTile.setGrowthModifierNormal   (getOption("GrowthModifierNormal",    TreeTile.getGrowthModifierNormal(),    properties));
-		TreeTile.setGrowthModifierEnchanted(getOption("GrowthModifierEnchanted", TreeTile.getGrowthModifierEnchanted(), properties));
-		TreeTile.setGrowthModifierMycelium (getOption("GrowthModifierMycelium",  TreeTile.getGrowthModifierMycelium(),  properties));
+		TreeTileTask.setGrowthModifierBirch   (getOption("GrowthModifierBirch",    TreeTileTask.getGrowthModifierBirch(),    properties));
+		TreeTileTask.setGrowthModifierPine    (getOption("GrowthModifierPine",     TreeTileTask.getGrowthModifierPine(),     properties));
+		TreeTileTask.setGrowthModifierOak     (getOption("GrowthModifierOak",      TreeTileTask.getGrowthModifierOak(),      properties));
+		TreeTileTask.setGrowthModifierCedar   (getOption("GrowthModifierCedar",    TreeTileTask.getGrowthModifierCedar(),    properties));
+		TreeTileTask.setGrowthModifierWillow  (getOption("GrowthModifierWillow",   TreeTileTask.getGrowthModifierWillow(),   properties));
+		TreeTileTask.setGrowthModifierMaple   (getOption("GrowthModifierMaple",    TreeTileTask.getGrowthModifierMaple(),    properties));
+		TreeTileTask.setGrowthModifierApple   (getOption("GrowthModifierApple",    TreeTileTask.getGrowthModifierApple(),    properties));
+		TreeTileTask.setGrowthModifierLemon   (getOption("GrowthModifierLemon",    TreeTileTask.getGrowthModifierLemon(),    properties));
+		TreeTileTask.setGrowthModifierOlive   (getOption("GrowthModifierOlive",    TreeTileTask.getGrowthModifierOlive(),    properties));
+		TreeTileTask.setGrowthModifierCherry  (getOption("GrowthModifierCherry",   TreeTileTask.getGrowthModifierCherry(),   properties));
+		TreeTileTask.setGrowthModifierChestnut(getOption("GrowthModifierChestnut", TreeTileTask.getGrowthModifierChestnut(), properties));
+		TreeTileTask.setGrowthModifierWalnut  (getOption("GrowthModifierWalnut",   TreeTileTask.getGrowthModifierWalnut(),   properties));
+		TreeTileTask.setGrowthModifierFir     (getOption("GrowthModifierFir",      TreeTileTask.getGrowthModifierFir(),      properties));
+		TreeTileTask.setGrowthModifierLinden  (getOption("GrowthModifierLinden",   TreeTileTask.getGrowthModifierLinden(),   properties));
+
+		TreeTileTask.setGrowthModifierNormal   (getOption("GrowthModifierNormal",    TreeTileTask.getGrowthModifierNormal(),    properties));
+		TreeTileTask.setGrowthModifierEnchanted(getOption("GrowthModifierEnchanted", TreeTileTask.getGrowthModifierEnchanted(), properties));
+		TreeTileTask.setGrowthModifierMycelium (getOption("GrowthModifierMycelium",  TreeTileTask.getGrowthModifierMycelium(),  properties));
 		
-		TreeTile.setGrowthModifierCamellia(getOption("GrowthModifierCamellia", TreeTile.getGrowthModifierCamellia(), properties));
-		TreeTile.setGrowthModifierGrape   (getOption("GrowthModifierGrape",    TreeTile.getGrowthModifierGrape(),    properties));
-		TreeTile.setGrowthModifierLavender(getOption("GrowthModifierLavender", TreeTile.getGrowthModifierLavender(), properties));
-		TreeTile.setGrowthModifierOleander(getOption("GrowthModifierOleander", TreeTile.getGrowthModifierOleander(), properties));
-		TreeTile.setGrowthModifierRose    (getOption("GrowthModifierRose",     TreeTile.getGrowthModifierRose(),     properties));
-		TreeTile.setGrowthModifierThorn   (getOption("GrowthModifierThorn",    TreeTile.getGrowthModifierThorn(),    properties));
+		TreeTileTask.setGrowthModifierCamellia(getOption("GrowthModifierCamellia", TreeTileTask.getGrowthModifierCamellia(), properties));
+		TreeTileTask.setGrowthModifierGrape   (getOption("GrowthModifierGrape",    TreeTileTask.getGrowthModifierGrape(),    properties));
+		TreeTileTask.setGrowthModifierLavender(getOption("GrowthModifierLavender", TreeTileTask.getGrowthModifierLavender(), properties));
+		TreeTileTask.setGrowthModifierOleander(getOption("GrowthModifierOleander", TreeTileTask.getGrowthModifierOleander(), properties));
+		TreeTileTask.setGrowthModifierRose    (getOption("GrowthModifierRose",     TreeTileTask.getGrowthModifierRose(),     properties));
+		TreeTileTask.setGrowthModifierThorn   (getOption("GrowthModifierThorn",    TreeTileTask.getGrowthModifierThorn(),    properties));
 		
-		TreeTile.setGrowthModifierAge( 0, getOption("GrowthModifierAge0",  TreeTile.getGrowthModifierAge( 0), properties));
-		TreeTile.setGrowthModifierAge( 1, getOption("GrowthModifierAge1",  TreeTile.getGrowthModifierAge( 1), properties));
-		TreeTile.setGrowthModifierAge( 2, getOption("GrowthModifierAge2",  TreeTile.getGrowthModifierAge( 2), properties));
-		TreeTile.setGrowthModifierAge( 3, getOption("GrowthModifierAge3",  TreeTile.getGrowthModifierAge( 3), properties));
-		TreeTile.setGrowthModifierAge( 4, getOption("GrowthModifierAge4",  TreeTile.getGrowthModifierAge( 4), properties));
-		TreeTile.setGrowthModifierAge( 5, getOption("GrowthModifierAge5",  TreeTile.getGrowthModifierAge( 5), properties));
-		TreeTile.setGrowthModifierAge( 6, getOption("GrowthModifierAge6",  TreeTile.getGrowthModifierAge( 6), properties));
-		TreeTile.setGrowthModifierAge( 7, getOption("GrowthModifierAge7",  TreeTile.getGrowthModifierAge( 7), properties));
-		TreeTile.setGrowthModifierAge( 8, getOption("GrowthModifierAge8",  TreeTile.getGrowthModifierAge( 8), properties));
-		TreeTile.setGrowthModifierAge( 9, getOption("GrowthModifierAge9",  TreeTile.getGrowthModifierAge( 9), properties));
-		TreeTile.setGrowthModifierAge(10, getOption("GrowthModifierAge10", TreeTile.getGrowthModifierAge(10), properties));
-		TreeTile.setGrowthModifierAge(11, getOption("GrowthModifierAge11", TreeTile.getGrowthModifierAge(11), properties));
-		TreeTile.setGrowthModifierAge(12, getOption("GrowthModifierAge12", TreeTile.getGrowthModifierAge(12), properties));
-		TreeTile.setGrowthModifierAge(13, getOption("GrowthModifierAge13", TreeTile.getGrowthModifierAge(13), properties));
-		TreeTile.setGrowthModifierAge(14, getOption("GrowthModifierAge14", TreeTile.getGrowthModifierAge(14), properties));
+		for(int i = 0; i < 15; i++){
+			TreeTileTask.setGrowthModifierAge( i, getOption("GrowthModifierAge" + i,  TreeTileTask.getGrowthModifierAge(i), properties));
+		}
 	}
 //======================================================================
 }

@@ -1,7 +1,5 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import com.wurmonline.mesh.Tiles;
-import com.wurmonline.server.Server;
 import com.wurmonline.server.ServerDirInfo;
 
 import java.util.ArrayList;
@@ -16,33 +14,27 @@ import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-public class TreeTilePoller
+public class TaskPoller
 {
 //======================================================================
-	private static final Map<Long, TreeTile> tiles = new HashMap<Long, TreeTile>();
+	private static final Map<Long, AbstractTask> tiles = new HashMap<Long, AbstractTask>();
 	private static volatile long lastPolledTiles = System.currentTimeMillis();
-	private static Logger logger = Logger.getLogger(TreeTilePoller.class.getName());
+	private static Logger logger = Logger.getLogger(TaskPoller.class.getName());
 	private static String fileName = "modTreeFarm.mtf";
 //======================================================================
 	private static long pollInterval = 300000;
-	private static boolean preserveTreeList = true;
+	private static boolean preserveList = true;
 //======================================================================
 	public static void setPollInterval(long time){ pollInterval = time; }
-	public static void setPreserveTreeList(boolean b){ preserveTreeList = b; }
+	public static void setPreserveList(boolean b){ preserveList = b; }
 //======================================================================
 	public static long getPollInterval(){ return pollInterval; }
-	public static boolean getPreserveTreeList(){ return preserveTreeList; }
+	public static boolean getPreserveList(){ return preserveList; }
 //======================================================================
-	private static long getTileKey(int x, int y)
-	{
-		return Long.valueOf(Tiles.getTileId(x, y, 0, true));
-	}
-//======================================================================
-	public static void addTreeTile(int rawtile, int x, int y, AbstractTask task, double multiplier)
+	public static void addTask(AbstractTask task)
 	{
 		synchronized(tiles){
-			TreeTile ttile = new TreeTile(rawtile, x, y, task, multiplier);
-			tiles.put(getTileKey(x, y), ttile);
+			tiles.put(task.getTaskKey(), task);
 		}
 	}
 //======================================================================
@@ -51,60 +43,50 @@ public class TreeTilePoller
 		loadTreeList();
 	}
 //======================================================================
-	public static AbstractTask containsTileAt(int x, int y)
+	public static AbstractTask containsTileAt(long key)
 	{
-		TreeTile tt = null;
+		AbstractTask tt = null;
 		synchronized(tiles){
-			tt = tiles.get(getTileKey(x, y));
+			tt = tiles.get(key);
 		}
-		if(tt != null) return tt.getTask();
-		return null;
+		return tt;
 	}
 //======================================================================
 	// Heavily inspired by the CropTilePoller.
-	public static void pollTreeTiles()
+	public static void poll()
 	{
 		long now = System.currentTimeMillis();
 		if(now - lastPolledTiles < pollInterval) return;
 
-		List<TreeTile> toRemove = new ArrayList<TreeTile>();
+		List<AbstractTask> toRemove = new ArrayList<AbstractTask>();
 		
 		synchronized(tiles){
 			lastPolledTiles = System.currentTimeMillis();
 			
-			for(TreeTile treetile : tiles.values()){
-				int rawtile = Server.surfaceMesh.getTile(treetile.getX(), treetile.getY());
-				Tiles.Tile tile = TreeTile.getTile(rawtile);
-				
-				// Generic check
-				if(tile == null){
-					toRemove.add(treetile);
-					continue;
-				}
-				
+			for(AbstractTask task : tiles.values()){
 				// Check task relevant stuff
-				if(treetile.getTask().performCheck(treetile, rawtile)){
-					toRemove.add(treetile);
+				if(task.performCheck()){
+					toRemove.add(task);
 					continue;
 				}
 				
 				// Growth time not yet reached
-				if(now - treetile.getTimeStamp() < treetile.getGrowthTime()) continue;
+				if(now - task.getTimeStamp() < task.getTaskTime()) continue;
 
 				// Perform task
-				if(treetile.getTask().performTask(treetile))
-					toRemove.add(treetile);
+				if(task.performTask())
+					toRemove.add(task);
 			}
 			
-			for(TreeTile t : toRemove){
-				tiles.remove(getTileKey(t.getX(), t.getY()));
+			for(AbstractTask t : toRemove){
+				tiles.remove(t.getTaskKey());
 			}
 		}
 	}
 //======================================================================
 	public static void dumpTreeList()
 	{
-		if(!preserveTreeList) return;
+		if(!preserveList) return;
 		
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
@@ -117,12 +99,12 @@ public class TreeTilePoller
 			oos.writeObject(tiles.size());
 			
 			synchronized(tiles){
-				for(TreeTile treetile : tiles.values()) oos.writeObject(treetile);
+				for(AbstractTask task : tiles.values()) oos.writeObject(task);
 			}
 			
-			logger.log(Level.INFO, "Saved " + tiles.size() + " tree tiles.");
+			logger.log(Level.INFO, "Saved " + tiles.size() + " tasks.");
 		}catch(Exception e){
-			logger.log(Level.WARNING, "Failed saving tree list: " + e);
+			logger.log(Level.WARNING, "Failed saving task list: " + e);
 		}finally{
 			try{
 				if(oos != null) oos.close();
@@ -133,7 +115,7 @@ public class TreeTilePoller
 //======================================================================
 	public static void loadTreeList()
 	{
-		if(!preserveTreeList) return;
+		if(!preserveList) return;
 		
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
@@ -150,15 +132,15 @@ public class TreeTilePoller
 			
 			synchronized(tiles){
 				for(int i = 0; i < length; i++){
-					TreeTile treetile = (TreeTile)ois.readObject();
-					treetile.setTimeStamp(treetile.getTimeStamp() + diff);
-					tiles.put(getTileKey(treetile.getX(), treetile.getY()), treetile);
+					AbstractTask task = (AbstractTask)ois.readObject();
+					task.setTimeStamp(task.getTimeStamp() + diff);
+					tiles.put(task.getTaskKey(), task);
 				}
 			}
 			
-			logger.log(Level.INFO, "" + tiles.size() + " tree tiles loaded.");
+			logger.log(Level.INFO, "" + tiles.size() + " tasks loaded.");
 		}catch(Exception e){
-			logger.log(Level.WARNING, "Failed loading tree list: " + e);
+			logger.log(Level.WARNING, "Failed loading task list: " + e);
 			logger.log(Level.INFO, "That's okay if it is the first time using that option.");
 		}finally{
 			try{
