@@ -16,7 +16,7 @@ public class TreeTile implements Serializable
 	// Only compare type and age.
 //======================================================================
 	private static long BaseGrowthTime = 600000;
-	//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 	private static double GrowthModifierBirch = 1.0;
 	private static double GrowthModifierPine = 1.0;
 	private static double GrowthModifierOak = 2.0;
@@ -55,7 +55,7 @@ public class TreeTile implements Serializable
 	private long timestamp;
 	private long growthtime;
 //======================================================================
-	public TreeTile(int tile, int tilex, int tiley, AbstractTask t)
+	public TreeTile(int tile, int tilex, int tiley, AbstractTask t, double multiplier)
 	{
 		task = t;
 		rawtile = tile;
@@ -105,6 +105,8 @@ public class TreeTile implements Serializable
 		     if(tiletype.isNormalTree())    growthtime *= GrowthModifierNormal;
 		else if(tiletype.isEnchantedTree()) growthtime *= GrowthModifierEnchanted;
 		else if(tiletype.isMyceliumTree())  growthtime *= GrowthModifierMycelium;
+		
+		growthtime *= multiplier;
 		
 		timestamp = System.currentTimeMillis();
 	}

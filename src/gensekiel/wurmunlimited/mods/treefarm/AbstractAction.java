@@ -10,13 +10,16 @@ import org.gotti.wurmunlimited.modsupport.actions.BehaviourProvider;
 import org.gotti.wurmunlimited.modsupport.actions.ModAction;
 import org.gotti.wurmunlimited.modsupport.actions.ModActions;
 
+import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.behaviours.Action;
 import com.wurmonline.server.behaviours.ActionEntry;
+import com.wurmonline.server.behaviours.Actions;
 import com.wurmonline.server.behaviours.NoSuchActionException;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.players.Player;
+import com.wurmonline.server.skills.Skill;
 
 public abstract class AbstractAction implements ModAction, BehaviourProvider, ActionPerformer
 {
@@ -31,6 +34,12 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	protected static boolean checkConditions;
 	protected static boolean allowTrees;
 	protected static boolean allowBushes;
+	protected static double costSkillMultiplier;
+	protected static double costAgeMultiplier;
+	protected static double timeSkillMultiplier;
+	protected static double growthTimeQualityMultiplier;
+	protected static double growthTimeSkillMultiplier;
+	protected static boolean gainSkill;
 //======================================================================
 	protected String menuEntry;
 	protected String actionVerb;
@@ -44,6 +53,12 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public static void setCheckConditions(boolean b){ checkConditions = b; }
 	public static void setAllowTrees(boolean b){ allowTrees = b; }
 	public static void setAllowBushes(boolean b){ allowBushes = b; }
+	public static void setCostSkillMultiplier(double d){ costSkillMultiplier = d; }
+	public static void setCostAgeMultiplier(double d){ costAgeMultiplier = d; }
+	public static void setTimeSkillMultiplier(double d){ timeSkillMultiplier = d; }
+	public static void setGrowthTimeQualityMultiplier(double d){ growthTimeQualityMultiplier = d; }
+	public static void setGrowthTimeSkillMultiplier(double d){ growthTimeSkillMultiplier = d; }
+	public static void setGainSkill(boolean b){ gainSkill = b; }
 //======================================================================
 	public int getCost(){ return cost; }
 	public int getTime(){ return time; }
@@ -52,6 +67,12 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public static boolean getCheckConditions(){ return checkConditions; }
 	public static boolean getAllowTrees(){ return allowTrees; }
 	public static boolean getAllowBushes(){ return allowBushes; }
+	public static double getCostSkillMultiplier(){ return costSkillMultiplier; }
+	public static double getCostAgeMultiplier(){ return costAgeMultiplier; }
+	public static double getTimeSkillMultiplier(){ return timeSkillMultiplier; }
+	public static double getGrowthTimeQualityMultiplier(){ return growthTimeQualityMultiplier; }
+	public static double getGrowthTimeSkillMultiplier(){ return growthTimeSkillMultiplier; }
+	public static boolean getGainSkill(){ return gainSkill; }
 //======================================================================
 	protected AbstractAction(String menu, String verb, String verbing, String desc)
 	{
@@ -68,7 +89,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 		ModActions.registerAction(actionEntry);
 	}
 //======================================================================
-	protected abstract void performTileAction(int rawtile, int tilex, int tiley);
+	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier);
 //======================================================================
 	// Called when action is started.
 	protected abstract boolean checkConditions(Creature performer, int rawtile);
@@ -83,7 +104,40 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	@Override
 	public ActionPerformer getActionPerformer(){ return this; }
 //======================================================================
-	public boolean checkItem(Creature performer, Item source, String tilename)
+	private static double interpolate(double limit, double value, double maxv)
+	{
+		return 1.0 + (limit - 1.0) * value / maxv;
+	}
+//======================================================================
+	public int getActionCost(double knowledge, int tree_age)
+	{
+		double multiplier =   interpolate(costSkillMultiplier, knowledge, 100.0)
+		                    * interpolate(costAgeMultiplier, tree_age, 15.0);
+		return Math.max(0, (int)(cost * multiplier));
+	}
+//======================================================================
+	public int getActionTime(double knowledge)
+	{
+		double multiplier = interpolate(timeSkillMultiplier, knowledge, 100.0);
+		return Math.max(0, (int)(time * multiplier));
+	}
+//======================================================================
+	public double getTaskTimeMultiplier(double quality, double knowledge)
+	{
+		return Math.max(0.0,
+		          interpolate(growthTimeQualityMultiplier, quality, 100.0)
+		        * interpolate(growthTimeSkillMultiplier, knowledge, 100.0)
+		);
+	}
+//======================================================================
+	public double gainSkill(Skill skill)
+	{
+		float times = 10.0f;
+		double div = 2.0;
+		return skill.skillCheck(1.0, null, 1.0, false, times, true, div);
+	}
+//======================================================================
+	public boolean checkItem(Creature performer, Item source, String tilename, int amount)
 	{
 		if(source == null){
 			performer.getCommunicator().sendNormalServerMessage("You have nothing in your hands to " + actionVerb + " the " + tilename + " with.", (byte)1);
@@ -97,7 +151,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 		}
 		
 		int available = source.getWeightGrams();
-		if (available < cost){
+		if (available < amount){
 			performer.getCommunicator().sendNormalServerMessage("You have too little " + source.getActualName() + " to " + actionVerb + " the " + tilename + ".", (byte)1);
 			return true;
 		}
@@ -105,12 +159,12 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 		return false;
 	}
 //======================================================================
-	public void startAction(Creature performer, String tilename) throws NoSuchActionException
+	public void startAction(Creature performer, String tilename, int actiontime) throws NoSuchActionException
 	{
 		performer.getCommunicator().sendNormalServerMessage("You start to " + actionVerb + " the " + tilename + ".");
 		Server.getInstance().broadCastAction(performer.getName() + " starts to " + actionVerb + " some " + tilename + ".", performer, 5);
-		performer.getCurrentAction().setTimeLeft(time);
-		performer.sendActionControl(actionDesc, true, time);
+		performer.getCurrentAction().setTimeLeft(actiontime);
+		performer.sendActionControl(actionDesc, true, actiontime);
 	}
 //======================================================================
 	public void finishAction(Creature performer, String tilename)
@@ -153,23 +207,34 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	{
 		try{
 			String tilename = TreeTile.getTileName(rawtile);
-			int timeLeft = time;
+			byte tiledata = Tiles.decodeData(rawtile);
+			Skill skill = performer.getSkills().getSkillOrLearn(10048);
+			int timeLeft = getActionTime(skill.knowledge);
+			int actioncost = getActionCost(skill.knowledge, TreeTile.getAge(tiledata));
+			
 			if(counter == 1.0f){
 				if(!checkTileType(rawtile)) return true;
 				if(checkConditions) if(checkConditions(performer, rawtile)) return true;
 				if(checkIfPolled) if(checkStatus(performer, tilex, tiley, rawtile)) return true;
-				if(item != 0) if(checkItem(performer, source, tilename)) return true;
-				startAction(performer, tilename);
+
+				if(item != 0) if(checkItem(performer, source, tilename, actioncost)) return true;
+				
+				startAction(performer, tilename, timeLeft);
+				if(gainSkill) gainSkill(skill);
 			}else{
 				timeLeft = performer.getCurrentAction().getTimeLeft();
 			}
 			if(counter * 10.0F > timeLeft){
+				double quality = 100.0;
+				if(item != 0) quality = source.getCurrentQualityLevel();
+				
 				// Can the tile change while action is performed?
 				// There seems to be a flag that could lock a tile.
-				performTileAction(rawtile, tilex, tiley);
+				double multiplier = getTaskTimeMultiplier(quality, skill.knowledge);
+				performTileAction(rawtile, tilex, tiley, multiplier);
 
 				// Source item can not change.
-				if(item != 0) source.setWeight(source.getWeightGrams() - cost, true);
+				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
 
 				finishAction(performer, tilename);
 				// What if item is moved to container while action is 

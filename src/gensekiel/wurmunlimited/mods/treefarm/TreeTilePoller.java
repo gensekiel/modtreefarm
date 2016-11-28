@@ -38,10 +38,10 @@ public class TreeTilePoller
 		return Long.valueOf(Tiles.getTileId(x, y, 0, true));
 	}
 //======================================================================
-	public static void addTreeTile(int rawtile, int x, int y, AbstractTask task)
+	public static void addTreeTile(int rawtile, int x, int y, AbstractTask task, double multiplier)
 	{
 		synchronized(tiles){
-			TreeTile ttile = new TreeTile(rawtile, x, y, task);
+			TreeTile ttile = new TreeTile(rawtile, x, y, task, multiplier);
 			tiles.put(getTileKey(x, y), ttile);
 		}
 	}

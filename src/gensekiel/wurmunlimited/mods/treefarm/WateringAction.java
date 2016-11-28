@@ -36,9 +36,9 @@ public class WateringAction extends AbstractAction
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int rawtile, int tilex, int tiley)
+	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
 	{
-		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new GrowTask());
+		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new GrowTask(), multiplier);
 	}
 //======================================================================
 	@Override

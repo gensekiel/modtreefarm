@@ -54,9 +54,9 @@ public class FertilizingAction extends AbstractAction
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int rawtile, int tilex, int tiley)
+	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
 	{
-		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new FruitTask());
+		TreeTilePoller.addTreeTile(rawtile, tilex, tiley, new FruitTask(), multiplier);
 	}
 //======================================================================
 	@Override
