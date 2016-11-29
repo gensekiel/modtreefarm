@@ -24,8 +24,8 @@ public class GrowTask extends TreeTileTask
 	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
 //======================================================================
 	private static double growthMultiplier = 1.0;
-	public static void setGrowthModifier(double d){ growthMultiplier = d; }
-	public static double getGrowthModifier(){ return growthMultiplier; }
+	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
+	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	public GrowTask(int rawtile, int tilex, int tiley, double multiplier)
 	{

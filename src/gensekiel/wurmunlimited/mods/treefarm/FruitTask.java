@@ -10,8 +10,8 @@ public class FruitTask extends TreeTileTask
 	private static final long serialVersionUID = 3L;
 //======================================================================
 	private static double growthMultiplier = 1.0;
-	public static void setGrowthModifier(double d){ growthMultiplier = d; }
-	public static double getGrowthModifier(){ return growthMultiplier; }
+	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
+	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	public FruitTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
