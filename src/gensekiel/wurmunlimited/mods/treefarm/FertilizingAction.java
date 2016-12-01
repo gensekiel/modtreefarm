@@ -6,7 +6,7 @@ import com.wurmonline.mesh.TreeData;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
 
-public class FertilizingAction extends AbstractAction 
+public class FertilizingAction extends TileAction 
 {
 //======================================================================
 	public FertilizingAction()
@@ -24,7 +24,7 @@ public class FertilizingAction extends AbstractAction
 	}
 //======================================================================
 	@Override
-	protected boolean checkConditions(Creature performer, int rawtile)
+	protected boolean checkTileConditions(Creature performer, int rawtile)
 	{
 		byte data = Tiles.decodeData(rawtile);
 		int age = TreeTileTask.getAge(data);
@@ -46,7 +46,7 @@ public class FertilizingAction extends AbstractAction
 		}
 
 		if(tt.isMycelium()){
-			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " already bears fruit.", (byte)1);
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " cannot bear fruit.", (byte)1);
 			return true;
 		}
 

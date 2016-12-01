@@ -43,7 +43,7 @@ public class TaskPoller
 		loadTreeList();
 	}
 //======================================================================
-	public static AbstractTask containsTileAt(long key)
+	public static AbstractTask containsTaskFor(long key)
 	{
 		AbstractTask tt = null;
 		synchronized(tiles){

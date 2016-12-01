@@ -51,17 +51,21 @@ public class TreeFarmMod implements
 	private static Logger logger = Logger.getLogger(TreeFarmMod.class.getName());
 	private static WateringAction wateringaction = new WateringAction();
 	private static FertilizingAction fertilizingaction = new FertilizingAction();
+	private static HedgeAction hedgeaction = new HedgeAction();
 	private static boolean allowGrow = true;
 	private static boolean allowFertilize = true;
+	private static boolean allowHedges = true;
 //======================================================================
 	@Override
 	public void onServerStarted()
 	{
 		wateringaction.registerAction();
 		fertilizingaction.registerAction();
+		hedgeaction.registerAction();
 		
 		if(allowGrow) ModActions.registerAction(wateringaction);
 		if(allowFertilize) ModActions.registerAction(fertilizingaction);
+		if(allowHedges) ModActions.registerAction(hedgeaction);
 		
 		boolean debug = false;
 		if(debug){
@@ -181,13 +185,18 @@ public class TreeFarmMod implements
 	{
 		allowGrow = getOption("AllowGrow", allowGrow, properties);
 		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
+		allowHedges = getOption("AllowHedges", allowHedges, properties);
 
-		AbstractAction.setAllowTrees(getOption("AllowTrees", AbstractAction.getAllowTrees(), properties));
-		AbstractAction.setAllowBushes(getOption("AllowBushes", AbstractAction.getAllowBushes(), properties));
+		TileAction.setAllowTrees(getOption("AllowTrees", TileAction.getAllowTrees(), properties));
+		TileAction.setAllowBushes(getOption("AllowBushes", TileAction.getAllowBushes(), properties));
 		
 		wateringaction.setCost(getOption("WateringCost", wateringaction.getCost(), properties));
 		wateringaction.setTime(getOption("WateringTime", wateringaction.getTime(), properties));
 		wateringaction.setItem(getOption("WateringItem", wateringaction.getItem(), properties));
+
+		hedgeaction.setCost(getOption("WateringCost", hedgeaction.getCost(), properties));
+		hedgeaction.setTime(getOption("WateringTime", hedgeaction.getTime(), properties));
+		hedgeaction.setItem(getOption("WateringItem", hedgeaction.getItem(), properties));
 
 		fertilizingaction.setCost(getOption("FertilizingCost", fertilizingaction.getCost(), properties));
 		fertilizingaction.setTime(getOption("FertilizingTime", fertilizingaction.getTime(), properties));
@@ -208,8 +217,11 @@ public class TreeFarmMod implements
 		TaskPoller.setPollInterval(getOption("PollInterval", TaskPoller.getPollInterval(), properties));
 		TaskPoller.setPreserveList(getOption("PreserveList", TaskPoller.getPreserveList(), properties));
 
+		boolean keepgrowing = getOption("KeepGrowing", GrowTask.getKeepGrowing(), properties);
+		GrowTask.setKeepGrowing(keepgrowing);
+		HedgeTask.setKeepGrowing(keepgrowing);
+
 		GrowTask.setAgeLimit(getOption("AgeLimit", GrowTask.getAgeLimit(), properties));
-		GrowTask.setKeepGrowing(getOption("KeepGrowing", GrowTask.getKeepGrowing(), properties));
 		GrowTask.setCheckForWUPoll(getOption("CheckForWUPoll", GrowTask.getCheckForWUPoll(), properties));
 		GrowTask.setUseOriginalGrowthFunction(getOption("UseOriginalGrowthFunction", GrowTask.getUseOriginalGrowthFunction(), properties));
 		

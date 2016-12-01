@@ -4,7 +4,7 @@ import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
 import com.wurmonline.mesh.Tiles;
 
-public class WateringAction extends AbstractAction
+public class WateringAction extends TileAction
 {
 //======================================================================
 	public WateringAction()
@@ -22,7 +22,7 @@ public class WateringAction extends AbstractAction
 	}
 //======================================================================
 	@Override
-	protected boolean checkConditions(Creature performer, int rawtile)
+	protected boolean checkTileConditions(Creature performer, int rawtile)
 	{
 		byte data = Tiles.decodeData(rawtile);
 		int age = TreeTileTask.getAge(data);
