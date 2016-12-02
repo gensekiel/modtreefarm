@@ -31,6 +31,11 @@ public abstract class TileTask extends AbstractTask
 		return getTaskKey(x, y);
 	}
 //======================================================================
+	public static boolean compareTileTypes(int rawtile1, int rawtile2)
+	{
+		return ((rawtile1 & 0xFF000000) == (rawtile2 & 0xFF000000));
+	}
+//======================================================================
 	public static long getTaskKey(int tx, int ty)
 	{
 		return Long.valueOf(Tiles.getTileId(tx, ty, 0, true));

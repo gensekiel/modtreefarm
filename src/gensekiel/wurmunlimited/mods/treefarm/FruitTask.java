@@ -41,9 +41,11 @@ public class FruitTask extends TreeTileTask
 		if(!checkTileType(rawtile)) return true;
 		
 		if(getTile(rawtile).isMycelium()) return true;
-		
-		if(checkForWUPoll){ // Check type and fruit state, ignore rest
-			if( (tile & 0xFF080000) != (rawtile & 0xFF080000) )
+
+		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
+
+		if(checkForWUPoll){ // Check fruit state, ignore rest
+			if((tile & 0x00080000) != (rawtile & 0x00080000))
 				return true;
 		}
 

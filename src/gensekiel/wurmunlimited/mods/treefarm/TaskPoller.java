@@ -24,12 +24,18 @@ public class TaskPoller
 //======================================================================
 	private static long pollInterval = 300000;
 	private static boolean preserveList = true;
+	private static boolean protectTasks = false;
+	private static boolean ignoreNextMatch = false;
 //======================================================================
 	public static void setPollInterval(long time){ pollInterval = time; }
 	public static void setPreserveList(boolean b){ preserveList = b; }
+	public static void setProtectTasks(boolean b){ protectTasks = b; }
 //======================================================================
 	public static long getPollInterval(){ return pollInterval; }
 	public static boolean getPreserveList(){ return preserveList; }
+	public static boolean getProtectTasks(){ return protectTasks; }
+//======================================================================
+	public static void ignoreNextMatch(){ ignoreNextMatch = true; }
 //======================================================================
 	public static void addTask(AbstractTask task)
 	{
@@ -45,6 +51,10 @@ public class TaskPoller
 //======================================================================
 	public static AbstractTask containsTaskFor(long key)
 	{
+		if(ignoreNextMatch){
+			ignoreNextMatch = false;
+			return null;
+		}
 		AbstractTask tt = null;
 		synchronized(tiles){
 			tt = tiles.get(key);

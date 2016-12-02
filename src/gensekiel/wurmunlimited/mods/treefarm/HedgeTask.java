@@ -48,9 +48,9 @@ public class HedgeTask extends AbstractTask
 
 		if(!fence.isHedge()) return true;
 		if(!fence.isFinished()) return true;
-		
+		if(getHedgeType(fence) != type) return true;
+
 		if(checkForWUPoll){
-			if(getHedgeType(fence) != type) return true;
 			if(!keepGrowing && getHedgeAge(fence) != age) return true;
 		}
 		

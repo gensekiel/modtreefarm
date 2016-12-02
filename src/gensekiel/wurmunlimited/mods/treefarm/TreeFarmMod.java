@@ -1,7 +1,5 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Properties;
 
 import org.gotti.wurmunlimited.modloader.interfaces.Initable;
@@ -9,19 +7,7 @@ import org.gotti.wurmunlimited.modloader.interfaces.PreInitable;
 import org.gotti.wurmunlimited.modloader.interfaces.ServerStartedListener;
 import org.gotti.wurmunlimited.modloader.interfaces.WurmServerMod;
 import org.gotti.wurmunlimited.modloader.interfaces.Configurable;
-import org.gotti.wurmunlimited.modloader.classhooks.HookManager;
-import org.gotti.wurmunlimited.modloader.classhooks.InvocationHandlerFactory;
 import org.gotti.wurmunlimited.modsupport.actions.ModActions;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
-
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.CtNewMethod;
-import javassist.CtPrimitiveType;
-import javassist.bytecode.Descriptor;
 
 public class TreeFarmMod implements
 	WurmServerMod,
@@ -31,24 +17,6 @@ public class TreeFarmMod implements
 	ServerStartedListener
 {
 //======================================================================
-	private static String wrapper_code = ""
-	+ "public static void wrap_checkForTreeGrowth("
-	+ "   int tile, int tilex, int tiley, byte type, byte aData)"
-	+ "{"
-	+ "   logger.log(Level.INFO, \"Injected method entered.\");"
-	+ "   boolean pollingSurface_old = pollingSurface;"
-	+ "   MeshIO currentMesh_old = currentMesh;"
-	+ "   pollingSurface = true;"
-	+ "   currentMesh = Server.surfaceMesh;"
-	+ ""
-	+ "   checkForTreeGrowth(tile, tilex, tiley, type, aData);"
-	+ ""
-	+ "   pollingSurface = pollingSurface_old;"
-	+ "   currentMesh = currentMesh_old;"
-	+ "   logger.log(Level.INFO, \"Injected method left.\");"
-	+ "}";
-//======================================================================	
-	private static Logger logger = Logger.getLogger(TreeFarmMod.class.getName());
 	private static WateringAction wateringaction = new WateringAction();
 	private static FertilizingAction fertilizingaction = new FertilizingAction();
 	private static HedgeAction hedgeaction = new HedgeAction();
@@ -67,10 +35,11 @@ public class TreeFarmMod implements
 		if(allowFertilize) ModActions.registerAction(fertilizingaction);
 		if(allowHedges) ModActions.registerAction(hedgeaction);
 		
-		boolean debug = false;
+		boolean debug = true;
 		if(debug){
 			WateringAction wa2 = new WateringAction("WaterEX");
 			FertilizingAction fa2 = new FertilizingAction("FertilizeEX");
+			HedgeAction he2 = new HedgeAction("WaterEX");
 	
 			wa2.setCost(0);
 			wa2.setTime(0);
@@ -79,92 +48,39 @@ public class TreeFarmMod implements
 			fa2.setCost(0);
 			fa2.setTime(0);
 			fa2.setItem(0);
-	
+
+			he2.setCost(0);
+			he2.setTime(0);
+			he2.setItem(0);
+
 			wa2.registerAction();
 			fa2.registerAction();
+			he2.registerAction();
 	
 			ModActions.registerAction(wa2);
 			ModActions.registerAction(fa2);
+			ModActions.registerAction(he2);
+			
+			HedgePollAction hpa = new HedgePollAction();
+			hpa.registerAction();
+			ModActions.registerAction(hpa);
 		}
-		
-		logger.log(Level.INFO, "Actions registered.");
 	}
 //======================================================================
 	@Override
 	public void init()
 	{
 		if(GrowTask.getUseOriginalGrowthFunction()){
-			try{
-				ClassPool pool = ClassPool.getDefault();
-				pool.importPackage("java.util.logging");
-				pool.importPackage("com.wurmonline.mesh");
-				pool.importPackage("com.wurmonline.server");
-				CtClass ctclass = pool.get("com.wurmonline.server.zones.TilePoller");
-				CtMethod wrapper_method = CtNewMethod.make(wrapper_code, ctclass);
-				ctclass.addMethod(wrapper_method);
-				logger.log(Level.INFO, "Wrapper method injected.");
-			}catch(Exception e){
-				logger.log(Level.WARNING, "Wrapper injection failed. Falling back to builtin growth function. Exception: " + e);
-				GrowTask.setUseOriginalGrowthFunction(false);
-			}
+			Hooks.injectTreeGrowthWrapper();
 		}
 		
-		// We need the server paths to be set properly before initializing
-		// the TaskPoller.
-		// TODO Should be okay to do that in preinit.
-		try{
-			HookManager.getInstance().registerHook("com.wurmonline.server.zones.CropTilePoller", "initializeFields", Descriptor.ofMethod(CtPrimitiveType.voidType, null), new InvocationHandlerFactory(){
-				@Override
-				public InvocationHandler createInvocationHandler(){
-					return new InvocationHandler() {
-						@Override
-						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
-							TaskPoller.initialize();
-							return method.invoke(object, args);
-						}
-					};
-				}
-			});
-		}catch(Exception e){
-			logger.log(Level.WARNING, "Initializing hook failed. Tree list will not be loaded. Exception: " + e);
-		}
+		Hooks.registerListLoadingHook();
+		Hooks.registerPollingHook();
+		Hooks.registerListSavingHook();
 
-		try{
-			HookManager.getInstance().registerHook("com.wurmonline.server.zones.CropTilePoller", "pollCropTiles", Descriptor.ofMethod(CtPrimitiveType.voidType, null), new InvocationHandlerFactory(){
-				@Override
-				public InvocationHandler createInvocationHandler(){
-					return new InvocationHandler() {
-						@Override
-						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
-							TaskPoller.poll();
-							return method.invoke(object, args);
-						}
-					};
-				}
-			});
-		}catch(Exception e){
-			logger.log(Level.SEVERE, "Polling hook failed. TaskPoller will not run. Exception: " + e);
-		}
-		
-		try{
-			// Don't hook shutDown directly as it raises an exception on
-			// purpose and that may make it look like this mod is somehow
-			// responsible.
-//			HookManager.getInstance().registerHook("com.wurmonline.server.Server", "shutDown", Descriptor.ofMethod(CtPrimitiveType.voidType, null), new InvocationHandlerFactory(){
-			HookManager.getInstance().registerHook("com.wurmonline.server.zones.Zones", "saveAllZones", Descriptor.ofMethod(CtPrimitiveType.voidType, null), new InvocationHandlerFactory(){
-				@Override
-				public InvocationHandler createInvocationHandler(){
-					return new InvocationHandler() {
-						@Override
-						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
-							TaskPoller.dumpTreeList();
-							return method.invoke(object, args);
-						}
-					};
-				}
-			});
-		}catch(Exception e){
-			logger.log(Level.WARNING, "Tree list hook failed. Tree list will not be saved. Exception: " + e);
+		if(TaskPoller.getProtectTasks()){
+			Hooks.registerTreeProtectionHook();
+			Hooks.registerHedgeProtectionHook();
 		}
 	}
 //======================================================================
@@ -186,7 +102,7 @@ public class TreeFarmMod implements
 		allowGrow = getOption("AllowGrow", allowGrow, properties);
 		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
 		allowHedges = getOption("AllowHedges", allowHedges, properties);
-
+		
 		TileAction.setAllowTrees(getOption("AllowTrees", TileAction.getAllowTrees(), properties));
 		TileAction.setAllowBushes(getOption("AllowBushes", TileAction.getAllowBushes(), properties));
 		
@@ -216,6 +132,7 @@ public class TreeFarmMod implements
 
 		TaskPoller.setPollInterval(getOption("PollInterval", TaskPoller.getPollInterval(), properties));
 		TaskPoller.setPreserveList(getOption("PreserveList", TaskPoller.getPreserveList(), properties));
+		TaskPoller.setProtectTasks(getOption("ProtectTasks", TaskPoller.getProtectTasks(), properties));
 
 		boolean keepgrowing = getOption("KeepGrowing", GrowTask.getKeepGrowing(), properties);
 		GrowTask.setKeepGrowing(keepgrowing);

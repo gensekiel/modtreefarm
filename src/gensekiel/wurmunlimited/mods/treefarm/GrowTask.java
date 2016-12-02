@@ -56,14 +56,12 @@ public class GrowTask extends TreeTileTask
 		if(ttile == null) return true;
 		
 		if(!checkTileType(rawtile)) return true;
-		
-		if(checkForWUPoll){
-			if(keepGrowing) // check type, ignore age
-				if( (tile & 0xFF000000) != (rawtile & 0xFF000000) ) 
-					return true;
-			else // check type and age
-				if( (tile & 0xFFF00000) != (rawtile & 0xFFF00000) )
-					return true;
+
+		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
+
+		if(checkForWUPoll){ // Check age
+			if(!keepGrowing && (tile & 0x00F00000) != (rawtile & 0x00F00000))
+				return true;
 		}
 		
 		byte age = getAge(Tiles.decodeData(rawtile));
@@ -76,6 +74,7 @@ public class GrowTask extends TreeTileTask
 	public boolean performTask()
 	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
+
 		if(useOriginalGrowthFunction)
 			callTreeGrowthWrapper(rawtile, x, y, getType(), getData());
 		else
@@ -87,6 +86,10 @@ public class GrowTask extends TreeTileTask
 //======================================================================
 	private static void callTreeGrowthWrapper(int rawtile, int tilex, int tiley, byte type, byte data)
 	{
+		// If the protection is active, calling the growth function
+		// will also check for tasks and prevent the execution on
+		// tracked objects --> allow execution once.
+		if(TaskPoller.getProtectTasks()) TaskPoller.ignoreNextMatch();
 		try{
 			Method method = TilePoller.class.getMethod("wrap_checkForTreeGrowth", int.class, int.class, int.class, byte.class, byte.class);
 			method.invoke(null, rawtile, tilex, tiley, type, data);
