@@ -80,8 +80,8 @@ public class HedgeTask extends AbstractTask
 	public String getDescription()
 	{
 		Fence fence = getFence();
-		if(fence == null) return "This hedge has already been watered.";
-		return "This " + fence.getName() + " has already been watered.";
+		if(fence == null) return "This hedge has been watered recently.";
+		return "This " + fence.getName() + " has been watered recently.";
 	}
 //======================================================================
 	public static VolaTile getVolaTile(int zoneID, int x, int y)

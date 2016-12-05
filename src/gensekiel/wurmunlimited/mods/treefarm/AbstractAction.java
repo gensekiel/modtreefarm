@@ -154,9 +154,9 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 //======================================================================
 	protected boolean checkStatus(Creature performer, long key)
 	{
-		AbstractTask aa = TaskPoller.containsTaskFor(key);
-		if(aa != null){
-			performer.getCommunicator().sendNormalServerMessage(aa.getDescription(), (byte)1);
+		AbstractTask at = TaskPoller.containsTaskFor(key);
+		if(at != null){
+			performer.getCommunicator().sendNormalServerMessage(at.getDescription(), (byte)1);
 			return true;
 		}
 		return false;

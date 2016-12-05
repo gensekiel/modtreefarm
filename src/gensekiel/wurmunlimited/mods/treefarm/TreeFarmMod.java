@@ -23,6 +23,7 @@ public class TreeFarmMod implements
 	private static boolean allowGrow = true;
 	private static boolean allowFertilize = true;
 	private static boolean allowHedges = true;
+	private static boolean augmentExamine = true;
 //======================================================================
 	@Override
 	public void onServerStarted()
@@ -34,12 +35,13 @@ public class TreeFarmMod implements
 		if(allowGrow) ModActions.registerAction(wateringaction);
 		if(allowFertilize) ModActions.registerAction(fertilizingaction);
 		if(allowHedges) ModActions.registerAction(hedgeaction);
+		if(augmentExamine) ModActions.registerAction(new ExamineAction());
 		
 		boolean debug = true;
 		if(debug){
-			WateringAction wa2 = new WateringAction("WaterEX");
-			FertilizingAction fa2 = new FertilizingAction("FertilizeEX");
-			HedgeAction he2 = new HedgeAction("WaterEX");
+			WateringAction wa2 = new WateringAction("Water (debug)");
+			FertilizingAction fa2 = new FertilizingAction("Fertilize (debug)");
+			HedgeAction he2 = new HedgeAction("Water (debug)");
 	
 			wa2.setCost(0);
 			wa2.setTime(0);
@@ -102,6 +104,7 @@ public class TreeFarmMod implements
 		allowGrow = getOption("AllowGrow", allowGrow, properties);
 		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
 		allowHedges = getOption("AllowHedges", allowHedges, properties);
+		augmentExamine = getOption("StatusOnExamine", augmentExamine, properties);
 		
 		TileAction.setAllowTrees(getOption("AllowTrees", TileAction.getAllowTrees(), properties));
 		TileAction.setAllowBushes(getOption("AllowBushes", TileAction.getAllowBushes(), properties));

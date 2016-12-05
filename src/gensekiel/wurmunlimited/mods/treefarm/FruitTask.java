@@ -23,7 +23,7 @@ public class FruitTask extends TreeTileTask
 	public String getDescription()
 	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
-		return "This " + getTileName(rawtile) + " has already been fertilized.";
+		return "This " + getTileName(rawtile) + " has been fertilized recently.";
 	}
 //======================================================================
 	public static boolean checkTileType(int rawtile)
