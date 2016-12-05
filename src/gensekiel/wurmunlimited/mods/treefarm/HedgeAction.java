@@ -26,6 +26,7 @@ public class HedgeAction extends AbstractAction
 		cost = 5000;
 		time = 30;
 		item = ItemList.water;
+		skill = 10045;
 	}
 //======================================================================
 	protected void performFenceAction(Fence fence, double multiplier)
@@ -72,9 +73,9 @@ public class HedgeAction extends AbstractAction
 	public boolean action(Action action, Creature performer, Item source, boolean onSurface, Fence target, short num, float counter)
 	{
 		try{
-			Skill skill = performer.getSkills().getSkillOrLearn(10045);
-			int timeLeft = getActionTime(skill.knowledge);
-			int actioncost = getActionCost(skill.knowledge, HedgeTask.getHedgeAge(target), 2);
+			Skill skl = performer.getSkills().getSkillOrLearn(skill);
+			int timeLeft = getActionTime(skl.knowledge);
+			int actioncost = getActionCost(skl.knowledge, HedgeTask.getHedgeAge(target), 2);
 			String fencename = target.getName();
 			
 			if(counter == 1.0f){
@@ -85,7 +86,7 @@ public class HedgeAction extends AbstractAction
 				if(item != 0) if(checkItem(performer, source, fencename, actioncost)) return true;
 				
 				startAction(performer, fencename, timeLeft);
-				if(gainSkill) gainSkill(skill);
+				if(gainSkill) gainSkill(skl);
 			}else{
 				timeLeft = performer.getCurrentAction().getTimeLeft();
 			}
@@ -93,7 +94,7 @@ public class HedgeAction extends AbstractAction
 				double quality = 100.0;
 				if(item != 0) quality = source.getCurrentQualityLevel();
 				
-				double multiplier = getTaskTimeMultiplier(quality, skill.knowledge);
+				double multiplier = getTaskTimeMultiplier(quality, skl.knowledge);
 				performFenceAction(target, multiplier);
 
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);

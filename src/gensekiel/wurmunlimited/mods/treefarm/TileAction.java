@@ -55,9 +55,9 @@ public abstract class TileAction extends AbstractAction
 		try{
 			String tilename = TileTask.getTileName(rawtile);
 			byte tiledata = Tiles.decodeData(rawtile);
-			Skill skill = performer.getSkills().getSkillOrLearn(10048);
-			int timeLeft = getActionTime(skill.knowledge);
-			int actioncost = getActionCost(skill.knowledge, TreeTileTask.getAge(tiledata), 15);
+			Skill skl = performer.getSkills().getSkillOrLearn(skill);
+			int timeLeft = getActionTime(skl.knowledge);
+			int actioncost = getActionCost(skl.knowledge, TreeTileTask.getAge(tiledata), 15);
 			
 			if(counter == 1.0f){
 				if(!checkTileType(rawtile)) return true;
@@ -67,7 +67,7 @@ public abstract class TileAction extends AbstractAction
 				if(item != 0) if(checkItem(performer, source, tilename, actioncost)) return true;
 				
 				startAction(performer, tilename, timeLeft);
-				if(gainSkill) gainSkill(skill);
+				if(gainSkill) gainSkill(skl);
 			}else{
 				timeLeft = performer.getCurrentAction().getTimeLeft();
 			}
@@ -77,7 +77,7 @@ public abstract class TileAction extends AbstractAction
 				
 				// Can the tile change while action is performed?
 				// There seems to be a flag that could lock a tile.
-				double multiplier = getTaskTimeMultiplier(quality, skill.knowledge);
+				double multiplier = getTaskTimeMultiplier(quality, skl.knowledge);
 				performTileAction(rawtile, tilex, tiley, multiplier);
 
 				// Source item can not change.

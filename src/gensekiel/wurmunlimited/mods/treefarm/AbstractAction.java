@@ -23,6 +23,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	protected int cost;
 	protected int time;
 	protected int item;
+	protected int skill;
 	protected static boolean checkIfPolled;
 	protected static boolean checkConditions;
 	protected static double costSkillMultiplier;
@@ -109,11 +110,11 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 		);
 	}
 //======================================================================
-	public double gainSkill(Skill skill)
+	public double gainSkill(Skill skl)
 	{
 		float times = 10.0f;
 		double div = 2.0;
-		return skill.skillCheck(1.0, null, 1.0, false, times, true, div);
+		return skl.skillCheck(1.0, null, 1.0, false, times, true, div);
 	}
 //======================================================================
 	public boolean checkItem(Creature performer, Item source, String tilename, int amount)

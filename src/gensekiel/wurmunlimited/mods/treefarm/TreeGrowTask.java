@@ -7,7 +7,7 @@ import com.wurmonline.server.Players;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.zones.TilePoller;
 
-public class GrowTask extends TreeTileTask
+public class TreeGrowTask extends TreeTileTask
 {
 	private static final long serialVersionUID = 3L;
 //======================================================================
@@ -15,19 +15,11 @@ public class GrowTask extends TreeTileTask
 	public static void setAgeLimit(byte b){ ageLimit = b; }
 	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
-	private static boolean keepGrowing = false;
-	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
-	public static boolean getKeepGrowing(){ return keepGrowing; }
-//======================================================================
-	private static boolean useOriginalGrowthFunction = false;
-	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
-	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
-//======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
-	public GrowTask(int rawtile, int tilex, int tiley, double multiplier)
+	public TreeGrowTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
 		super(rawtile, tilex, tiley, multiplier);
 		tasktime *= growthMultiplier;

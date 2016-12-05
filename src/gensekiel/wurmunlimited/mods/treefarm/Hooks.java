@@ -48,10 +48,44 @@ public class Hooks
 			CtClass ctclass = pool.get("com.wurmonline.server.zones.TilePoller");
 			CtMethod wrapper_method = CtNewMethod.make(tree_wrapper_code, ctclass);
 			ctclass.addMethod(wrapper_method);
-			logger.log(Level.INFO, "Wrapper method injected.");
+			logger.log(Level.INFO, "Tree growth wrapper method injected.");
 		}catch(Exception e){
-			logger.log(Level.WARNING, "Wrapper injection failed. Falling back to builtin growth function. Exception: " + e);
-			GrowTask.setUseOriginalGrowthFunction(false);
+			logger.log(Level.WARNING, "Tree growth wrapper injection failed. Falling back to builtin growth function. Exception: " + e);
+			TreeGrowTask.setUseOriginalGrowthFunction(false);
+		}
+	}
+//======================================================================
+	private static String grass_wrapper_code = ""
+	+ "public static void wrap_checkForGrassGrowth("
+	+ "   int tile, int tilex, int tiley, byte type, byte aData, boolean andflowers)"
+	+ "{"
+	+ "   logger.log(Level.INFO, \"Injected method entered.\");"
+	+ "   boolean pollingSurface_old = pollingSurface;"
+	+ "   MeshIO currentMesh_old = currentMesh;"
+	+ "   pollingSurface = true;"
+	+ "   currentMesh = Server.surfaceMesh;"
+	+ ""
+	+ "   checkForGrassGrowth(tile, tilex, tiley, type, aData, andflowers);"
+	+ ""
+	+ "   pollingSurface = pollingSurface_old;"
+	+ "   currentMesh = currentMesh_old;"
+	+ "   logger.log(Level.INFO, \"Injected method left.\");"
+	+ "}";
+//======================================================================
+	public static void injectGrassGrowthWrapper()
+	{
+		try{
+			ClassPool pool = ClassPool.getDefault();
+			pool.importPackage("java.util.logging");
+			pool.importPackage("com.wurmonline.mesh");
+			pool.importPackage("com.wurmonline.server");
+			CtClass ctclass = pool.get("com.wurmonline.server.zones.TilePoller");
+			CtMethod wrapper_method = CtNewMethod.make(grass_wrapper_code, ctclass);
+			ctclass.addMethod(wrapper_method);
+			logger.log(Level.INFO, "Grass growth wrapper method injected.");
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Grass growth wrapper injection failed. Falling back to builtin growth function. Exception: " + e);
+			GrassGrowTask.setUseOriginalGrowthFunction(false);
 		}
 	}
 //======================================================================

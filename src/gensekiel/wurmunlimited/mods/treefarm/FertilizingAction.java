@@ -21,6 +21,7 @@ public class FertilizingAction extends TileAction
 		cost = 100;
 		time = 50;
 		item = ItemList.ash;
+		skill = 10048;
 	}
 //======================================================================
 	@Override

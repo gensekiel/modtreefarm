@@ -10,6 +10,14 @@ public abstract class AbstractTask implements Serializable
 	public static void setCheckForWUPoll(boolean b){ checkForWUPoll = b; }
 	public static boolean getCheckForWUPoll(){ return checkForWUPoll; }
 //----------------------------------------------------------------------
+	protected static boolean useOriginalGrowthFunction = false;
+	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
+	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
+//----------------------------------------------------------------------
+	protected static boolean keepGrowing = false;
+	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
+	public static boolean getKeepGrowing(){ return keepGrowing; }
+//----------------------------------------------------------------------
 	protected static long BaseGrowthTime = 600000;
 	public static void setBaseGrowthTime(long l){ BaseGrowthTime = l; }
 	public static long getBaseGrowthTime(){ return BaseGrowthTime; }

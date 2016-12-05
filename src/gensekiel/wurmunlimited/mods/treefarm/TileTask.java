@@ -16,6 +16,16 @@ public abstract class TileTask extends AbstractTask
 //----------------------------------------------------------------------
 	protected int y;
 	public final int getY(){ return y; }
+//----------------------------------------------------------------------
+	protected static double GrowthMultiplierNormal = 1.0;
+	protected static double GrowthMultiplierEnchanted = 1.0;
+	protected static double GrowthMultiplierMycelium = 1.0;
+	public static void setGrowthMultiplierNormal(double d){ GrowthMultiplierNormal = d; }
+	public static void setGrowthMultiplierEnchanted(double d){ GrowthMultiplierEnchanted = d; }
+	public static void setGrowthMultiplierMycelium(double d){ GrowthMultiplierMycelium = d; }
+	public static double getGrowthMultiplierNormal(){ return GrowthMultiplierNormal; }
+	public static double getGrowthMultiplierEnchanted(){ return GrowthMultiplierEnchanted; }
+	public static double getGrowthMultiplierMycelium(){ return GrowthMultiplierMycelium; }
 //======================================================================
 	protected TileTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
@@ -24,6 +34,12 @@ public abstract class TileTask extends AbstractTask
 		tile = rawtile;
 		x = tilex;
 		y = tiley;
+
+		Tiles.Tile tiletype = getTile(tile);
+		
+		     if(tiletype.isNormalTree())    tasktime *= GrowthMultiplierNormal;
+		else if(tiletype.isEnchantedTree()) tasktime *= GrowthMultiplierEnchanted;
+		else if(tiletype.isMyceliumTree())  tasktime *= GrowthMultiplierMycelium;
 	}
 //======================================================================
 	public long getTaskKey()

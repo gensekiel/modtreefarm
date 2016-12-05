@@ -2,35 +2,36 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
+import com.wurmonline.mesh.GrassData;
 import com.wurmonline.mesh.Tiles;
 
-public class WateringAction extends TileAction
+public class GrassGrowAction extends TileAction
 {
 //======================================================================
-	public WateringAction()
+	public GrassGrowAction()
 	{
 		this("Water");
 	}
 //======================================================================
-	public WateringAction(String s)
+	public GrassGrowAction(String s)
 	{
 		super(s, "water", "watering", "Watering");
 		
 		cost = 5000;
 		time = 30;
 		item = ItemList.water;
-		skill = 10048;
+		skill = 10045;
 	}
 //======================================================================
 	@Override
 	protected boolean checkTileConditions(Creature performer, int rawtile)
 	{
 		byte data = Tiles.decodeData(rawtile);
-		int age = TreeTileTask.getAge(data);
+		byte age = GrassGrowTask.getGrowthStage(data);
 		String tilename = TileTask.getTileName(rawtile);
 		
-		if(age >= TreeGrowTask.getAgeLimit()){
-			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too old to make it grow by watering it.", (byte)1);
+		if(age >= 3){
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " has reached its maximum height.", (byte)1);
 			return true;
 		}
 		return false;
@@ -39,13 +40,14 @@ public class WateringAction extends TileAction
 	@Override
 	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
 	{
-		TaskPoller.addTask(new TreeGrowTask(rawtile, tilex, tiley, multiplier));
+		TaskPoller.addTask(new GrassGrowTask(rawtile, tilex, tiley, multiplier));
 	}
 //======================================================================
 	@Override
 	protected boolean checkTileType(int rawtile)
 	{
-		return TreeGrowTask.checkTileType(rawtile);
+		byte data = Tiles.decodeData(rawtile);
+		return (GrassGrowTask.checkTileType(rawtile) && GrassData.GrassType.decodeTileData(data).getType() == 0 );
 	}
 //======================================================================
 }

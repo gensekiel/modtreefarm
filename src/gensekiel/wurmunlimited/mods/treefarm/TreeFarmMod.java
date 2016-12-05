@@ -20,9 +20,11 @@ public class TreeFarmMod implements
 	private static WateringAction wateringaction = new WateringAction();
 	private static FertilizingAction fertilizingaction = new FertilizingAction();
 	private static HedgeAction hedgeaction = new HedgeAction();
+	private static GrassGrowAction grassaction = new GrassGrowAction();
 	private static boolean allowGrow = true;
 	private static boolean allowFertilize = true;
 	private static boolean allowHedges = true;
+	private static boolean allowGrass = true;
 	private static boolean augmentExamine = true;
 //======================================================================
 	@Override
@@ -31,17 +33,20 @@ public class TreeFarmMod implements
 		wateringaction.registerAction();
 		fertilizingaction.registerAction();
 		hedgeaction.registerAction();
+		grassaction.registerAction();
 		
 		if(allowGrow) ModActions.registerAction(wateringaction);
 		if(allowFertilize) ModActions.registerAction(fertilizingaction);
 		if(allowHedges) ModActions.registerAction(hedgeaction);
+		if(allowGrass) ModActions.registerAction(grassaction);
 		if(augmentExamine) ModActions.registerAction(new ExamineAction());
 		
 		boolean debug = true;
 		if(debug){
 			WateringAction wa2 = new WateringAction("Water (debug)");
 			FertilizingAction fa2 = new FertilizingAction("Fertilize (debug)");
-			HedgeAction he2 = new HedgeAction("Water (debug)");
+			HedgeAction ha2 = new HedgeAction("Water (debug)");
+			GrassGrowAction ga2 = new GrassGrowAction("Water (debug)");
 	
 			wa2.setCost(0);
 			wa2.setTime(0);
@@ -51,17 +56,23 @@ public class TreeFarmMod implements
 			fa2.setTime(0);
 			fa2.setItem(0);
 
-			he2.setCost(0);
-			he2.setTime(0);
-			he2.setItem(0);
+			ha2.setCost(0);
+			ha2.setTime(0);
+			ha2.setItem(0);
+
+			ga2.setCost(0);
+			ga2.setTime(0);
+			ga2.setItem(0);
 
 			wa2.registerAction();
 			fa2.registerAction();
-			he2.registerAction();
+			ha2.registerAction();
+			ga2.registerAction();
 	
 			ModActions.registerAction(wa2);
 			ModActions.registerAction(fa2);
-			ModActions.registerAction(he2);
+			ModActions.registerAction(ha2);
+			ModActions.registerAction(ga2);
 			
 			HedgePollAction hpa = new HedgePollAction();
 			hpa.registerAction();
@@ -72,8 +83,9 @@ public class TreeFarmMod implements
 	@Override
 	public void init()
 	{
-		if(GrowTask.getUseOriginalGrowthFunction()){
+		if(TreeGrowTask.getUseOriginalGrowthFunction()){
 			Hooks.injectTreeGrowthWrapper();
+			Hooks.injectGrassGrowthWrapper();
 		}
 		
 		Hooks.registerListLoadingHook();
@@ -104,6 +116,7 @@ public class TreeFarmMod implements
 		allowGrow = getOption("AllowGrow", allowGrow, properties);
 		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
 		allowHedges = getOption("AllowHedges", allowHedges, properties);
+		allowGrass = getOption("AllowGrass", allowGrass, properties);
 		augmentExamine = getOption("StatusOnExamine", augmentExamine, properties);
 		
 		TileAction.setAllowTrees(getOption("AllowTrees", TileAction.getAllowTrees(), properties));
@@ -116,6 +129,10 @@ public class TreeFarmMod implements
 		hedgeaction.setCost(getOption("WateringCost", hedgeaction.getCost(), properties));
 		hedgeaction.setTime(getOption("WateringTime", hedgeaction.getTime(), properties));
 		hedgeaction.setItem(getOption("WateringItem", hedgeaction.getItem(), properties));
+
+		grassaction.setCost(getOption("WateringCost", grassaction.getCost(), properties));
+		grassaction.setTime(getOption("WateringTime", grassaction.getTime(), properties));
+		grassaction.setItem(getOption("WateringItem", grassaction.getItem(), properties));
 
 		fertilizingaction.setCost(getOption("FertilizingCost", fertilizingaction.getCost(), properties));
 		fertilizingaction.setTime(getOption("FertilizingTime", fertilizingaction.getTime(), properties));
@@ -137,21 +154,26 @@ public class TreeFarmMod implements
 		TaskPoller.setPreserveList(getOption("PreserveList", TaskPoller.getPreserveList(), properties));
 		TaskPoller.setProtectTasks(getOption("ProtectTasks", TaskPoller.getProtectTasks(), properties));
 
-		boolean keepgrowing = getOption("KeepGrowing", GrowTask.getKeepGrowing(), properties);
-		GrowTask.setKeepGrowing(keepgrowing);
+		boolean keepgrowing = getOption("KeepGrowing", TreeGrowTask.getKeepGrowing(), properties);
+		TreeGrowTask.setKeepGrowing(keepgrowing);
 		HedgeTask.setKeepGrowing(keepgrowing);
+		GrassGrowTask.setKeepGrowing(keepgrowing);
 
-		GrowTask.setAgeLimit(getOption("AgeLimit", GrowTask.getAgeLimit(), properties));
-		GrowTask.setCheckForWUPoll(getOption("CheckForWUPoll", GrowTask.getCheckForWUPoll(), properties));
-		GrowTask.setUseOriginalGrowthFunction(getOption("UseOriginalGrowthFunction", GrowTask.getUseOriginalGrowthFunction(), properties));
+		TreeGrowTask.setAgeLimit(getOption("AgeLimit", TreeGrowTask.getAgeLimit(), properties));
+		TreeGrowTask.setCheckForWUPoll(getOption("CheckForWUPoll", TreeGrowTask.getCheckForWUPoll(), properties));
+		TreeGrowTask.setUseOriginalGrowthFunction(getOption("UseOriginalGrowthFunction", TreeGrowTask.getUseOriginalGrowthFunction(), properties));
 		
 		AbstractTask.setBaseGrowthTime(getOption("BaseGrowthTime", AbstractTask.getBaseGrowthTime(), properties));
 		
-		GrowTask .setGrowthMultiplier(getOption("GrowthMultiplierGrow",  GrowTask .getGrowthMultiplier(), properties));
+		double growthMultiplierGrow = getOption("GrowthMultiplierGrow",  TreeGrowTask .getGrowthMultiplier(), properties);
+		TreeGrowTask .setGrowthMultiplier(growthMultiplierGrow);
+		GrassGrowTask .setGrowthMultiplier(growthMultiplierGrow);
 		FruitTask.setGrowthMultiplier(getOption("GrowthMultiplierFruit", FruitTask.getGrowthMultiplier(), properties));
 
 		TreeTileTask.setGrowthMultiplierTree(getOption("GrowthMultiplierTree", TreeTileTask.getGrowthMultiplierTree(), properties));
 		TreeTileTask.setGrowthMultiplierBush(getOption("GrowthMultiplierBush", TreeTileTask.getGrowthMultiplierBush(), properties));
+		GrassTileTask.setGrowthMultiplierGrass(getOption("GrowthMultiplierGrass", GrassTileTask.getGrowthMultiplierGrass(), properties));
+		HedgeTask.setGrowthMultiplier(getOption("GrowthMultiplierHedge", HedgeTask.getGrowthMultiplier(), properties));
 
 		TreeTileTask.setGrowthMultiplierBirch   (getOption("GrowthMultiplierBirch",    TreeTileTask.getGrowthMultiplierBirch(),    properties));
 		TreeTileTask.setGrowthMultiplierPine    (getOption("GrowthMultiplierPine",     TreeTileTask.getGrowthMultiplierPine(),     properties));

@@ -27,10 +27,6 @@ public abstract class TreeTileTask extends TileTask
 	private static double GrowthMultiplierFir = 1.0;
 	private static double GrowthMultiplierLinden = 1.0;
 //----------------------------------------------------------------------
-	private static double GrowthMultiplierNormal = 1.0;
-	private static double GrowthMultiplierEnchanted = 1.0;
-	private static double GrowthMultiplierMycelium = 1.0;
-//----------------------------------------------------------------------
 	private static double GrowthMultiplierTree = 1.0;
 	private static double GrowthMultiplierBush = 1.0;
 //----------------------------------------------------------------------
@@ -82,10 +78,6 @@ public abstract class TreeTileTask extends TileTask
 	
 		byte tage = getAge();
 		if(tage < 15) tasktime *= GrowthMultiplierAge[tage];
-	
-		     if(tiletype.isNormalTree())    tasktime *= GrowthMultiplierNormal;
-		else if(tiletype.isEnchantedTree()) tasktime *= GrowthMultiplierEnchanted;
-		else if(tiletype.isMyceliumTree())  tasktime *= GrowthMultiplierMycelium;
 	}
 //======================================================================
 	public byte getAge()
@@ -130,9 +122,6 @@ public abstract class TreeTileTask extends TileTask
 	public static void setGrowthMultiplierWalnut(double d){ GrowthMultiplierWalnut = d; }
 	public static void setGrowthMultiplierFir(double d){ GrowthMultiplierFir = d; }
 	public static void setGrowthMultiplierLinden(double d){ GrowthMultiplierLinden = d; }
-	public static void setGrowthMultiplierNormal(double d){ GrowthMultiplierNormal = d; }
-	public static void setGrowthMultiplierEnchanted(double d){ GrowthMultiplierEnchanted = d; }
-	public static void setGrowthMultiplierMycelium(double d){ GrowthMultiplierMycelium = d; }
 	public static void setGrowthMultiplierTree(double d){ GrowthMultiplierTree = d; }
 	public static void setGrowthMultiplierBush(double d){ GrowthMultiplierBush = d; }
 	public static void setGrowthMultiplierCamellia(double d){ GrowthMultiplierCamellia = d; }
@@ -157,9 +146,6 @@ public abstract class TreeTileTask extends TileTask
 	public static double getGrowthMultiplierWalnut(){ return GrowthMultiplierWalnut; }
 	public static double getGrowthMultiplierFir(){ return GrowthMultiplierFir; }
 	public static double getGrowthMultiplierLinden(){ return GrowthMultiplierLinden; }
-	public static double getGrowthMultiplierNormal(){ return GrowthMultiplierNormal; }
-	public static double getGrowthMultiplierEnchanted(){ return GrowthMultiplierEnchanted; }
-	public static double getGrowthMultiplierMycelium(){ return GrowthMultiplierMycelium; }
 	public static double getGrowthMultiplierTree(){ return GrowthMultiplierTree; }
 	public static double getGrowthMultiplierBush(){ return GrowthMultiplierBush; }
 	public static double getGrowthMultiplierCamellia(){ return GrowthMultiplierCamellia; }

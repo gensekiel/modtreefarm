@@ -19,13 +19,16 @@ public class HedgeTask extends AbstractTask
 	private int type;
 	private int age;
 //======================================================================
-	private static boolean keepGrowing = false;
-	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
-	public static boolean getKeepGrowing(){ return keepGrowing; }
+	private static double growthMultiplier = 1.0;
+	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
+	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
 	public HedgeTask(Fence fence, double multiplier)
 	{
 		super(multiplier);
+		
+		tasktime *= growthMultiplier;
+		
 		key = fence.getId();
 		zoneID = fence.getZoneId();
 		x = fence.getTileX();
@@ -63,7 +66,7 @@ public class HedgeTask extends AbstractTask
 	{
 		VolaTile vtile = getVolaTile(zoneID, x, y);
 		Fence fence = getFence(vtile, key);
-		if(fence != null){ 
+		if(fence != null){
 			forceHedgeGrowth(fence, vtile);
 			if(canGrow(fence) && keepGrowing) return false;
 		}
