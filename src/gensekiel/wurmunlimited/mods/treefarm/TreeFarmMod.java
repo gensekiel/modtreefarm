@@ -27,6 +27,7 @@ public class TreeFarmMod implements
 	private static boolean allowHedges = true;
 	private static boolean allowGrass = true;
 	private static boolean augmentExamine = true;
+	private static boolean debug = false;
 //======================================================================
 	@Override
 	public void onServerStarted()
@@ -39,39 +40,24 @@ public class TreeFarmMod implements
 		if(kelpreed)       kelpreedaction.registerAction();
 		if(augmentExamine) ModActions.registerAction(new ExamineAction());
 		
-		boolean debug = true;
 		if(debug){
 			WateringAction wa2 = new WateringAction("Water (debug)");
 			FertilizingAction fa2 = new FertilizingAction("Fertilize (debug)");
 			HedgeAction ha2 = new HedgeAction("Water (debug)");
 			GrassGrowAction ga2 = new GrassGrowAction("Water (debug)");
-			KelpReedGrowAction kra2 = new KelpReedGrowAction("Fertilize (debug)");
+			KelpReedGrowAction kr2 = new KelpReedGrowAction("Fertilize (debug)");
 	
-			wa2.setCost(0);
-			wa2.setTime(0);
-			wa2.setItem(0);
-	
-			fa2.setCost(0);
-			fa2.setTime(0);
-			fa2.setItem(0);
-
-			ha2.setCost(0);
-			ha2.setTime(0);
-			ha2.setItem(0);
-
-			ga2.setCost(0);
-			ga2.setTime(0);
-			ga2.setItem(0);
-
-			kra2.setCost(0);
-			kra2.setTime(0);
-			kra2.setItem(0);
+			wa2.setCost(0); wa2.setTime(0); wa2.setItem(0);
+			fa2.setCost(0); fa2.setTime(0); fa2.setItem(0);
+			ha2.setCost(0); ha2.setTime(0); ha2.setItem(0);
+			ga2.setCost(0); ga2.setTime(0); ga2.setItem(0);
+			kr2.setCost(0); kr2.setTime(0); kr2.setItem(0);
 
 			wa2.registerAction();
 			fa2.registerAction();
 			ha2.registerAction();
 			ga2.registerAction();
-			kra2.registerAction();
+			kr2.registerAction();
 				
 			HedgePollAction hpa = new HedgePollAction();
 			hpa.registerAction();
@@ -112,6 +98,7 @@ public class TreeFarmMod implements
 	@Override
 	public void configure(Properties properties)
 	{
+		debug = getOption("Debug", debug, properties);
 		allowGrow = getOption("AllowGrow", allowGrow, properties);
 		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
 		allowHedges = getOption("AllowHedges", allowHedges, properties);
