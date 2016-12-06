@@ -184,6 +184,34 @@ public class Hooks
 		}
 	}
 //======================================================================
+	public static void registerGrassProtectionHook()
+	{
+		try{
+			String desc = Descriptor.ofMethod(CtPrimitiveType.voidType, new CtClass[]{
+				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType, 
+				CtPrimitiveType.byteType, CtPrimitiveType.byteType, CtPrimitiveType.booleanType});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForGrassGrowth", desc, new InvocationHandlerFactory(){
+				@Override
+				public InvocationHandler createInvocationHandler(){
+					return new InvocationHandler(){
+						@Override
+						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
+							AbstractTask task = TaskPoller.containsTaskFor(TileTask.getTaskKey((int)args[1], (int)args[2]));
+							if(task != null){
+								logger.log(Level.WARNING, "Server poll prevented: checkForGrassGrowth");
+								return null;
+							}
+							return method.invoke(object, args);
+						}
+					};
+				}
+			});
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Grass protection hook failed. Exception: " + e);
+		}
+	}
+//======================================================================
 	public static void registerHedgeProtectionHook()
 	{
 		try{

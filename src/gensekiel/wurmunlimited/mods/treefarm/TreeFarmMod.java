@@ -93,7 +93,7 @@ public class TreeFarmMod implements
 	@Override
 	public void init()
 	{
-		if(TreeGrowTask.getUseOriginalGrowthFunction()){
+		if(AbstractTask.getUseOriginalGrowthFunction()){
 			Hooks.injectTreeGrowthWrapper();
 			Hooks.injectGrassGrowthWrapper();
 		}
@@ -105,6 +105,7 @@ public class TreeFarmMod implements
 		if(TaskPoller.getProtectTasks()){
 			Hooks.registerTreeProtectionHook();
 			Hooks.registerHedgeProtectionHook();
+			Hooks.registerGrassProtectionHook();
 		}
 	}
 //======================================================================
