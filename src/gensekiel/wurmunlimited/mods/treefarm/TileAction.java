@@ -33,9 +33,6 @@ public abstract class TileAction extends AbstractAction
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
-		if(!allowTrees && TileTask.getTile(rawtile).isTree()) return null;
-		if(!allowBushes && TileTask.getTile(rawtile).isBush()) return null;
-
 		if(   checkTileType(rawtile)
 			&& performer instanceof Player)
 		{

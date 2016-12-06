@@ -1,5 +1,8 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
 import com.wurmonline.mesh.GrassData;
@@ -15,11 +18,17 @@ public class GrassGrowAction extends TileAction
 //======================================================================
 	public GrassGrowAction(String s)
 	{
-		super(s, "water", "watering", "Watering");
-		
+		this(s, "water", "watering", "Watering");
+
+		item = ItemList.water;
+	}
+//======================================================================
+	protected GrassGrowAction(String s1, String s2, String s3, String s4)
+	{
+		super(s1, s2, s3, s4);
+
 		cost = 5000;
 		time = 30;
-		item = ItemList.water;
 		skill = 10045;
 	}
 //======================================================================
@@ -46,8 +55,8 @@ public class GrassGrowAction extends TileAction
 	@Override
 	protected boolean checkTileType(int rawtile)
 	{
-		byte data = Tiles.decodeData(rawtile);
-		return (GrassGrowTask.checkTileType(rawtile) && GrassData.GrassType.decodeTileData(data).getType() == 0 );
+		byte type = Tiles.decodeType(rawtile);
+		return (GrassGrowTask.checkTileType(rawtile) && type == Tiles.Tile.TILE_GRASS.id );
 	}
 //======================================================================
 }

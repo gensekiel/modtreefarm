@@ -39,8 +39,7 @@ public class GrassGrowTask extends GrassTileTask
 //======================================================================
 	public static boolean checkTileType(int rawtile)
 	{
-		Tiles.Tile tt = getTile(rawtile);
-		return ( tt.isGrass() );
+		return getTile(rawtile).isGrass();
 	}
 //======================================================================
 	public byte getGrowthStage()

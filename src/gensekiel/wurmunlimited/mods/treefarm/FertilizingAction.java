@@ -63,6 +63,8 @@ public class FertilizingAction extends TileAction
 	@Override
 	protected boolean checkTileType(int rawtile)
 	{
+		if(!allowTrees && TileTask.getTile(rawtile).isTree()) return false;
+		if(!allowBushes && TileTask.getTile(rawtile).isBush()) return false;
 		return FruitTask.checkTileType(rawtile);
 	}
 //======================================================================

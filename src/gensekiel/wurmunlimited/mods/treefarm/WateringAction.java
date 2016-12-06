@@ -45,6 +45,8 @@ public class WateringAction extends TileAction
 	@Override
 	protected boolean checkTileType(int rawtile)
 	{
+		if(!allowTrees && TileTask.getTile(rawtile).isTree()) return false;
+		if(!allowBushes && TileTask.getTile(rawtile).isBush()) return false;
 		return TreeGrowTask.checkTileType(rawtile);
 	}
 //======================================================================
