@@ -75,6 +75,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 		actionId = (short)ModActions.getNextActionId();
 		actionEntry = ActionEntry.createEntry(actionId, menuEntry, actionVerbIng, new int[] {6, 48, 35});
 		ModActions.registerAction(actionEntry);
+		ModActions.registerAction(this);
 	}
 //======================================================================
 	@Override

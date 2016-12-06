@@ -31,17 +31,12 @@ public class TreeFarmMod implements
 	@Override
 	public void onServerStarted()
 	{
-		wateringaction.registerAction();
-		fertilizingaction.registerAction();
-		hedgeaction.registerAction();
-		grassaction.registerAction();
-		kelpreedaction.registerAction();
-		
-		if(allowGrow) ModActions.registerAction(wateringaction);
-		if(allowFertilize) ModActions.registerAction(fertilizingaction);
-		if(allowHedges) ModActions.registerAction(hedgeaction);
-		if(allowGrass) ModActions.registerAction(grassaction);
-		if(KelpReedGrowAction.getAllowReed() || KelpReedGrowAction.getAllowKelp()) ModActions.registerAction(kelpreedaction);
+		boolean kelpreed = (KelpReedGrowAction.getAllowReed() || KelpReedGrowAction.getAllowKelp());
+		if(allowGrow)      wateringaction.registerAction();
+		if(allowFertilize) fertilizingaction.registerAction();
+		if(allowHedges)    hedgeaction.registerAction();
+		if(allowGrass)     grassaction.registerAction();
+		if(kelpreed)       kelpreedaction.registerAction();
 		if(augmentExamine) ModActions.registerAction(new ExamineAction());
 		
 		boolean debug = true;
@@ -77,16 +72,9 @@ public class TreeFarmMod implements
 			ha2.registerAction();
 			ga2.registerAction();
 			kra2.registerAction();
-	
-			ModActions.registerAction(wa2);
-			ModActions.registerAction(fa2);
-			ModActions.registerAction(ha2);
-			ModActions.registerAction(ga2);
-			ModActions.registerAction(kra2);
-			
+				
 			HedgePollAction hpa = new HedgePollAction();
 			hpa.registerAction();
-			ModActions.registerAction(hpa);
 		}
 	}
 //======================================================================
