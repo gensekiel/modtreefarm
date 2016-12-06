@@ -22,23 +22,27 @@ public class TreeFarmMod implements
 	private static HedgeAction hedgeaction = new HedgeAction();
 	private static GrassGrowAction grassaction = new GrassGrowAction();
 	private static KelpReedGrowAction kelpreedaction = new KelpReedGrowAction();
+	private static ForageBotanizeAction foragebotanizeaction = new ForageBotanizeAction();
 	private static boolean allowGrow = true;
 	private static boolean allowFertilize = true;
 	private static boolean allowHedges = true;
 	private static boolean allowGrass = true;
+	private static boolean allowForageBotanize = true;
 	private static boolean augmentExamine = true;
 	private static boolean debug = false;
+	private static boolean useOriginalGrowthFunction = false;
 //======================================================================
 	@Override
 	public void onServerStarted()
 	{
 		boolean kelpreed = (KelpReedGrowAction.getAllowReed() || KelpReedGrowAction.getAllowKelp());
-		if(allowGrow)      wateringaction.registerAction();
-		if(allowFertilize) fertilizingaction.registerAction();
-		if(allowHedges)    hedgeaction.registerAction();
-		if(allowGrass)     grassaction.registerAction();
-		if(kelpreed)       kelpreedaction.registerAction();
-		if(augmentExamine) ModActions.registerAction(new ExamineAction());
+		if(allowGrow)           wateringaction.registerAction();
+		if(allowFertilize)      fertilizingaction.registerAction();
+		if(allowHedges)         hedgeaction.registerAction();
+		if(allowGrass)          grassaction.registerAction();
+		if(kelpreed)            kelpreedaction.registerAction();
+		if(allowForageBotanize) foragebotanizeaction.registerAction();
+		if(augmentExamine)      ModActions.registerAction(new ExamineAction());
 		
 		if(debug){
 			WateringAction wa2 = new WateringAction("Water (debug)");
@@ -46,19 +50,22 @@ public class TreeFarmMod implements
 			HedgeAction ha2 = new HedgeAction("Water (debug)");
 			GrassGrowAction ga2 = new GrassGrowAction("Water (debug)");
 			KelpReedGrowAction kr2 = new KelpReedGrowAction("Fertilize (debug)");
+			ForageBotanizeAction fb2 = new ForageBotanizeAction("Fertilize (debug)");
 	
 			wa2.setCost(0); wa2.setTime(0); wa2.setItem(0);
 			fa2.setCost(0); fa2.setTime(0); fa2.setItem(0);
 			ha2.setCost(0); ha2.setTime(0); ha2.setItem(0);
 			ga2.setCost(0); ga2.setTime(0); ga2.setItem(0);
 			kr2.setCost(0); kr2.setTime(0); kr2.setItem(0);
+			fb2.setCost(0); fb2.setTime(0); fb2.setItem(0);
 
 			wa2.registerAction();
 			fa2.registerAction();
 			ha2.registerAction();
 			ga2.registerAction();
 			kr2.registerAction();
-				
+			fb2.registerAction();
+			
 			HedgePollAction hpa = new HedgePollAction();
 			hpa.registerAction();
 		}
@@ -67,9 +74,10 @@ public class TreeFarmMod implements
 	@Override
 	public void init()
 	{
-		if(AbstractTask.getUseOriginalGrowthFunction()){
+		if(useOriginalGrowthFunction){
 			Hooks.injectTreeGrowthWrapper();
 			Hooks.injectGrassGrowthWrapper();
+			Hooks.injectSeedGrowthWrapper();
 		}
 		
 		Hooks.registerListLoadingHook();
@@ -80,6 +88,7 @@ public class TreeFarmMod implements
 			Hooks.registerTreeProtectionHook();
 			Hooks.registerHedgeProtectionHook();
 			Hooks.registerGrassProtectionHook();
+			Hooks.registerSeedProtectionHook();
 		}
 	}
 //======================================================================
@@ -103,6 +112,7 @@ public class TreeFarmMod implements
 		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
 		allowHedges = getOption("AllowHedges", allowHedges, properties);
 		allowGrass = getOption("AllowGrass", allowGrass, properties);
+		allowForageBotanize = getOption("AllowForageBotanize", allowForageBotanize, properties);
 		augmentExamine = getOption("StatusOnExamine", augmentExamine, properties);
 		
 		TileAction.setAllowTrees(getOption("AllowTrees", TileAction.getAllowTrees(), properties));
@@ -130,6 +140,11 @@ public class TreeFarmMod implements
 		fertilizingaction.setTime(getOption("FertilizingTime", fertilizingaction.getTime(), properties));
 		fertilizingaction.setItem(getOption("FertilizingItem", fertilizingaction.getItem(), properties));
 
+		useOriginalGrowthFunction = getOption("UseOriginalGrowthFunction", useOriginalGrowthFunction, properties);
+		TreeGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
+		GrassGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
+		ForageBotanizeTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
+
 		AbstractAction.setCostSkillMultiplier(getOption("CostSkillMultiplier", AbstractAction.getCostSkillMultiplier(), properties));
 		AbstractAction.setCostAgeMultiplier(getOption("CostAgeMultiplier", AbstractAction.getCostAgeMultiplier(), properties));
 		AbstractAction.setTimeSkillMultiplier(getOption("TimeSkillMultiplier", AbstractAction.getTimeSkillMultiplier(), properties));
@@ -153,7 +168,6 @@ public class TreeFarmMod implements
 
 		TreeGrowTask.setAgeLimit(getOption("AgeLimit", TreeGrowTask.getAgeLimit(), properties));
 		TreeGrowTask.setCheckForWUPoll(getOption("CheckForWUPoll", TreeGrowTask.getCheckForWUPoll(), properties));
-		TreeGrowTask.setUseOriginalGrowthFunction(getOption("UseOriginalGrowthFunction", TreeGrowTask.getUseOriginalGrowthFunction(), properties));
 		
 		AbstractTask.setBaseGrowthTime(getOption("BaseGrowthTime", AbstractTask.getBaseGrowthTime(), properties));
 		

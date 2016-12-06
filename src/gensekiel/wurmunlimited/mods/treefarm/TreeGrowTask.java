@@ -14,10 +14,14 @@ public class TreeGrowTask extends TreeTileTask
 	private static byte ageLimit = 15;
 	public static void setAgeLimit(byte b){ ageLimit = b; }
 	public static byte getAgeLimit(){ return ageLimit; }
-//======================================================================
+//----------------------------------------------------------------------
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
+//----------------------------------------------------------------------
+	protected static boolean useOriginalGrowthFunction = false;
+	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
+	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
 //======================================================================
 	public TreeGrowTask(int rawtile, int tilex, int tiley, double multiplier)
 	{

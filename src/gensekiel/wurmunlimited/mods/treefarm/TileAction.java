@@ -27,7 +27,7 @@ public abstract class TileAction extends AbstractAction
 	}
 //======================================================================
 	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier);
-	protected abstract boolean checkTileConditions(Creature performer, int rawtile);
+	protected abstract boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley);
 	protected abstract boolean checkTileType(int rawtile);
 //======================================================================
 	@Override
@@ -58,7 +58,7 @@ public abstract class TileAction extends AbstractAction
 			
 			if(counter == 1.0f){
 				if(!checkTileType(rawtile)) return true;
-				if(checkConditions) if(checkTileConditions(performer, rawtile)) return true;
+				if(checkConditions) if(checkTileConditions(performer, rawtile, tilex, tiley)) return true;
 				if(checkIfPolled) if(checkStatus(performer, TreeTileTask.getTaskKey(tilex, tiley))) return true;
 
 				if(item != 0) if(checkItem(performer, source, tilename, actioncost)) return true;

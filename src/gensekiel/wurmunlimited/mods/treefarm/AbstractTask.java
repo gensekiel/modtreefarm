@@ -2,6 +2,11 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import java.io.Serializable;
 
+import com.wurmonline.server.zones.NoSuchZoneException;
+import com.wurmonline.server.zones.VolaTile;
+import com.wurmonline.server.zones.Zone;
+import com.wurmonline.server.zones.Zones;
+
 public abstract class AbstractTask implements Serializable
 {
 	private static final long serialVersionUID = 3L;
@@ -9,10 +14,6 @@ public abstract class AbstractTask implements Serializable
 	protected static boolean checkForWUPoll = true;
 	public static void setCheckForWUPoll(boolean b){ checkForWUPoll = b; }
 	public static boolean getCheckForWUPoll(){ return checkForWUPoll; }
-//----------------------------------------------------------------------
-	protected static boolean useOriginalGrowthFunction = false;
-	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
-	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
 //----------------------------------------------------------------------
 	protected static boolean keepGrowing = false;
 	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
@@ -42,4 +43,24 @@ public abstract class AbstractTask implements Serializable
 		timestamp = System.currentTimeMillis();
 	}
 //======================================================================
+	public static VolaTile getVolaTile(int zoneID, int x, int y)
+	{
+		VolaTile vtile = null;
+		try{
+			Zone zone = Zones.getZone(zoneID);
+			vtile = zone.getTileOrNull(x, y);
+		}
+		catch(NoSuchZoneException nsze){ /* oops */ }
+		return vtile;
+	}
+//======================================================================
+	public static VolaTile getVolaTile(int tilex, int tiley){
+		VolaTile vtile = null;
+		try{
+			Zone zone = Zones.getZone(tilex, tiley, true);
+			vtile = zone.getTileOrNull(tilex, tiley);
+		}
+		catch(NoSuchZoneException nsze){ /* oops */ }
+		return vtile;
+	}
 }

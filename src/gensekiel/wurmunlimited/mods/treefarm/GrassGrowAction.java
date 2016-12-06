@@ -1,11 +1,7 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
-import com.wurmonline.mesh.GrassData;
 import com.wurmonline.mesh.Tiles;
 
 public class GrassGrowAction extends TileAction
@@ -33,7 +29,7 @@ public class GrassGrowAction extends TileAction
 	}
 //======================================================================
 	@Override
-	protected boolean checkTileConditions(Creature performer, int rawtile)
+	protected boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley)
 	{
 		byte data = Tiles.decodeData(rawtile);
 		byte age = GrassGrowTask.getGrowthStage(data);

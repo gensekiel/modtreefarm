@@ -23,7 +23,7 @@ public class WateringAction extends TileAction
 	}
 //======================================================================
 	@Override
-	protected boolean checkTileConditions(Creature performer, int rawtile)
+	protected boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley)
 	{
 		byte data = Tiles.decodeData(rawtile);
 		int age = TreeTileTask.getAge(data);

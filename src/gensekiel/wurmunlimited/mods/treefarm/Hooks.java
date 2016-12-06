@@ -89,6 +89,40 @@ public class Hooks
 		}
 	}
 //======================================================================
+	private static String seed_wrapper_code = ""
+	+ "public static void wrap_checkForSeedGrowth("
+	+ "   int tile, int tilex, int tiley)"
+	+ "{"
+	+ "   logger.log(Level.INFO, \"Injected method entered.\");"
+	+ "   boolean pollingSurface_old = pollingSurface;"
+	+ "   MeshIO currentMesh_old = currentMesh;"
+	+ "   pollingSurface = true;"
+	+ "   currentMesh = Server.surfaceMesh;"
+	+ ""
+	+ "   checkForSeedGrowth(tile, tilex, tiley);"
+	+ ""
+	+ "   pollingSurface = pollingSurface_old;"
+	+ "   currentMesh = currentMesh_old;"
+	+ "   logger.log(Level.INFO, \"Injected method left.\");"
+	+ "}";
+//======================================================================
+	public static void injectSeedGrowthWrapper()
+	{
+		try{
+			ClassPool pool = ClassPool.getDefault();
+			pool.importPackage("java.util.logging");
+			pool.importPackage("com.wurmonline.mesh");
+			pool.importPackage("com.wurmonline.server");
+			CtClass ctclass = pool.get("com.wurmonline.server.zones.TilePoller");
+			CtMethod wrapper_method = CtNewMethod.make(seed_wrapper_code, ctclass);
+			ctclass.addMethod(wrapper_method);
+			logger.log(Level.INFO, "Seed growth wrapper method injected.");
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Seed growth wrapper injection failed. Falling back to builtin growth function. Exception: " + e);
+			ForageBotanizeTask.setUseOriginalGrowthFunction(false);
+		}
+	}
+//======================================================================
 	public static void registerListLoadingHook()
 	{
 		// We need the server paths to be set properly before initializing
@@ -209,6 +243,33 @@ public class Hooks
 			});
 		}catch(Exception e){
 			logger.log(Level.WARNING, "Grass protection hook failed. Exception: " + e);
+		}
+	}
+//======================================================================
+	public static void registerSeedProtectionHook()
+	{
+		try{
+			String desc = Descriptor.ofMethod(CtPrimitiveType.voidType, new CtClass[]{
+				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForSeedGrowth", desc, new InvocationHandlerFactory(){
+				@Override
+				public InvocationHandler createInvocationHandler(){
+					return new InvocationHandler(){
+						@Override
+						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
+							AbstractTask task = TaskPoller.containsTaskFor(TileTask.getTaskKey((int)args[1], (int)args[2]));
+							if(task != null){
+								logger.log(Level.WARNING, "Server poll prevented: checkForSeedGrowth");
+								return null;
+							}
+							return method.invoke(object, args);
+						}
+					};
+				}
+			});
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Seed protection hook failed. Exception: " + e);
 		}
 	}
 //======================================================================

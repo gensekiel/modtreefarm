@@ -3,10 +3,7 @@ package gensekiel.wurmunlimited.mods.treefarm;
 import java.io.IOException;
 
 import com.wurmonline.server.structures.Fence;
-import com.wurmonline.server.zones.NoSuchZoneException;
 import com.wurmonline.server.zones.VolaTile;
-import com.wurmonline.server.zones.Zone;
-import com.wurmonline.server.zones.Zones;
 
 public class HedgeTask extends AbstractTask
 {
@@ -85,17 +82,6 @@ public class HedgeTask extends AbstractTask
 		Fence fence = getFence();
 		if(fence == null) return "This hedge has been watered recently.";
 		return "This " + fence.getName() + " has been watered recently.";
-	}
-//======================================================================
-	public static VolaTile getVolaTile(int zoneID, int x, int y)
-	{
-		VolaTile vtile = null;
-		try{
-			Zone zone = Zones.getZone(zoneID);
-			vtile = zone.getTileOrNull(x, y);
-		}
-		catch(NoSuchZoneException nsze){ /* oops */ }
-		return vtile;
 	}
 //======================================================================
 	public Fence getFence()

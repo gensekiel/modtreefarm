@@ -15,10 +15,14 @@ public class GrassGrowTask extends GrassTileTask
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
-//======================================================================
+//----------------------------------------------------------------------
 	private static double[] GrowthMultiplierAge = {1.0, 1.1, 1.2};
 	public static void setGrowthMultiplierAge(int age, double d){ GrowthMultiplierAge[age] = d; }
 	public static double getGrowthMultiplierAge(int age){ return GrowthMultiplierAge[age]; }
+//----------------------------------------------------------------------
+	protected static boolean useOriginalGrowthFunction = false;
+	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
+	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
 //======================================================================
 	public GrassGrowTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
