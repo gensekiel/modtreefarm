@@ -32,7 +32,8 @@ public class ForageBotanizeTask extends GrassTileTask
 	}
 //======================================================================
 	@Override
-	public boolean performCheck() {
+	public boolean performCheck()
+	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 		Tiles.Tile ttile = getTile(rawtile);
 		
@@ -53,7 +54,8 @@ public class ForageBotanizeTask extends GrassTileTask
 	}
 //======================================================================
 	@Override
-	public boolean performTask() {
+	public boolean performTask()
+	{
 		if(useOriginalGrowthFunction)
 			callSeedGrowthWrapper(tile, x, y);
 		else
@@ -62,9 +64,10 @@ public class ForageBotanizeTask extends GrassTileTask
 	}
 //======================================================================
 	@Override
-	public String getDescription(){
+	public String getDescription()
+	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
-		return "This " + getTileName(rawtile) + " has been fertilized recently.";
+		return "This " + getTileName(rawtile) + "'s ground has been fertilized recently.";
 	}
 //======================================================================
 	private void callSeedGrowthWrapper(int rawtile, int tilex, int tiley)

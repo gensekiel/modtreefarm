@@ -89,6 +89,40 @@ public class Hooks
 		}
 	}
 //======================================================================
+	private static String treegrass_wrapper_code = ""
+	+ "public static void wrap_checkForTreeGrassGrowth("
+	+ "   int tile, int tilex, int tiley, byte type, byte aData)"
+	+ "{"
+	+ "   logger.log(Level.INFO, \"Injected method entered.\");"
+	+ "   boolean pollingSurface_old = pollingSurface;"
+	+ "   MeshIO currentMesh_old = currentMesh;"
+	+ "   pollingSurface = true;"
+	+ "   currentMesh = Server.surfaceMesh;"
+	+ ""
+	+ "   checkForGrassGrowth(tile, tilex, tiley, type, aData, andflowers);"
+	+ ""
+	+ "   pollingSurface = pollingSurface_old;"
+	+ "   currentMesh = currentMesh_old;"
+	+ "   logger.log(Level.INFO, \"Injected method left.\");"
+	+ "}";
+//======================================================================
+	public static void injectTreeGrassGrowthWrapper()
+	{
+		try{
+			ClassPool pool = ClassPool.getDefault();
+			pool.importPackage("java.util.logging");
+			pool.importPackage("com.wurmonline.mesh");
+			pool.importPackage("com.wurmonline.server");
+			CtClass ctclass = pool.get("com.wurmonline.server.zones.TilePoller");
+			CtMethod wrapper_method = CtNewMethod.make(treegrass_wrapper_code, ctclass);
+			ctclass.addMethod(wrapper_method);
+			logger.log(Level.INFO, "Tree grass growth wrapper method injected.");
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Tree grass growth wrapper injection failed. Falling back to builtin growth function. Exception: " + e);
+			TreeGrassTask.setUseOriginalGrowthFunction(false);
+		}
+	}
+//======================================================================
 	private static String seed_wrapper_code = ""
 	+ "public static void wrap_checkForSeedGrowth("
 	+ "   int tile, int tilex, int tiley)"
@@ -221,7 +255,7 @@ public class Hooks
 	public static void registerGrassProtectionHook()
 	{
 		try{
-			String desc = Descriptor.ofMethod(CtPrimitiveType.voidType, new CtClass[]{
+			String desc = Descriptor.ofMethod(CtPrimitiveType.booleanType, new CtClass[]{
 				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType, 
 				CtPrimitiveType.byteType, CtPrimitiveType.byteType, CtPrimitiveType.booleanType});
 			
@@ -234,7 +268,7 @@ public class Hooks
 							AbstractTask task = TaskPoller.containsTaskFor(TileTask.getTaskKey((int)args[1], (int)args[2]));
 							if(task != null){
 								logger.log(Level.WARNING, "Server poll prevented: checkForGrassGrowth");
-								return null;
+								return false;
 							}
 							return method.invoke(object, args);
 						}
@@ -246,10 +280,38 @@ public class Hooks
 		}
 	}
 //======================================================================
+	public static void registerTreeGrassProtectionHook()
+	{
+		try{
+			String desc = Descriptor.ofMethod(CtPrimitiveType.booleanType, new CtClass[]{
+				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType, 
+				CtPrimitiveType.byteType, CtPrimitiveType.byteType});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForTreeGrassGrowth", desc, new InvocationHandlerFactory(){
+				@Override
+				public InvocationHandler createInvocationHandler(){
+					return new InvocationHandler(){
+						@Override
+						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
+							AbstractTask task = TaskPoller.containsTaskFor(TileTask.getTaskKey((int)args[1], (int)args[2]));
+							if(task != null){
+								logger.log(Level.WARNING, "Server poll prevented: checkForTreeGrassGrowth");
+								return false;
+							}
+							return method.invoke(object, args);
+						}
+					};
+				}
+			});
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Tree grass protection hook failed. Exception: " + e);
+		}
+	}
+//======================================================================
 	public static void registerSeedProtectionHook()
 	{
 		try{
-			String desc = Descriptor.ofMethod(CtPrimitiveType.voidType, new CtClass[]{
+			String desc = Descriptor.ofMethod(CtPrimitiveType.booleanType, new CtClass[]{
 				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType});
 			
 			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForSeedGrowth", desc, new InvocationHandlerFactory(){
@@ -261,7 +323,7 @@ public class Hooks
 							AbstractTask task = TaskPoller.containsTaskFor(TileTask.getTaskKey((int)args[1], (int)args[2]));
 							if(task != null){
 								logger.log(Level.WARNING, "Server poll prevented: checkForSeedGrowth");
-								return null;
+								return false;
 							}
 							return method.invoke(object, args);
 						}

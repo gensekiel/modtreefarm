@@ -21,6 +21,7 @@ public class TreeFarmMod implements
 	private static FertilizingAction fertilizingaction = new FertilizingAction();
 	private static HedgeAction hedgeaction = new HedgeAction();
 	private static GrassGrowAction grassaction = new GrassGrowAction();
+	private static TreeGrassAction treegrassaction = new TreeGrassAction();
 	private static KelpReedGrowAction kelpreedaction = new KelpReedGrowAction();
 	private static ForageBotanizeAction foragebotanizeaction = new ForageBotanizeAction();
 	private static boolean allowGrow = true;
@@ -40,6 +41,7 @@ public class TreeFarmMod implements
 		if(allowFertilize)      fertilizingaction.registerAction();
 		if(allowHedges)         hedgeaction.registerAction();
 		if(allowGrass)          grassaction.registerAction();
+		if(allowGrass)          treegrassaction.registerAction();
 		if(kelpreed)            kelpreedaction.registerAction();
 		if(allowForageBotanize) foragebotanizeaction.registerAction();
 		if(augmentExamine)      ModActions.registerAction(new ExamineAction());
@@ -49,13 +51,15 @@ public class TreeFarmMod implements
 			FertilizingAction fa2 = new FertilizingAction("Fertilize (debug)");
 			HedgeAction ha2 = new HedgeAction("Water (debug)");
 			GrassGrowAction ga2 = new GrassGrowAction("Water (debug)");
+			TreeGrassAction tg2 = new TreeGrassAction("Water ground (debug)");
 			KelpReedGrowAction kr2 = new KelpReedGrowAction("Fertilize (debug)");
-			ForageBotanizeAction fb2 = new ForageBotanizeAction("Fertilize (debug)");
+			ForageBotanizeAction fb2 = new ForageBotanizeAction("Fertilize ground (debug)");
 	
 			wa2.setCost(0); wa2.setTime(0); wa2.setItem(0);
 			fa2.setCost(0); fa2.setTime(0); fa2.setItem(0);
 			ha2.setCost(0); ha2.setTime(0); ha2.setItem(0);
 			ga2.setCost(0); ga2.setTime(0); ga2.setItem(0);
+			tg2.setCost(0); tg2.setTime(0); tg2.setItem(0);
 			kr2.setCost(0); kr2.setTime(0); kr2.setItem(0);
 			fb2.setCost(0); fb2.setTime(0); fb2.setItem(0);
 
@@ -63,6 +67,7 @@ public class TreeFarmMod implements
 			fa2.registerAction();
 			ha2.registerAction();
 			ga2.registerAction();
+			tg2.registerAction();
 			kr2.registerAction();
 			fb2.registerAction();
 			
@@ -77,6 +82,7 @@ public class TreeFarmMod implements
 		if(useOriginalGrowthFunction){
 			Hooks.injectTreeGrowthWrapper();
 			Hooks.injectGrassGrowthWrapper();
+			Hooks.injectTreeGrassGrowthWrapper();
 			Hooks.injectSeedGrowthWrapper();
 		}
 		
@@ -88,6 +94,7 @@ public class TreeFarmMod implements
 			Hooks.registerTreeProtectionHook();
 			Hooks.registerHedgeProtectionHook();
 			Hooks.registerGrassProtectionHook();
+			Hooks.registerTreeGrassProtectionHook();
 			Hooks.registerSeedProtectionHook();
 		}
 	}
@@ -131,6 +138,10 @@ public class TreeFarmMod implements
 		grassaction.setCost(getOption("WateringCost", grassaction.getCost(), properties));
 		grassaction.setTime(getOption("WateringTime", grassaction.getTime(), properties));
 		grassaction.setItem(getOption("WateringItem", grassaction.getItem(), properties));
+
+		treegrassaction.setCost(getOption("WateringCost", treegrassaction.getCost(), properties));
+		treegrassaction.setTime(getOption("WateringTime", treegrassaction.getTime(), properties));
+		treegrassaction.setItem(getOption("WateringItem", treegrassaction.getItem(), properties));
 
 		kelpreedaction.setCost(getOption("FertilizingCost", kelpreedaction.getCost(), properties));
 		kelpreedaction.setTime(getOption("FertilizingTime", kelpreedaction.getTime(), properties));

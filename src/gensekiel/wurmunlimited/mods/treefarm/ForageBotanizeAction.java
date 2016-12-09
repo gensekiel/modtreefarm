@@ -10,7 +10,7 @@ public class ForageBotanizeAction extends TileAction
 //======================================================================
 	public ForageBotanizeAction()
 	{
-		this("Fertilize");
+		this("Fertilize ground");
 	}
 //======================================================================
 	public ForageBotanizeAction(String s)
