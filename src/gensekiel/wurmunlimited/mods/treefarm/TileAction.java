@@ -11,6 +11,7 @@ import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.players.Player;
 import com.wurmonline.server.skills.Skill;
+import com.wurmonline.server.zones.Zones;
 
 public abstract class TileAction extends AbstractAction
 {
@@ -33,6 +34,8 @@ public abstract class TileAction extends AbstractAction
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
+		if(obeyProtection && Zones.protectedTiles[tilex][tiley]) return null;
+		
 		if(   checkTileType(rawtile)
 			&& performer instanceof Player)
 		{

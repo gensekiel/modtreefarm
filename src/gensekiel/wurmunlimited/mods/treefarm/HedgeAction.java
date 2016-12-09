@@ -11,6 +11,7 @@ import com.wurmonline.server.items.Item;
 import com.wurmonline.server.items.ItemList;
 import com.wurmonline.server.skills.Skill;
 import com.wurmonline.server.structures.Fence;
+import com.wurmonline.server.zones.Zones;
 
 public class HedgeAction extends AbstractAction
 {
@@ -57,6 +58,8 @@ public class HedgeAction extends AbstractAction
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Fence fence)
 	{
+		if(obeyProtection && Zones.protectedTiles[fence.getTileX()][fence.getTileY()]) return null;
+		
 		if(fence.isHedge() && fence.isFinished()){
 			return Arrays.asList(actionEntry);
 		}

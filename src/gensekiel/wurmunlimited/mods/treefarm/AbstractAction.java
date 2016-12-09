@@ -24,14 +24,15 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	protected int time;
 	protected int item;
 	protected int skill;
-	protected static boolean checkIfPolled;
-	protected static boolean checkConditions;
-	protected static double costSkillMultiplier;
-	protected static double costAgeMultiplier;
-	protected static double timeSkillMultiplier;
-	protected static double growthTimeQualityMultiplier;
-	protected static double growthTimeSkillMultiplier;
-	protected static boolean gainSkill;
+	protected static boolean checkIfPolled = true;
+	protected static boolean checkConditions = true;
+	protected static double costSkillMultiplier = 1.0;
+	protected static double costAgeMultiplier = 1.0;
+	protected static double timeSkillMultiplier = 1.0;
+	protected static double growthTimeQualityMultiplier = 1.0;
+	protected static double growthTimeSkillMultiplier = 1.0;
+	protected static boolean gainSkill = true;
+	protected static boolean obeyProtection = true;
 //======================================================================
 	protected String menuEntry;
 	protected String actionVerb;
@@ -49,6 +50,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public static void setGrowthTimeQualityMultiplier(double d){ growthTimeQualityMultiplier = d; }
 	public static void setGrowthTimeSkillMultiplier(double d){ growthTimeSkillMultiplier = d; }
 	public static void setGainSkill(boolean b){ gainSkill = b; }
+	public static void setObeyProtection(boolean b){ obeyProtection = b; }
 //======================================================================
 	public int getCost(){ return cost; }
 	public int getTime(){ return time; }
@@ -61,6 +63,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public static double getGrowthTimeQualityMultiplier(){ return growthTimeQualityMultiplier; }
 	public static double getGrowthTimeSkillMultiplier(){ return growthTimeSkillMultiplier; }
 	public static boolean getGainSkill(){ return gainSkill; }
+	public static boolean getObeyProtection(){ return obeyProtection; }
 //======================================================================
 	protected AbstractAction(String menu, String verb, String verbing, String desc)
 	{

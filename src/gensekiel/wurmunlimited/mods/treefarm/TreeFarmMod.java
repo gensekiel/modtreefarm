@@ -121,7 +121,9 @@ public class TreeFarmMod implements
 		allowGrass = getOption("AllowGrass", allowGrass, properties);
 		allowForageBotanize = getOption("AllowForageBotanize", allowForageBotanize, properties);
 		augmentExamine = getOption("StatusOnExamine", augmentExamine, properties);
-		
+
+		AbstractAction.setObeyProtection(getOption("ObeyProtection", AbstractAction.getObeyProtection(), properties));
+
 		TileAction.setAllowTrees(getOption("AllowTrees", TileAction.getAllowTrees(), properties));
 		TileAction.setAllowBushes(getOption("AllowBushes", TileAction.getAllowBushes(), properties));
 		KelpReedGrowAction.setAllowReed(getOption("AllowReed", KelpReedGrowAction.getAllowReed(), properties));
