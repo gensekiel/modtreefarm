@@ -25,10 +25,10 @@ public class TreeFarmMod implements
 	private static KelpReedGrowAction kelpreedaction = new KelpReedGrowAction();
 	private static ForageBotanizeAction foragebotanizeaction = new ForageBotanizeAction();
 	private static boolean allowGrow = true;
-	private static boolean allowFertilize = true;
+	private static boolean allowFert = true;
 	private static boolean allowHedges = true;
 	private static boolean allowGrass = true;
-	private static boolean allowForageBotanize = true;
+	private static boolean allowFandB = true;
 	private static boolean augmentExamine = true;
 	private static boolean debug = false;
 	private static boolean useOriginalGrowthFunction = false;
@@ -37,14 +37,15 @@ public class TreeFarmMod implements
 	public void onServerStarted()
 	{
 		boolean kelpreed = (KelpReedGrowAction.getAllowReed() || KelpReedGrowAction.getAllowKelp());
-		if(allowGrow)           wateringaction.registerAction();
-		if(allowFertilize)      fertilizingaction.registerAction();
-		if(allowHedges)         hedgeaction.registerAction();
-		if(allowGrass)          grassaction.registerAction();
-		if(allowGrass)          treegrassaction.registerAction();
-		if(kelpreed)            kelpreedaction.registerAction();
-		if(allowForageBotanize) foragebotanizeaction.registerAction();
-		if(augmentExamine)      ModActions.registerAction(new ExamineAction());
+		boolean treebush = (TileAction.getAllowTrees() || TileAction.getAllowBushes());
+		if(allowGrow && treebush)    wateringaction.registerAction();
+		if(allowFert && treebush)    fertilizingaction.registerAction();
+		if(allowGrow && allowHedges) hedgeaction.registerAction();
+		if(allowGrow && allowGrass)  grassaction.registerAction();
+		if(allowGrow && allowGrass)  treegrassaction.registerAction();
+		if(allowGrow && kelpreed)    kelpreedaction.registerAction();
+		if(allowFert && allowFandB)  foragebotanizeaction.registerAction();
+		if(augmentExamine)           ModActions.registerAction(new ExamineAction());
 		
 		if(debug){
 			WateringAction wa2 = new WateringAction("Water (debug)");
@@ -116,10 +117,10 @@ public class TreeFarmMod implements
 	{
 		debug = getOption("Debug", debug, properties);
 		allowGrow = getOption("AllowGrow", allowGrow, properties);
-		allowFertilize = getOption("AllowFertilize", allowFertilize, properties);
+		allowFert = getOption("AllowFertilize", allowFert, properties);
 		allowHedges = getOption("AllowHedges", allowHedges, properties);
 		allowGrass = getOption("AllowGrass", allowGrass, properties);
-		allowForageBotanize = getOption("AllowForageBotanize", allowForageBotanize, properties);
+		allowFandB = getOption("AllowForageBotanize", allowFandB, properties);
 		augmentExamine = getOption("StatusOnExamine", augmentExamine, properties);
 
 		AbstractAction.setObeyProtection(getOption("ObeyProtection", AbstractAction.getObeyProtection(), properties));
@@ -156,13 +157,14 @@ public class TreeFarmMod implements
 		useOriginalGrowthFunction = getOption("UseOriginalGrowthFunction", useOriginalGrowthFunction, properties);
 		TreeGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
 		GrassGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
+		TreeGrassTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
 		ForageBotanizeTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
 
 		AbstractAction.setCostSkillMultiplier(getOption("CostSkillMultiplier", AbstractAction.getCostSkillMultiplier(), properties));
 		AbstractAction.setCostAgeMultiplier(getOption("CostAgeMultiplier", AbstractAction.getCostAgeMultiplier(), properties));
-		AbstractAction.setTimeSkillMultiplier(getOption("TimeSkillMultiplier", AbstractAction.getTimeSkillMultiplier(), properties));
-		AbstractAction.setGrowthTimeQualityMultiplier(getOption("GrowthTimeQualityMultiplier", AbstractAction.getGrowthTimeQualityMultiplier(), properties));
-		AbstractAction.setGrowthTimeSkillMultiplier(getOption("GrowthTimeSkillMultiplier", AbstractAction.getGrowthTimeSkillMultiplier(), properties));
+		AbstractAction.setTimeSkillMultiplier(getOption("ActionTimeSkillMultiplier", AbstractAction.getTimeSkillMultiplier(), properties));
+		AbstractAction.setGrowthTimeQualityMultiplier(getOption("TimeQualityMultiplier", AbstractAction.getGrowthTimeQualityMultiplier(), properties));
+		AbstractAction.setGrowthTimeSkillMultiplier(getOption("TimeSkillMultiplier", AbstractAction.getGrowthTimeSkillMultiplier(), properties));
 		AbstractAction.setGainSkill(getOption("GainSkill", AbstractAction.getGainSkill(), properties));
 
 		AbstractAction.setCheckIfPolled(getOption("CheckIfPolled", AbstractAction.getCheckIfPolled(), properties));
@@ -174,54 +176,52 @@ public class TreeFarmMod implements
 		TaskPoller.setPreserveList(getOption("PreserveList", TaskPoller.getPreserveList(), properties));
 		TaskPoller.setProtectTasks(getOption("ProtectTasks", TaskPoller.getProtectTasks(), properties));
 
-		boolean keepgrowing = getOption("KeepGrowing", TreeGrowTask.getKeepGrowing(), properties);
-		TreeGrowTask.setKeepGrowing(keepgrowing);
-		HedgeTask.setKeepGrowing(keepgrowing);
-		GrassGrowTask.setKeepGrowing(keepgrowing);
+		AbstractTask.setKeepGrowing(getOption("KeepGrowing", AbstractTask.getKeepGrowing(), properties));
+		AbstractTask.setCheckForWUPoll(getOption("CheckForWUPoll", AbstractTask.getCheckForWUPoll(), properties));
+		AbstractTask.setBaseGrowthTime(getOption("BaseTaskTime", AbstractTask.getBaseGrowthTime(), properties));
 
 		TreeGrowTask.setAgeLimit(getOption("AgeLimit", TreeGrowTask.getAgeLimit(), properties));
-		TreeGrowTask.setCheckForWUPoll(getOption("CheckForWUPoll", TreeGrowTask.getCheckForWUPoll(), properties));
-		
-		AbstractTask.setBaseGrowthTime(getOption("BaseGrowthTime", AbstractTask.getBaseGrowthTime(), properties));
-		
-		double growthMultiplierGrow = getOption("GrowthMultiplierGrow",  TreeGrowTask .getGrowthMultiplier(), properties);
+
+		double growthMultiplierGrow = getOption("TimeMultiplierGrow", 1.0, properties);
 		TreeGrowTask .setGrowthMultiplier(growthMultiplierGrow);
-		GrassGrowTask .setGrowthMultiplier(growthMultiplierGrow);
-		FruitTask.setGrowthMultiplier(getOption("GrowthMultiplierFruit", FruitTask.getGrowthMultiplier(), properties));
+		GrassGrowTask.setGrowthMultiplier(growthMultiplierGrow);
+		TreeGrassTask.setGrowthMultiplier(growthMultiplierGrow);
 
-		TreeTileTask.setGrowthMultiplierTree(getOption("GrowthMultiplierTree", TreeTileTask.getGrowthMultiplierTree(), properties));
-		TreeTileTask.setGrowthMultiplierBush(getOption("GrowthMultiplierBush", TreeTileTask.getGrowthMultiplierBush(), properties));
-		GrassTileTask.setGrowthMultiplierGrass(getOption("GrowthMultiplierGrass", GrassTileTask.getGrowthMultiplierGrass(), properties));
-		HedgeTask.setGrowthMultiplier(getOption("GrowthMultiplierHedge", HedgeTask.getGrowthMultiplier(), properties));
+		HedgeTask.setGrowthMultiplier(growthMultiplierGrow * getOption("TimeMultiplierHedge", HedgeTask.getGrowthMultiplier(), properties));
+		FruitTask.setGrowthMultiplier(getOption("TimeMultiplierFruit", FruitTask.getGrowthMultiplier(), properties));
+		TreeTileTask.setGrowthMultiplierTree(getOption("TimeMultiplierTree", TreeTileTask.getGrowthMultiplierTree(), properties));
+		TreeTileTask.setGrowthMultiplierBush(getOption("TimeMultiplierBush", TreeTileTask.getGrowthMultiplierBush(), properties));
+		GrassTileTask.setGrowthMultiplier(getOption("TimeMultiplierGrass", GrassTileTask.getGrowthMultiplier(), properties));
+		ForageBotanizeTask.setGrowthMultiplier(getOption("TimeMultiplierForageBotanize", ForageBotanizeTask.getGrowthMultiplier(), properties));
 
-		TreeTileTask.setGrowthMultiplierBirch   (getOption("GrowthMultiplierBirch",    TreeTileTask.getGrowthMultiplierBirch(),    properties));
-		TreeTileTask.setGrowthMultiplierPine    (getOption("GrowthMultiplierPine",     TreeTileTask.getGrowthMultiplierPine(),     properties));
-		TreeTileTask.setGrowthMultiplierOak     (getOption("GrowthMultiplierOak",      TreeTileTask.getGrowthMultiplierOak(),      properties));
-		TreeTileTask.setGrowthMultiplierCedar   (getOption("GrowthMultiplierCedar",    TreeTileTask.getGrowthMultiplierCedar(),    properties));
-		TreeTileTask.setGrowthMultiplierWillow  (getOption("GrowthMultiplierWillow",   TreeTileTask.getGrowthMultiplierWillow(),   properties));
-		TreeTileTask.setGrowthMultiplierMaple   (getOption("GrowthMultiplierMaple",    TreeTileTask.getGrowthMultiplierMaple(),    properties));
-		TreeTileTask.setGrowthMultiplierApple   (getOption("GrowthMultiplierApple",    TreeTileTask.getGrowthMultiplierApple(),    properties));
-		TreeTileTask.setGrowthMultiplierLemon   (getOption("GrowthMultiplierLemon",    TreeTileTask.getGrowthMultiplierLemon(),    properties));
-		TreeTileTask.setGrowthMultiplierOlive   (getOption("GrowthMultiplierOlive",    TreeTileTask.getGrowthMultiplierOlive(),    properties));
-		TreeTileTask.setGrowthMultiplierCherry  (getOption("GrowthMultiplierCherry",   TreeTileTask.getGrowthMultiplierCherry(),   properties));
-		TreeTileTask.setGrowthMultiplierChestnut(getOption("GrowthMultiplierChestnut", TreeTileTask.getGrowthMultiplierChestnut(), properties));
-		TreeTileTask.setGrowthMultiplierWalnut  (getOption("GrowthMultiplierWalnut",   TreeTileTask.getGrowthMultiplierWalnut(),   properties));
-		TreeTileTask.setGrowthMultiplierFir     (getOption("GrowthMultiplierFir",      TreeTileTask.getGrowthMultiplierFir(),      properties));
-		TreeTileTask.setGrowthMultiplierLinden  (getOption("GrowthMultiplierLinden",   TreeTileTask.getGrowthMultiplierLinden(),   properties));
+		TreeTileTask.setGrowthMultiplierBirch   (getOption("TimeMultiplierBirch",    TreeTileTask.getGrowthMultiplierBirch(),    properties));
+		TreeTileTask.setGrowthMultiplierPine    (getOption("TimeMultiplierPine",     TreeTileTask.getGrowthMultiplierPine(),     properties));
+		TreeTileTask.setGrowthMultiplierOak     (getOption("TimeMultiplierOak",      TreeTileTask.getGrowthMultiplierOak(),      properties));
+		TreeTileTask.setGrowthMultiplierCedar   (getOption("TimeMultiplierCedar",    TreeTileTask.getGrowthMultiplierCedar(),    properties));
+		TreeTileTask.setGrowthMultiplierWillow  (getOption("TimeMultiplierWillow",   TreeTileTask.getGrowthMultiplierWillow(),   properties));
+		TreeTileTask.setGrowthMultiplierMaple   (getOption("TimeMultiplierMaple",    TreeTileTask.getGrowthMultiplierMaple(),    properties));
+		TreeTileTask.setGrowthMultiplierApple   (getOption("TimeMultiplierApple",    TreeTileTask.getGrowthMultiplierApple(),    properties));
+		TreeTileTask.setGrowthMultiplierLemon   (getOption("TimeMultiplierLemon",    TreeTileTask.getGrowthMultiplierLemon(),    properties));
+		TreeTileTask.setGrowthMultiplierOlive   (getOption("TimeMultiplierOlive",    TreeTileTask.getGrowthMultiplierOlive(),    properties));
+		TreeTileTask.setGrowthMultiplierCherry  (getOption("TimeMultiplierCherry",   TreeTileTask.getGrowthMultiplierCherry(),   properties));
+		TreeTileTask.setGrowthMultiplierChestnut(getOption("TimeMultiplierChestnut", TreeTileTask.getGrowthMultiplierChestnut(), properties));
+		TreeTileTask.setGrowthMultiplierWalnut  (getOption("TimeMultiplierWalnut",   TreeTileTask.getGrowthMultiplierWalnut(),   properties));
+		TreeTileTask.setGrowthMultiplierFir     (getOption("TimeMultiplierFir",      TreeTileTask.getGrowthMultiplierFir(),      properties));
+		TreeTileTask.setGrowthMultiplierLinden  (getOption("TimeMultiplierLinden",   TreeTileTask.getGrowthMultiplierLinden(),   properties));
 
-		TreeTileTask.setGrowthMultiplierNormal   (getOption("GrowthMultiplierNormal",    TreeTileTask.getGrowthMultiplierNormal(),    properties));
-		TreeTileTask.setGrowthMultiplierEnchanted(getOption("GrowthMultiplierEnchanted", TreeTileTask.getGrowthMultiplierEnchanted(), properties));
-		TreeTileTask.setGrowthMultiplierMycelium (getOption("GrowthMultiplierMycelium",  TreeTileTask.getGrowthMultiplierMycelium(),  properties));
+		TileTask.setGrowthMultiplierNormal   (getOption("TimeMultiplierNormal",    TileTask.getGrowthMultiplierNormal(),    properties));
+		TileTask.setGrowthMultiplierEnchanted(getOption("TimeMultiplierEnchanted", TileTask.getGrowthMultiplierEnchanted(), properties));
+		TileTask.setGrowthMultiplierMycelium (getOption("TimeMultiplierMycelium",  TileTask.getGrowthMultiplierMycelium(),  properties));
 		
-		TreeTileTask.setGrowthMultiplierCamellia(getOption("GrowthMultiplierCamellia", TreeTileTask.getGrowthMultiplierCamellia(), properties));
-		TreeTileTask.setGrowthMultiplierGrape   (getOption("GrowthMultiplierGrape",    TreeTileTask.getGrowthMultiplierGrape(),    properties));
-		TreeTileTask.setGrowthMultiplierLavender(getOption("GrowthMultiplierLavender", TreeTileTask.getGrowthMultiplierLavender(), properties));
-		TreeTileTask.setGrowthMultiplierOleander(getOption("GrowthMultiplierOleander", TreeTileTask.getGrowthMultiplierOleander(), properties));
-		TreeTileTask.setGrowthMultiplierRose    (getOption("GrowthMultiplierRose",     TreeTileTask.getGrowthMultiplierRose(),     properties));
-		TreeTileTask.setGrowthMultiplierThorn   (getOption("GrowthMultiplierThorn",    TreeTileTask.getGrowthMultiplierThorn(),    properties));
+		TreeTileTask.setGrowthMultiplierCamellia(getOption("TimeMultiplierCamellia", TreeTileTask.getGrowthMultiplierCamellia(), properties));
+		TreeTileTask.setGrowthMultiplierGrape   (getOption("TimeMultiplierGrape",    TreeTileTask.getGrowthMultiplierGrape(),    properties));
+		TreeTileTask.setGrowthMultiplierLavender(getOption("TimeMultiplierLavender", TreeTileTask.getGrowthMultiplierLavender(), properties));
+		TreeTileTask.setGrowthMultiplierOleander(getOption("TimeMultiplierOleander", TreeTileTask.getGrowthMultiplierOleander(), properties));
+		TreeTileTask.setGrowthMultiplierRose    (getOption("TimeMultiplierRose",     TreeTileTask.getGrowthMultiplierRose(),     properties));
+		TreeTileTask.setGrowthMultiplierThorn   (getOption("TimeMultiplierThorn",    TreeTileTask.getGrowthMultiplierThorn(),    properties));
 		
 		for(int i = 0; i < 15; i++){
-			TreeTileTask.setGrowthMultiplierAge( i, getOption("GrowthMultiplierAge" + i,  TreeTileTask.getGrowthMultiplierAge(i), properties));
+			TreeTileTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i,  TreeTileTask.getGrowthMultiplierAge(i), properties));
 		}
 	}
 //======================================================================
