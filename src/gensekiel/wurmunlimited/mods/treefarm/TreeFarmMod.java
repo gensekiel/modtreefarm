@@ -50,7 +50,7 @@ public class TreeFarmMod implements
 			WateringAction wa2 = new WateringAction("Water (debug)");
 			FertilizingAction fa2 = new FertilizingAction("Fertilize (debug)");
 			HedgeAction ha2 = new HedgeAction("Water (debug)");
-			GrassGrowAction ga2 = new GrassGrowAction("Water (debug)");
+			GrassGrowAction ga2 = new GrassGrowAction("Water ground (debug)");
 			TreeGrassAction tg2 = new TreeGrassAction("Water ground (debug)");
 			KelpReedGrowAction kr2 = new KelpReedGrowAction("Fertilize (debug)");
 			ForageBotanizeAction fb2 = new ForageBotanizeAction("Fertilize ground (debug)");

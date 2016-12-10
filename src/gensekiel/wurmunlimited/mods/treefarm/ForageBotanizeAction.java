@@ -29,14 +29,21 @@ public class ForageBotanizeAction extends TileAction
 		Tiles.Tile ttile = TileTask.getTile(rawtile);
 		if(ttile == null) return true;
 		String tilename = TileTask.getTileName(rawtile);
-		
-		if( ttile.canForage() && !ttile.canBotanize() && Server.isForagable  (tilex, tiley)) 
-			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " does not require fertilization.", (byte)1);
-		if(!ttile.canForage() &&  ttile.canBotanize() && Server.isBotanizable(tilex, tiley))
-			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " does not require fertilization.", (byte)1);
-		if( ttile.canForage() &&  ttile.canBotanize() && Server.isBotanizable(tilex, tiley) && Server.isForagable(tilex, tiley))
-			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " does not require fertilization.", (byte)1);
 
+		boolean fert_required = true;
+		boolean foragable   = Server.isForagable  (tilex, tiley);
+		boolean botanizable = Server.isBotanizable(tilex, tiley);
+		boolean canforage   = ttile.canForage();
+		boolean canbotanize = ttile.canBotanize();
+		if( canforage && !canbotanize && foragable  ) fert_required = false;
+		if(!canforage &&  canbotanize && botanizable) fert_required = false;
+		if( canforage &&  canbotanize && botanizable && foragable) fert_required = false;
+
+		if(!fert_required){
+			performer.getCommunicator().sendNormalServerMessage("This " + tilename + "'s ground does not require fertilization.", (byte)1);
+			return true;
+		}
+		
 		return false;
 	}
 //======================================================================

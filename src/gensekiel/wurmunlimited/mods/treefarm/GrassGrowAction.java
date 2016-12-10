@@ -9,7 +9,7 @@ public class GrassGrowAction extends TileAction
 //======================================================================
 	public GrassGrowAction()
 	{
-		this("Water");
+		this("Water ground");
 	}
 //======================================================================
 	public GrassGrowAction(String s)

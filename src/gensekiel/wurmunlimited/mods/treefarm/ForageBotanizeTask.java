@@ -45,9 +45,13 @@ public class ForageBotanizeTask extends GrassTileTask
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
 
 		if(checkForWUPoll){
-			if( ttile.canForage() && !ttile.canBotanize() && Server.isForagable  (x, y)) return true; 
-			if(!ttile.canForage() &&  ttile.canBotanize() && Server.isBotanizable(x, y)) return true; 
-			if( ttile.canForage() &&  ttile.canBotanize() && Server.isBotanizable(x, y) && Server.isForagable(x, y)) return true; 
+			boolean canforage   = ttile.canForage();
+			boolean canbotanize = ttile.canBotanize();
+			boolean foragable   = Server.isForagable  (x, y);
+			boolean botanizable = Server.isBotanizable(x, y);
+			if( canforage && !canbotanize && foragable  ) return true; 
+			if(!canforage &&  canbotanize && botanizable) return true; 
+			if( canforage &&  canbotanize && botanizable && foragable) return true; 
 		}
 		
 		return false;
