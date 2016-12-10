@@ -25,6 +25,18 @@ public class FertilizingAction extends TileAction
 	}
 //======================================================================
 	@Override
+	protected byte getAge(byte tiledata)
+	{
+		return TreeTileTask.getAge(tiledata);
+	}
+//======================================================================
+	@Override
+	protected byte getMaxAge()
+	{
+		return 15;
+	}
+//======================================================================
+	@Override
 	protected boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley)
 	{
 		byte data = Tiles.decodeData(rawtile);

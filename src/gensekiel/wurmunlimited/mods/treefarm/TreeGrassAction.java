@@ -29,6 +29,18 @@ public class TreeGrassAction extends TileAction
 	}
 //======================================================================
 	@Override
+	protected byte getAge(byte tiledata)
+	{
+		return TreeGrassTask.getGrowthStage(tiledata);
+	}
+//======================================================================
+	@Override
+	protected byte getMaxAge()
+	{
+		return 3;
+	}
+//======================================================================
+	@Override
 	protected boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley)
 	{
 		byte data = Tiles.decodeData(rawtile);

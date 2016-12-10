@@ -31,6 +31,10 @@ public abstract class TileAction extends AbstractAction
 	protected abstract boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley);
 	protected abstract boolean checkTileType(int rawtile);
 //======================================================================
+	protected byte getAge(byte tiledata){ return 0; }
+//======================================================================
+	protected byte getMaxAge(){ return 1; }
+//======================================================================
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
@@ -57,7 +61,7 @@ public abstract class TileAction extends AbstractAction
 			byte tiledata = Tiles.decodeData(rawtile);
 			Skill skl = performer.getSkills().getSkillOrLearn(skill);
 			int timeLeft = getActionTime(skl.knowledge);
-			int actioncost = getActionCost(skl.knowledge, TreeTileTask.getAge(tiledata), 15);
+			int actioncost = getActionCost(skl.knowledge, getAge(tiledata), getMaxAge());
 			
 			if(counter == 1.0f){
 				if(!checkTileType(rawtile)) return true;
