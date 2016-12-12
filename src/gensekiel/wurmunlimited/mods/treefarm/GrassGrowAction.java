@@ -2,10 +2,14 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
+import com.wurmonline.mesh.GrassData;
 import com.wurmonline.mesh.Tiles;
 
 public class GrassGrowAction extends TileAction
 {
+	private static boolean allowFlowers = true;
+	public static void setAllowFlowers(boolean b){ allowFlowers = b; }
+	public static boolean getAllowFlowers(){ return allowFlowers; }
 //======================================================================
 	public GrassGrowAction()
 	{
@@ -40,14 +44,19 @@ public class GrassGrowAction extends TileAction
 		return 3;
 	}
 //======================================================================
+	public static boolean isPureGrassTile(int rawtile)
+	{
+		return (Tiles.decodeType(rawtile) == Tiles.Tile.TILE_GRASS.id);
+	}
+//======================================================================
 	@Override
 	protected boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley)
 	{
 		byte data = Tiles.decodeData(rawtile);
-		byte age = GrassGrowTask.getGrowthStage(data);
 		String tilename = TileTask.getTileName(rawtile);
+		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(data);
 		
-		if(age >= 3){
+		if(gs.isMax() && (!allowFlowers || !isPureGrassTile(rawtile) || FlowerGrowTask.containsFlowers(rawtile))){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " has reached its maximum height.", (byte)1);
 			return true;
 		}
@@ -57,14 +66,18 @@ public class GrassGrowAction extends TileAction
 	@Override
 	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
 	{
-		TaskPoller.addTask(new GrassGrowTask(rawtile, tilex, tiley, multiplier));
+		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(Tiles.decodeData(rawtile));
+		if(gs.isMax()){
+			TaskPoller.addTask(new FlowerGrowTask(rawtile, tilex, tiley, multiplier));
+		}else{
+			TaskPoller.addTask(new GrassGrowTask(rawtile, tilex, tiley, multiplier));
+		}
 	}
 //======================================================================
 	@Override
 	protected boolean checkTileType(int rawtile)
 	{
-		byte type = Tiles.decodeType(rawtile);
-		return (GrassGrowTask.checkTileType(rawtile) && type == Tiles.Tile.TILE_GRASS.id );
+		return (GrassGrowTask.checkTileType(rawtile) && isPureGrassTile(rawtile));
 	}
 //======================================================================
 }

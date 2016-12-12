@@ -129,6 +129,7 @@ public class TreeFarmMod implements
 		TileAction.setAllowBushes(getOption("AllowBushes", TileAction.getAllowBushes(), properties));
 		KelpReedGrowAction.setAllowReed(getOption("AllowReed", KelpReedGrowAction.getAllowReed(), properties));
 		KelpReedGrowAction.setAllowKelp(getOption("AllowKelp", KelpReedGrowAction.getAllowKelp(), properties));
+		GrassGrowAction.setAllowFlowers(getOption("AllowFlowers", GrassGrowAction.getAllowFlowers(), properties));
 		
 		wateringaction.setCost(getOption("WateringCost", wateringaction.getCost(), properties));
 		wateringaction.setTime(getOption("WateringTime", wateringaction.getTime(), properties));
@@ -193,6 +194,7 @@ public class TreeFarmMod implements
 		TreeTileTask.setGrowthMultiplierBush(getOption("TimeMultiplierBush", TreeTileTask.getGrowthMultiplierBush(), properties));
 		GrassTileTask.setGrowthMultiplier(getOption("TimeMultiplierGrass", GrassTileTask.getGrowthMultiplier(), properties));
 		ForageBotanizeTask.setGrowthMultiplier(getOption("TimeMultiplierForageBotanize", ForageBotanizeTask.getGrowthMultiplier(), properties));
+		FlowerGrowTask.setGrowthMultiplier(getOption("TimeMultiplierFlowers", FlowerGrowTask.getGrowthMultiplier(), properties));
 
 		TreeTileTask.setGrowthMultiplierBirch   (getOption("TimeMultiplierBirch",    TreeTileTask.getGrowthMultiplierBirch(),    properties));
 		TreeTileTask.setGrowthMultiplierPine    (getOption("TimeMultiplierPine",     TreeTileTask.getGrowthMultiplierPine(),     properties));
