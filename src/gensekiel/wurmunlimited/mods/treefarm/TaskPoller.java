@@ -70,6 +70,7 @@ public class TaskPoller
 		if(now - lastPolled < pollInterval) return;
 
 		List<AbstractTask> toRemove = new ArrayList<AbstractTask>();
+		List<AbstractTask> toCoolDown = new ArrayList<AbstractTask>();
 		
 		synchronized(tiles){
 			lastPolled = System.currentTimeMillis();
@@ -85,16 +86,18 @@ public class TaskPoller
 				if(now - task.getTimeStamp() < task.getTaskTime()) continue;
 
 				// Perform task
-				if(task.performTask())
-					toRemove.add(task);
+				if(task.performTask()){
+					if(CoolDownTask.getCoolDownMultiplier() > 0.0 && !(task instanceof CoolDownTask))
+						toCoolDown.add(task);
+					else
+						toRemove.add(task);
+				}
 			}
 			
-			for(AbstractTask t : toRemove){
-				if(CoolDownTask.getCoolDownMultiplier() > 0.0 && !(t instanceof CoolDownTask))
-					tiles.put(t.getTaskKey(), new CoolDownTask(t.getTaskKey(), t.getTaskTime()));
-				else
-					tiles.remove(t.getTaskKey());
-			}
+			for(AbstractTask t : toRemove) tiles.remove(t.getTaskKey());
+
+			for(AbstractTask t : toCoolDown)
+				tiles.put(t.getTaskKey(), new CoolDownTask(t.getTaskKey(), t.getTaskTime()));
 		}
 	}
 //======================================================================
