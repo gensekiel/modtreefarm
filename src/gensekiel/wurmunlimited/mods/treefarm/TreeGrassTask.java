@@ -89,8 +89,8 @@ public class TreeGrassTask extends GrassTileTask
 		else
 			forceTreeGrassGrowth(rawtile, x, y, getType(), getData());
 		
-		if(!keepGrowing) return true;
-		return false;
+		if(keepGrowing) return false;
+		return true;
 	}
 //======================================================================
 	@Override

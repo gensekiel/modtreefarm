@@ -76,8 +76,8 @@ public class TreeGrowTask extends TreeTileTask
 		else
 			forceTreeGrowth(rawtile, x, y, getType(), getData());
 		
-		if(!keepGrowing) return true;
-		return false;
+		if(keepGrowing) return false;
+		return true;
 	}
 //======================================================================
 	private static void callTreeGrowthWrapper(int rawtile, int tilex, int tiley, byte type, byte data)

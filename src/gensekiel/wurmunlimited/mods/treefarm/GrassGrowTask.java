@@ -93,8 +93,8 @@ public class GrassGrowTask extends GrassTileTask
 		else
 			forceGrassGrowth(rawtile, x, y, getType(), getData());
 		
-		if(!keepGrowing) return true;
-		return false;
+		if(keepGrowing) return false;
+		return true;
 	}
 //======================================================================
 	private static void callGrassGrowthWrapper(int rawtile, int tilex, int tiley, byte type, byte data)
