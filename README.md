@@ -1,72 +1,96 @@
-# TreeFarmMod - An Accelerated Forestry Server Mod for Wurm Unlimited
+# Accelerated Forestry & Gardening Server Mod for Wurm Unlimited
 
-If your trees don't want to grow, make them.
+Current version: **beta 0.9.9**
 
-Current version: **beta 0.9.1**
+This mod allows to speed up the growth of trees, bushes, fruit (and
+other harvestables) hedges, grass, kelp, reed, flowers and to refresh
+foraging and botanizing for tiles that allow it.
 
-This mod allows you to speed up tree and bush growth by watering, and to
-fertilize them, making them grow fruit/produce out of season. Without 
-waiting for ages.
+Every action to start a task consumes a certain amount of a watering or
+fertilizing item. After the action is performed, a certain time span is
+required for the task to be performed. After the task has been finished,
+another task can be started for that tile/object. While there can exist
+only one task for a particular tile/object at a time, the number of
+simultaneous tasks for different tiles/objects is potentially infinite.
 
-Activating water in your inventory enables a watering action for tree 
-and bush tiles that will consume some amount of water. After watering,
-growth by one stage will occur within a configurable amount of time, 
-after which the tile can be watered again. 
-Activating a fertilizer item (default: ash) enables a fertilizing 
-action, which will consume some amount of fertilizer. After fertilizing,
-the tile will be harvestable after a configurable amount of time. After
-harvesting it can be fertilized again.
+Possible tasks are *(if enabled, actions use and increase either the
+forestry or gardening skill; the skill governing an action is indicated
+in parentheses)*:
 
-* Accelerated growth ignores all related effects that otherwise
-would be invoked when a tree or bush grows\*
-* Accelerated fruit/produce ripening ignores seasons
-* Configurable action time, action item, action cost
-* Configurable poll interval for watered/fertilized tiles
-* Configurable growth rates and modifiers (for type, age, etc.)
-* Age limit for growth by watering
-* Persistent tracked tile list when shutting down the server
-* Optional continuous growth until the age limit is reached
-* Disable single actions or plant types
-* Optionally use the original growth function will all related 
-effects and chances
+* Make trees, bushes grow by watering them. *(forestry)*
+* Make hedges grow by watering them. *(gardening)*
+* Have trees and bushes grow fruit (or other harvestables) out of season
+by fertilizing them. *(forestry)*
+* Increase the grass height on grass and tree tiles by watering the
+ground. *(gardening)*
+* Grow (random) flowers on a grass tile by watering it when at maximum 
+height. In contrast to conventional flower growth, all flowers have the
+same probability. *(gardening)*
+* Make kelp and reed grow by fertilizing them. Note that there is no
+visual indicator of height for these tiles. *(gardening)*
+* Refresh the ability to forage and/or botanize tiles that allow it by
+fertilizing them. *(gardening)*
 
-\* Such as tree death & self re-plant, mycelium decay, small chances for 
-tree growth depending on age and tree type, killing area checks for oaks 
-and willows, sprouting to nearby tiles, mushrooms, etc. These effects 
-still occur, but at a normal rate.
+Almost every aspect can be modified via the configuration file.
 
-Growth time/ripening time can be defined by a base growth time and several multipliers
-for tree type, age, species, task and modifier (normal, enchanted, mycelium). The time 
-required to grow a tree, t, is 
+* Time required by tasks and polling interval (see below).
+* Cost, time and item required for actions.
+* Influence of skill, item quality and age on task time, action 
+time and action cost.
 
-    TreeGrowthTime < t < TreeGrowthTime + PollInterval
+Other options are:
 
-where TreeGrowthTime is the growth time as specified by TreeGrowthBaseTime and respective multipliers.
+* Block certain actions or tile/object types.
+* Show status on examine if a task is enqueued for the examined
+tile/object.
+* Enforce a cool down time for an object or tile after a task has been
+finished.
+* Continuous growth until the maximum age or height is reached.
+* Age limit for trees and bushes.
+* Gain skill for performing actions.
+* Persistent task list when shutting down the server.
+* Obey tile protection.
+* Active protection against conventional server poll for tracked 
+objects.
+* Use the original growth functions with all related effects and 
+chances.
 
-    TreeGrowthTime =   TreeGrowthBaseTime
-                     * task_multiplier
-                     * type_multiplier
-                     * species_multiplier 
-                     * age_multiplier
-                     * modifier_multiplier
+Task time can be defined by a base time and several multipliers for
+task type, object/tile type, species, age, modifier (normal, enchanted,
+mycelium), skill and item quality. The time required to grow a tree, t,
+is
 
-Modifiers can be tweaked separately for all tree/bush types and ages 0 to 14.
+    TaskTime < t < TaskTime + PollInterval
 
-For more information, see the mod's properties file.
+where TaskTime is the time required for a task as specified by
+BaseTaskTime and a collection of multipliers.
+
+    TaskTime =   BaseTaskTime 
+               * task_multiplier
+               * type_multiplier
+               * species_multiplier 
+               * age_multiplier
+               * modifier_multiplier
+               * skill_multiplier
+               * quality_multiplier
+
+Multipliers can be tweaked separately for all kinds of conditions. For 
+more information, see the mod's properties file.
+
+Other information:
+
+* Accelerated tree and bush growth ignores all related effects that 
+otherwise would be invoked when a tree or bush grows.\*
+* Accelerated fruit/harvestable growth ignores seasons.
+* Accelerated grass growth ignores seasonal growth rates.
+
+\* Such as tree death & self re-plant, mycelium decay, killing area 
+checks for oaks and willows, sprouting to nearby tiles, mushrooms, etc.
+These effects still occur, but at a normal rate.
 
 Planned features:
 
-* Incorporate forestry/gardening skill; watering time, amount of water
-and growth time are reduced and the skill is improved
-* Cooldown for watering and fertilizing
-* Grow grass
-* Fertilize grass -> refresh forage & botanize
-* Grow flowers using something other than flowers
-* Grow hedges
-* Active protection against normal tile polling; prevent
-conventional tree growth for tracked tiles alltogether
-* Show status on examine
-* Rename mod to Accelerated Forestry or similar
+* What else could need acceleration? Any suggestions?
 
 Requirements:
 
@@ -77,7 +101,7 @@ As always with modded content, I rid me of all liability. Although the
 mod in non-invasive and can be removed at any time without any effect on 
 the world, make a backup. Just to be sure.
 
-[0.9.1-beta](https://github.com/gensekiel/modtreefarm/releases/tag/0.9.1-beta)
+[0.9.9-beta](https://github.com/gensekiel/modtreefarm/releases/tag/0.9.9-beta)
 
 [GitHub page](https://github.com/gensekiel/modtreefarm)
 
