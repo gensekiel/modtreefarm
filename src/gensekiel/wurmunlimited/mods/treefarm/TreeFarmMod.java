@@ -116,6 +116,7 @@ public class TreeFarmMod implements
 	public void configure(Properties properties)
 	{
 		debug = getOption("Debug", debug, properties);
+		ExamineAction.setDebug(debug);
 		allowGrow = getOption("AllowGrow", allowGrow, properties);
 		allowFert = getOption("AllowFertilize", allowFert, properties);
 		allowHedges = getOption("AllowHedges", allowHedges, properties);

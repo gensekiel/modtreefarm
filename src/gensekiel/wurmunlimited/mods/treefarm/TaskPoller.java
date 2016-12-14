@@ -21,6 +21,7 @@ public class TaskPoller
 	private static Logger logger = Logger.getLogger(TaskPoller.class.getName());
 	private static String fileName = "modTreeFarm.mtf";
 	private static volatile long lastPolled = System.currentTimeMillis();
+	public static long getLastPolled(){ return lastPolled; }
 //======================================================================
 	private static long pollInterval = 300000;
 	private static boolean preserveList = true;
