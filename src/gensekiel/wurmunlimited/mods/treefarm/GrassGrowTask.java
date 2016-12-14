@@ -74,8 +74,11 @@ public class GrassGrowTask extends GrassTileTask
 				return true;
 		}
 		
-		byte age = getGrowthStage(Tiles.decodeData(rawtile));
-		if(age >= 3) return true;
+//		byte age = getGrowthStage(Tiles.decodeData(rawtile));
+//		if(age >= 3) return true;
+
+		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(Tiles.decodeData(rawtile));
+		if(gs.isMax()) return true;
 		
 		return false;
 	}
@@ -113,13 +116,11 @@ public class GrassGrowTask extends GrassTileTask
 	{
 		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(data);
 		GrassData.FlowerType ft = GrassData.FlowerType.decodeTileData(data);
-		if(!gs.isMax()){
-			gs = gs.getNextStage();
-			byte newdata = GrassData.encodeGrassTileData(gs, ft);
-			Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, newdata));
-			Server.modifyFlagsByTileType(tilex, tiley, type);
-			Players.getInstance().sendChangedTile(tilex, tiley, true, false);
-		}
+		gs = gs.getNextStage();
+		byte newdata = GrassData.encodeGrassTileData(gs, ft);
+		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, newdata));
+		Server.modifyFlagsByTileType(tilex, tiley, type);
+		Players.getInstance().sendChangedTile(tilex, tiley, true, false);
 	}
 //======================================================================
 }

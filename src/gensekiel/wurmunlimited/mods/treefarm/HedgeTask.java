@@ -55,6 +55,7 @@ public class HedgeTask extends AbstractTask
 		}
 		
 		if(!canGrow(fence)) return true;
+
 		return false;
 	}
 //======================================================================
@@ -114,15 +115,12 @@ public class HedgeTask extends AbstractTask
 //======================================================================
 	public static void forceHedgeGrowth(Fence fence, VolaTile vtile)
 	{
-		if(fence.isHedge()){
-			if(!canGrow(fence)) return;
-			fence.setType((byte)(fence.getType() + 1));
-			try{
-				fence.save();
-				if(vtile != null) vtile.updateFence(fence);
-			}
-			catch(IOException ioe){ /* oops */ }
+		fence.setType((byte)(fence.getType() + 1));
+		try{
+			fence.save();
+			if(vtile != null) vtile.updateFence(fence);
 		}
+		catch(IOException ioe){ /* oops */ }
 	}
 //======================================================================
 }

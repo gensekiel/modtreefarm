@@ -161,7 +161,7 @@ public class Hooks
 	{
 		// We need the server paths to be set properly before initializing
 		// the TaskPoller.
-		// TODO Should be okay to do that in preinit.
+		// Should be okay to do that in preinit, too.
 		try{
 			HookManager.getInstance().registerHook("com.wurmonline.server.zones.CropTilePoller", "initializeFields", Descriptor.ofMethod(CtPrimitiveType.voidType, null), new InvocationHandlerFactory(){
 				@Override

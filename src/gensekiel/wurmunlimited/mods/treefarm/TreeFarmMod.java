@@ -224,7 +224,10 @@ public class TreeFarmMod implements
 		TreeTileTask.setGrowthMultiplierThorn   (getOption("TimeMultiplierThorn",    TreeTileTask.getGrowthMultiplierThorn(),    properties));
 		
 		for(int i = 0; i < 15; i++){
-			TreeTileTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i,  TreeTileTask.getGrowthMultiplierAge(i), properties));
+			TreeTileTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, TreeTileTask.getGrowthMultiplierAge(i), properties));
+		}
+		for(int i = 0; i < 3; i++){
+			GrassGrowTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, GrassGrowTask.getGrowthMultiplierAge(i), properties));
 		}
 	}
 //======================================================================

@@ -91,8 +91,9 @@ public class ForageBotanizeTask extends GrassTileTask
 		Tiles.Tile tt = getTile(rawtile);
 		VolaTile vtile = getVolaTile(tilex, tiley);
 		if(vtile == null) return;
-		if(vtile.getStructure() != null) return;
-		if(vtile.getFences().length > 0) return;
+		// Should be okay to remove these
+//		if(vtile.getStructure() != null) return;
+//		if(vtile.getFences().length > 0) return;
 
 		boolean addforage = false;
 		boolean addbotanize = false;

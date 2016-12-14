@@ -70,8 +70,11 @@ public class TreeGrassTask extends GrassTileTask
 				return true;
 		}
 		
-		byte age = getGrowthStage(Tiles.decodeData(rawtile));
-		if(age >= 3) return true;
+//		byte age = getGrowthStage(Tiles.decodeData(rawtile));
+//		if(age >= 3) return true;
+		
+		GrassData.GrowthTreeStage grassheight = GrassData.GrowthTreeStage.decodeTileData(Tiles.decodeData(rawtile));
+		if(grassheight.isMax()) return true;
 		
 		return false;
 	}
@@ -115,13 +118,10 @@ public class TreeGrassTask extends GrassTileTask
 	private static void forceTreeGrassGrowth(int rawtile, int tilex, int tiley, byte type, byte data)
 	{
 		GrassData.GrowthTreeStage grassheight = GrassData.GrowthTreeStage.decodeTileData(data);
-		
-		if(!grassheight.isMax()) {
-			grassheight = grassheight.getNextStage();
-			byte new_data = Tiles.encodeTreeData(FoliageAge.getFoliageAge(data), TreeData.hasFruit(data), TreeData.isCentre(data), grassheight);
-			Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, new_data));
-			Server.modifyFlagsByTileType(tilex, tiley, type);
-			Players.getInstance().sendChangedTile(tilex, tiley, true, false);
-		}
+		grassheight = grassheight.getNextStage();
+		byte new_data = Tiles.encodeTreeData(FoliageAge.getFoliageAge(data), TreeData.hasFruit(data), TreeData.isCentre(data), grassheight);
+		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, new_data));
+		Server.modifyFlagsByTileType(tilex, tiley, type);
+		Players.getInstance().sendChangedTile(tilex, tiley, true, false);
 	}
 }

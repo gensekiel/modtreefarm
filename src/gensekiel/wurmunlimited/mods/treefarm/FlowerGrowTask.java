@@ -49,7 +49,7 @@ public class FlowerGrowTask extends GrassGrowTask
 		}
 
 		if(containsFlowers(rawtile)) return true;
-		
+
 		return false;
 	}
 //======================================================================
@@ -65,12 +65,10 @@ public class FlowerGrowTask extends GrassGrowTask
 	{
 		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(data);
 		GrassData.FlowerType ft = GrassData.FlowerType.decodeTileData(data);
-		if(ft == GrassData.FlowerType.NONE){
-			ft = GrassData.FlowerType.fromInt(Server.rand.nextInt(7) + 1);
-			byte newdata = GrassData.encodeGrassTileData(gs, ft);
-			Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, newdata));
-			Server.modifyFlagsByTileType(tilex, tiley, type);
-			Players.getInstance().sendChangedTile(tilex, tiley, true, false);
-		}
+		ft = GrassData.FlowerType.fromInt(Server.rand.nextInt(7) + 1);
+		byte newdata = GrassData.encodeGrassTileData(gs, ft);
+		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, newdata));
+		Server.modifyFlagsByTileType(tilex, tiley, type);
+		Players.getInstance().sendChangedTile(tilex, tiley, true, false);
 	}
 }
