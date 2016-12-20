@@ -3,8 +3,9 @@
 Current version: **beta 0.9.9**
 
 This mod allows to speed up the growth of trees, bushes, fruit (and
-other harvestables) hedges, grass, kelp, reed, flowers and to refresh
-foraging and botanizing for tiles that allow it.
+other harvestables), hedges, grass, kelp, reed, flowers and to refresh
+foraging and botanizing for tiles that allow it. The default items for 
+watering and fertilizing are water and ash, respectively.
 
 Every action to start a task consumes a certain amount of a watering or
 fertilizing item. After the action is performed, a certain time span is
@@ -17,7 +18,7 @@ Possible tasks are *(if enabled, actions use and increase either the
 forestry or gardening skill; the skill governing an action is indicated
 in parentheses)*:
 
-* Make trees, bushes grow by watering them. *(forestry)*
+* Make trees and bushes grow by watering them. *(forestry)*
 * Make hedges grow by watering them. *(gardening)*
 * Have trees and bushes grow fruit (or other harvestables) out of season
 by fertilizing them. *(forestry)*
