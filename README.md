@@ -99,7 +99,7 @@ Requirements:
 * Intended for Wurm Unlimited 1.1.2.3
 
 As always with modded content, I rid me of all liability. Although the 
-mod in non-invasive and can be removed at any time without any effect on 
+mod is non-invasive and can be removed at any time without any effect on 
 the world, make a backup. Just to be sure.
 
 [0.9.9-beta](https://github.com/gensekiel/modtreefarm/releases/tag/0.9.9-beta)
