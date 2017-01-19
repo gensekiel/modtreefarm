@@ -1,7 +1,5 @@
 # Accelerated Forestry & Gardening Server Mod for Wurm Unlimited
 
-Current version: **beta 0.9.9**
-
 This mod allows to speed up the growth of trees, bushes, fruit (and
 other harvestables), hedges, grass, kelp, reed, flowers and to refresh
 foraging and botanizing for tiles that allow it. The default items for 
@@ -102,7 +100,7 @@ As always with modded content, I rid me of all liability. Although the
 mod is non-invasive and can be removed at any time without any effect on 
 the world, make a backup. Just to be sure.
 
-[0.9.9-beta](https://github.com/gensekiel/modtreefarm/releases/tag/0.9.9-beta)
+[Get it here](https://github.com/gensekiel/modtreefarm/releases/latest)
 
 [GitHub page](https://github.com/gensekiel/modtreefarm)
 
