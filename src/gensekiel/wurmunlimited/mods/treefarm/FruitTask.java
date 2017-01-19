@@ -2,6 +2,7 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import com.wurmonline.mesh.FoliageAge;
 import com.wurmonline.mesh.Tiles;
+import com.wurmonline.mesh.TreeData;
 import com.wurmonline.server.Players;
 import com.wurmonline.server.Server;
 
@@ -29,8 +30,13 @@ public class FruitTask extends TreeTileTask
 	public static boolean checkTileType(int rawtile)
 	{
 		Tiles.Tile tt = getTile(rawtile);
+		byte data = Tiles.decodeData(rawtile);
+		TreeData.TreeType treetype = tt.getTreeType(data);
 		return (     tt.canBearFruit() // Currently implies tree
-		         || (tt.isBush() && !tt.isThorn(Tiles.decodeData(rawtile))));
+		         || (tt.isTree() && (    treetype == TreeData.TreeType.MAPLE
+		                              || treetype == TreeData.TreeType.CHESTNUT
+		                              || treetype == TreeData.TreeType.WALNUT   ))
+		         || (tt.isBush() && !tt.isThorn(data)));
 	}
 //======================================================================
 	@Override
