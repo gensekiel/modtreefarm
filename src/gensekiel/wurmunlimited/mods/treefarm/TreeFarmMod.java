@@ -2,11 +2,11 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import java.util.Properties;
 
+import org.gotti.wurmunlimited.modloader.interfaces.Configurable;
 import org.gotti.wurmunlimited.modloader.interfaces.Initable;
 import org.gotti.wurmunlimited.modloader.interfaces.PreInitable;
 import org.gotti.wurmunlimited.modloader.interfaces.ServerStartedListener;
 import org.gotti.wurmunlimited.modloader.interfaces.WurmServerMod;
-import org.gotti.wurmunlimited.modloader.interfaces.Configurable;
 import org.gotti.wurmunlimited.modsupport.actions.ModActions;
 
 public class TreeFarmMod implements
@@ -24,11 +24,14 @@ public class TreeFarmMod implements
 	private static TreeGrassAction treegrassaction = new TreeGrassAction();
 	private static KelpReedGrowAction kelpreedaction = new KelpReedGrowAction();
 	private static ForageBotanizeAction foragebotanizeaction = new ForageBotanizeAction();
+	private static ItemAction itemaction = new ItemAction();
+
 	private static boolean allowGrow = true;
 	private static boolean allowFert = true;
 	private static boolean allowHedges = true;
 	private static boolean allowGrass = true;
 	private static boolean allowFandB = true;
+	private static boolean allowTrell = true;
 	private static boolean augmentExamine = true;
 	private static boolean debug = false;
 	private static boolean useOriginalGrowthFunction = false;
@@ -45,8 +48,10 @@ public class TreeFarmMod implements
 		if(allowGrow && allowGrass)  treegrassaction.registerAction();
 		if(allowGrow && kelpreed)    kelpreedaction.registerAction();
 		if(allowFert && allowFandB)  foragebotanizeaction.registerAction();
+		if(allowFert && allowTrell)  itemaction.registerAction();
 		if(augmentExamine)           ModActions.registerAction(new ExamineAction());
-		
+
+
 		if(debug){
 			WateringAction wa2 = new WateringAction("Water (debug)");
 			FertilizingAction fa2 = new FertilizingAction("Fertilize (debug)");
@@ -55,7 +60,8 @@ public class TreeFarmMod implements
 			TreeGrassAction tg2 = new TreeGrassAction("Water ground (debug)");
 			KelpReedGrowAction kr2 = new KelpReedGrowAction("Fertilize (debug)");
 			ForageBotanizeAction fb2 = new ForageBotanizeAction("Fertilize ground (debug)");
-	
+			ItemAction ia2 = new ItemAction("Fertilize (debug)");
+
 			wa2.setCost(0); wa2.setTime(0); wa2.setItem(0);
 			fa2.setCost(0); fa2.setTime(0); fa2.setItem(0);
 			ha2.setCost(0); ha2.setTime(0); ha2.setItem(0);
@@ -63,6 +69,7 @@ public class TreeFarmMod implements
 			tg2.setCost(0); tg2.setTime(0); tg2.setItem(0);
 			kr2.setCost(0); kr2.setTime(0); kr2.setItem(0);
 			fb2.setCost(0); fb2.setTime(0); fb2.setItem(0);
+			ia2.setCost(0); ia2.setTime(0); ia2.setItem(0);
 
 			wa2.registerAction();
 			fa2.registerAction();
@@ -71,7 +78,8 @@ public class TreeFarmMod implements
 			tg2.registerAction();
 			kr2.registerAction();
 			fb2.registerAction();
-			
+			ia2.registerAction();
+
 			new HedgePollAction().registerAction();
 			new SkillAction("-> Max skills!").registerAction();
 			new SproutAction("-> Sprouts! Now!").registerAction();
@@ -88,7 +96,7 @@ public class TreeFarmMod implements
 			Hooks.injectTreeGrassGrowthWrapper();
 			Hooks.injectSeedGrowthWrapper();
 		}
-		
+
 		Hooks.registerListLoadingHook();
 		Hooks.registerPollingHook();
 		Hooks.registerListSavingHook();
@@ -124,6 +132,7 @@ public class TreeFarmMod implements
 		allowHedges = getOption("AllowHedges", allowHedges, properties);
 		allowGrass = getOption("AllowGrass", allowGrass, properties);
 		allowFandB = getOption("AllowForageBotanize", allowFandB, properties);
+		allowTrell = getOption("AllowTrellises", allowTrell, properties);
 		augmentExamine = getOption("StatusOnExamine", augmentExamine, properties);
 
 		AbstractAction.setObeyProtection(getOption("ObeyProtection", AbstractAction.getObeyProtection(), properties));
@@ -133,7 +142,9 @@ public class TreeFarmMod implements
 		KelpReedGrowAction.setAllowReed(getOption("AllowReed", KelpReedGrowAction.getAllowReed(), properties));
 		KelpReedGrowAction.setAllowKelp(getOption("AllowKelp", KelpReedGrowAction.getAllowKelp(), properties));
 		GrassGrowAction.setAllowFlowers(getOption("AllowFlowers", GrassGrowAction.getAllowFlowers(), properties));
-		
+
+		// allow trell
+
 		wateringaction.setCost(getOption("WateringCost", wateringaction.getCost(), properties));
 		wateringaction.setTime(getOption("WateringTime", wateringaction.getTime(), properties));
 		wateringaction.setItem(getOption("WateringItem", wateringaction.getItem(), properties));
@@ -198,6 +209,7 @@ public class TreeFarmMod implements
 		GrassTileTask.setGrowthMultiplier(getOption("TimeMultiplierGrass", GrassTileTask.getGrowthMultiplier(), properties));
 		ForageBotanizeTask.setGrowthMultiplier(getOption("TimeMultiplierForageBotanize", ForageBotanizeTask.getGrowthMultiplier(), properties));
 		FlowerGrowTask.setGrowthMultiplier(getOption("TimeMultiplierFlowers", FlowerGrowTask.getGrowthMultiplier(), properties));
+		ItemTask.setGrowthMultiplier(getOption("TimeMultiplierTrellises", ItemTask.getGrowthMultiplier(), properties));
 
 		TreeTileTask.setGrowthMultiplierBirch   (getOption("TimeMultiplierBirch",    TreeTileTask.getGrowthMultiplierBirch(),    properties));
 		TreeTileTask.setGrowthMultiplierPine    (getOption("TimeMultiplierPine",     TreeTileTask.getGrowthMultiplierPine(),     properties));
@@ -218,7 +230,7 @@ public class TreeFarmMod implements
 		TileTask.setGrowthMultiplierNormal   (getOption("TimeMultiplierNormal",    TileTask.getGrowthMultiplierNormal(),    properties));
 		TileTask.setGrowthMultiplierEnchanted(getOption("TimeMultiplierEnchanted", TileTask.getGrowthMultiplierEnchanted(), properties));
 		TileTask.setGrowthMultiplierMycelium (getOption("TimeMultiplierMycelium",  TileTask.getGrowthMultiplierMycelium(),  properties));
-		
+
 		TreeTileTask.setGrowthMultiplierCamellia(getOption("TimeMultiplierCamellia", TreeTileTask.getGrowthMultiplierCamellia(), properties));
 		TreeTileTask.setGrowthMultiplierGrape   (getOption("TimeMultiplierGrape",    TreeTileTask.getGrowthMultiplierGrape(),    properties));
 		TreeTileTask.setGrowthMultiplierLavender(getOption("TimeMultiplierLavender", TreeTileTask.getGrowthMultiplierLavender(), properties));
@@ -226,7 +238,7 @@ public class TreeFarmMod implements
 		TreeTileTask.setGrowthMultiplierRose    (getOption("TimeMultiplierRose",     TreeTileTask.getGrowthMultiplierRose(),     properties));
 		TreeTileTask.setGrowthMultiplierThorn   (getOption("TimeMultiplierThorn",    TreeTileTask.getGrowthMultiplierThorn(),    properties));
 		TreeTileTask.setGrowthMultiplierHazelnut(getOption("TimeMultiplierHazelnut", TreeTileTask.getGrowthMultiplierHazelnut(), properties));
-		
+
 		for(int i = 0; i < 15; i++){
 			TreeTileTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, TreeTileTask.getGrowthMultiplierAge(i), properties));
 		}
