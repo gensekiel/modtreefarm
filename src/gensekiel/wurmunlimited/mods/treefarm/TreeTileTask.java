@@ -26,6 +26,7 @@ public abstract class TreeTileTask extends TileTask
 	private static double GrowthMultiplierWalnut = 1.0;
 	private static double GrowthMultiplierFir = 1.0;
 	private static double GrowthMultiplierLinden = 1.0;
+	private static double GrowthMultiplierOrange = 1.0;
 //----------------------------------------------------------------------
 	private static double GrowthMultiplierTree = 1.0;
 	private static double GrowthMultiplierBush = 1.0;
@@ -36,6 +37,7 @@ public abstract class TreeTileTask extends TileTask
 	private static double GrowthMultiplierOleander = 1.0;
 	private static double GrowthMultiplierRose = 1.0;
 	private static double GrowthMultiplierThorn = 1.0;
+	private static double GrowthMultiplierHazelnut = 1.0;
 //----------------------------------------------------------------------
 	private static double[] GrowthMultiplierAge = {1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5, 1.6, 1.6, 1.7};
 //======================================================================
@@ -63,6 +65,7 @@ public abstract class TreeTileTask extends TileTask
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.WALNUT)   tasktime *= GrowthMultiplierWalnut;
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.FIR)      tasktime *= GrowthMultiplierFir;
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.LINDEN)   tasktime *= GrowthMultiplierLinden;
+			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.ORANGE)   tasktime *= GrowthMultiplierOrange;
 		}
 		
 		if(tiletype.isBush()){
@@ -74,6 +77,7 @@ public abstract class TreeTileTask extends TileTask
 			else if(tiletype.getBushType(tdata) == BushData.BushType.OLEANDER) tasktime *= GrowthMultiplierOleander;
 			else if(tiletype.getBushType(tdata) == BushData.BushType.ROSE)     tasktime *= GrowthMultiplierRose;
 			else if(tiletype.getBushType(tdata) == BushData.BushType.THORN)    tasktime *= GrowthMultiplierThorn;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.HAZELNUT) tasktime *= GrowthMultiplierHazelnut;
 		}
 	
 		byte tage = getAge();
@@ -122,6 +126,7 @@ public abstract class TreeTileTask extends TileTask
 	public static void setGrowthMultiplierWalnut(double d){ GrowthMultiplierWalnut = d; }
 	public static void setGrowthMultiplierFir(double d){ GrowthMultiplierFir = d; }
 	public static void setGrowthMultiplierLinden(double d){ GrowthMultiplierLinden = d; }
+	public static void setGrowthMultiplierOrange(double d){ GrowthMultiplierOrange = d; }
 	public static void setGrowthMultiplierTree(double d){ GrowthMultiplierTree = d; }
 	public static void setGrowthMultiplierBush(double d){ GrowthMultiplierBush = d; }
 	public static void setGrowthMultiplierCamellia(double d){ GrowthMultiplierCamellia = d; }
@@ -130,6 +135,7 @@ public abstract class TreeTileTask extends TileTask
 	public static void setGrowthMultiplierOleander(double d){ GrowthMultiplierOleander = d; }
 	public static void setGrowthMultiplierRose(double d){ GrowthMultiplierRose = d; }
 	public static void setGrowthMultiplierThorn(double d){ GrowthMultiplierThorn = d; }
+	public static void setGrowthMultiplierHazelnut(double d){ GrowthMultiplierHazelnut = d; }
 	public static void setGrowthMultiplierAge(int age, double d){ GrowthMultiplierAge[age] = d; }
 //======================================================================
 	public static double getGrowthMultiplierBirch(){ return GrowthMultiplierBirch; }
@@ -146,6 +152,7 @@ public abstract class TreeTileTask extends TileTask
 	public static double getGrowthMultiplierWalnut(){ return GrowthMultiplierWalnut; }
 	public static double getGrowthMultiplierFir(){ return GrowthMultiplierFir; }
 	public static double getGrowthMultiplierLinden(){ return GrowthMultiplierLinden; }
+	public static double getGrowthMultiplierOrange(){ return GrowthMultiplierOrange; }
 	public static double getGrowthMultiplierTree(){ return GrowthMultiplierTree; }
 	public static double getGrowthMultiplierBush(){ return GrowthMultiplierBush; }
 	public static double getGrowthMultiplierCamellia(){ return GrowthMultiplierCamellia; }
@@ -154,6 +161,7 @@ public abstract class TreeTileTask extends TileTask
 	public static double getGrowthMultiplierOleander(){ return GrowthMultiplierOleander; }
 	public static double getGrowthMultiplierRose(){ return GrowthMultiplierRose; }
 	public static double getGrowthMultiplierThorn(){ return GrowthMultiplierThorn; }
+	public static double getGrowthMultiplierHazelnut(){ return GrowthMultiplierHazelnut; }
 	public static double getGrowthMultiplierAge(int age){ return GrowthMultiplierAge[age]; }
 //======================================================================
 }

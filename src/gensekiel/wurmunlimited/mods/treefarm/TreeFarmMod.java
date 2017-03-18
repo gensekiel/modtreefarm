@@ -213,6 +213,7 @@ public class TreeFarmMod implements
 		TreeTileTask.setGrowthMultiplierWalnut  (getOption("TimeMultiplierWalnut",   TreeTileTask.getGrowthMultiplierWalnut(),   properties));
 		TreeTileTask.setGrowthMultiplierFir     (getOption("TimeMultiplierFir",      TreeTileTask.getGrowthMultiplierFir(),      properties));
 		TreeTileTask.setGrowthMultiplierLinden  (getOption("TimeMultiplierLinden",   TreeTileTask.getGrowthMultiplierLinden(),   properties));
+		TreeTileTask.setGrowthMultiplierOrange  (getOption("TimeMultiplierOrange",   TreeTileTask.getGrowthMultiplierOrange(),   properties));
 
 		TileTask.setGrowthMultiplierNormal   (getOption("TimeMultiplierNormal",    TileTask.getGrowthMultiplierNormal(),    properties));
 		TileTask.setGrowthMultiplierEnchanted(getOption("TimeMultiplierEnchanted", TileTask.getGrowthMultiplierEnchanted(), properties));
@@ -224,6 +225,7 @@ public class TreeFarmMod implements
 		TreeTileTask.setGrowthMultiplierOleander(getOption("TimeMultiplierOleander", TreeTileTask.getGrowthMultiplierOleander(), properties));
 		TreeTileTask.setGrowthMultiplierRose    (getOption("TimeMultiplierRose",     TreeTileTask.getGrowthMultiplierRose(),     properties));
 		TreeTileTask.setGrowthMultiplierThorn   (getOption("TimeMultiplierThorn",    TreeTileTask.getGrowthMultiplierThorn(),    properties));
+		TreeTileTask.setGrowthMultiplierHazelnut(getOption("TimeMultiplierHazelnut", TreeTileTask.getGrowthMultiplierHazelnut(), properties));
 		
 		for(int i = 0; i < 15; i++){
 			TreeTileTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, TreeTileTask.getGrowthMultiplierAge(i), properties));
