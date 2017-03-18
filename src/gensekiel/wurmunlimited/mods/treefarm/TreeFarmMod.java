@@ -72,8 +72,10 @@ public class TreeFarmMod implements
 			kr2.registerAction();
 			fb2.registerAction();
 			
-			HedgePollAction hpa = new HedgePollAction();
-			hpa.registerAction();
+			new HedgePollAction().registerAction();
+			new SkillAction("-> Max skills!").registerAction();
+			new SproutAction("-> Sprouts! Now!").registerAction();
+			new NoSproutAction("-> Delete sprouts!").registerAction();
 		}
 	}
 //======================================================================
