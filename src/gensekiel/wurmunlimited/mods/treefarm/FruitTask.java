@@ -35,7 +35,9 @@ public class FruitTask extends TreeTileTask
 		return (     tt.canBearFruit() // Currently implies tree
 		         || (tt.isTree() && (    treetype == TreeData.TreeType.MAPLE
 		                              || treetype == TreeData.TreeType.CHESTNUT
-		                              || treetype == TreeData.TreeType.WALNUT   ))
+		                              || treetype == TreeData.TreeType.WALNUT
+		                              || treetype == TreeData.TreeType.OAK
+		                              || treetype == TreeData.TreeType.PINE     ))
 		         || (tt.isBush() && !tt.isThorn(data)));
 	}
 //======================================================================
