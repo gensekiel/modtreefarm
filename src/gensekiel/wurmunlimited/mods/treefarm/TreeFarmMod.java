@@ -222,6 +222,7 @@ public class TreeFarmMod implements
 		PlanterTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterTask.getGrowthMultiplier(), properties));
 		PlanterAgeTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterAgeTask.getGrowthMultiplier(), properties));
 
+		PlanterAgeTask.setPlanterAgeStep(getOption("PlanterAgeStep", PlanterAgeTask.getPlanterAgeStep(), properties));
 		PlanterAction.setCostMultiplier(getOption("CostMultiplierPlanters", PlanterAction.getCostMultiplier(), properties));
 		PlanterAgeAction.setCostMultiplier(getOption("CostMultiplierPlanters", PlanterAgeAction.getCostMultiplier(), properties));
 

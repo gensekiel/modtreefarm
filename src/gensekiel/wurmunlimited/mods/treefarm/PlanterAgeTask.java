@@ -6,6 +6,10 @@ public class PlanterAgeTask extends ItemTask
 {
 	private static final long serialVersionUID = 3L;
 //======================================================================
+	private static int planterAgeStep = 1;
+	public static void setPlanterAgeStep(int i){ planterAgeStep = i; }
+	public static int getPlanterAgeStep(){ return planterAgeStep; }
+//======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
@@ -40,7 +44,7 @@ public class PlanterAgeTask extends ItemTask
 		Item item = getItem();
 		if(item != null){
 			byte aux = item.getAuxData();
-			item.setAuxData((byte)( (aux & 0x80) | ((aux & 0x7F) + 1) ));
+			item.setAuxData((byte)( (aux & 0x80) | ((aux & 0x7F) + planterAgeStep) ));
 		}
 		return true;
 	}
