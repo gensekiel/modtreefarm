@@ -5,17 +5,14 @@ import com.wurmonline.server.Server;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
 
-public class ForageBotanizeAction extends TileAction 
+public class ForageBotanizeAction extends TileAction
 {
 //======================================================================
-	public ForageBotanizeAction()
-	{
-		this("Fertilize ground");
-	}
+	public ForageBotanizeAction(){ this("Fertilize ground"); }
 //======================================================================
 	public ForageBotanizeAction(String s)
 	{
-		super(s, "fertilize", "fertilizing", "Fertilizing");
+		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
 
 		cost = 100;
 		time = 50;
@@ -43,7 +40,7 @@ public class ForageBotanizeAction extends TileAction
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + "'s ground does not require fertilization.", (byte)1);
 			return true;
 		}
-		
+
 		return false;
 	}
 //======================================================================

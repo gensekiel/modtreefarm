@@ -11,19 +11,11 @@ import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.structures.Fence;
 
-public class HedgePollAction extends AbstractAction
+public class HedgePollAction extends ActionTemplate
 {
 	private static Logger logger = Logger.getLogger(HedgePollAction.class.getName());
 //======================================================================
-	public HedgePollAction()
-	{
-		this("Poll", "X", "X", "X");
-	}
-//======================================================================
-	protected HedgePollAction(String menu, String verb, String verbing, String desc)
-	{
-		super(menu, verb, verbing, desc);
-	}
+	public HedgePollAction(){ menuEntry = "Poll"; }
 //======================================================================
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Fence fence)

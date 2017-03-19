@@ -3,11 +3,6 @@ package gensekiel.wurmunlimited.mods.treefarm;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gotti.wurmunlimited.modsupport.actions.ActionPerformer;
-import org.gotti.wurmunlimited.modsupport.actions.BehaviourProvider;
-import org.gotti.wurmunlimited.modsupport.actions.ModAction;
-import org.gotti.wurmunlimited.modsupport.actions.ModActions;
-
 import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.behaviours.Action;
 import com.wurmonline.server.behaviours.ActionEntry;
@@ -21,24 +16,10 @@ import com.wurmonline.server.structures.Fence;
 import com.wurmonline.server.structures.Floor;
 import com.wurmonline.server.structures.Wall;
 
-public abstract class DebugAction implements ModAction, ActionPerformer, BehaviourProvider
+public abstract class DebugAction extends ActionTemplate
 {
 //======================================================================
-	protected short actionId;
-	protected ActionEntry actionEntry;
-	protected String menustring = "none";
-//======================================================================
-	protected DebugAction(String menu){ menustring = menu; }
-//======================================================================
-	@Override public short getActionId(){ return actionId; }
-//======================================================================
-	public void registerAction()
-	{
-		actionId = (short)ModActions.getNextActionId();
-		actionEntry = ActionEntry.createEntry(actionId, menustring, "-", new int[] {6, 48, 35});
-		ModActions.registerAction(actionEntry);
-		ModActions.registerAction(this);
-	}
+	protected DebugAction(String menu){ menuEntry = menu; }
 //======================================================================
 	protected abstract void action(Creature performer);
 //======================================================================

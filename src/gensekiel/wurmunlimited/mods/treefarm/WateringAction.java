@@ -1,21 +1,18 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
+import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
-import com.wurmonline.mesh.Tiles;
 
 public class WateringAction extends TileAction
 {
 //======================================================================
-	public WateringAction()
-	{
-		this("Water");
-	}
+	public WateringAction(){ this("Water"); }
 //======================================================================
 	public WateringAction(String s)
 	{
-		super(s, "water", "watering", "Watering");
-		
+		super(s, AbstractAction.ActionFlavor.WATER_ACTION);
+
 		cost = 5000;
 		time = 30;
 		item = ItemList.water;
@@ -40,7 +37,7 @@ public class WateringAction extends TileAction
 		byte data = Tiles.decodeData(rawtile);
 		int age = TreeTileTask.getAge(data);
 		String tilename = TileTask.getTileName(rawtile);
-		
+
 		if(age >= TreeGrowTask.getAgeLimit()){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too old to make it grow by watering it.", (byte)1);
 			return true;

@@ -15,15 +15,12 @@ import com.wurmonline.server.zones.Zones;
 
 public class HedgeAction extends AbstractAction
 {
-	public HedgeAction()
-	{
-		this("Water");
-	}
+	public HedgeAction(){ this("Water"); }
 //======================================================================
 	protected HedgeAction(String s)
 	{
-		super(s, "water", "watering", "Watering");
-		
+		super(s, AbstractAction.ActionFlavor.WATER_ACTION);
+
 		cost = 5000;
 		time = 30;
 		item = ItemList.water;
@@ -41,7 +38,7 @@ public class HedgeAction extends AbstractAction
 			performer.getCommunicator().sendNormalServerMessage("This " + fence.getName() + " is not a hedge...", (byte)1);
 			return true;
 		}
-		
+
 		if(!HedgeTask.canGrow(fence)){
 			performer.getCommunicator().sendNormalServerMessage("This " + fence.getName() + " seems to have reached its maximum height.", (byte)1);
 			return true;
@@ -59,7 +56,7 @@ public class HedgeAction extends AbstractAction
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Fence fence)
 	{
 		if(obeyProtection && Zones.protectedTiles[fence.getTileX()][fence.getTileY()]) return null;
-		
+
 		if(fence.isHedge() && fence.isFinished()){
 			return Arrays.asList(actionEntry);
 		}
@@ -80,14 +77,14 @@ public class HedgeAction extends AbstractAction
 			int timeLeft = getActionTime(skl.knowledge);
 			int actioncost = getActionCost(skl.knowledge, HedgeTask.getHedgeAge(target), 2);
 			String fencename = target.getName();
-			
+
 			if(counter == 1.0f){
 				if(!checkFenceType(target)) return true;
 				if(checkConditions) if(checkFenceConditions(performer, target)) return true;
 				if(checkIfPolled) if(checkStatus(performer, target.getId())) return true;
 
 				if(item != 0) if(checkItem(performer, source, fencename, actioncost)) return true;
-				
+
 				startAction(performer, fencename, timeLeft);
 				if(gainSkill) gainSkill(skl);
 			}else{
@@ -96,14 +93,14 @@ public class HedgeAction extends AbstractAction
 			if(counter * 10.0F > timeLeft){
 				double quality = 100.0;
 				if(item != 0) quality = source.getCurrentQualityLevel();
-				
+
 				double multiplier = getTaskTimeMultiplier(quality, skl.knowledge);
 				performFenceAction(target, multiplier);
 
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
 
 				finishAction(performer, fencename);
-				
+
 				return true;
 			}
 			return false;

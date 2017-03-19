@@ -2,23 +2,15 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import java.util.logging.Logger;
 
-import org.gotti.wurmunlimited.modsupport.actions.ActionPerformer;
-import org.gotti.wurmunlimited.modsupport.actions.BehaviourProvider;
-import org.gotti.wurmunlimited.modsupport.actions.ModAction;
-import org.gotti.wurmunlimited.modsupport.actions.ModActions;
-
 import com.wurmonline.server.Server;
-import com.wurmonline.server.behaviours.ActionEntry;
 import com.wurmonline.server.behaviours.NoSuchActionException;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.skills.Skill;
 
-public abstract class AbstractAction implements ModAction, BehaviourProvider, ActionPerformer
+public abstract class AbstractAction extends ActionTemplate
 {
 	protected static Logger logger = Logger.getLogger(WateringAction.class.getName());
-	protected short actionId;
-	protected ActionEntry actionEntry;
 //======================================================================
 	protected int cost;
 	protected int time;
@@ -34,9 +26,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	protected static boolean gainSkill = true;
 	protected static boolean obeyProtection = true;
 //======================================================================
-	protected String menuEntry;
 	protected String actionVerb;
-	protected String actionVerbIng;
 	protected String actionDesc;
 //======================================================================
 	public void setCost(int i){ cost = i; }
@@ -65,28 +55,34 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 	public static boolean getGainSkill(){ return gainSkill; }
 	public static boolean getObeyProtection(){ return obeyProtection; }
 //======================================================================
-	protected AbstractAction(String menu, String verb, String verbing, String desc)
+	public enum ActionFlavor{
+		WATER_ACTION,
+		FERTILIZE_ACTION
+	}
+//======================================================================
+	protected AbstractAction(ActionFlavor f)
 	{
+		switch(f){
+		case WATER_ACTION:
+			menuEntry = "Water";
+			actionVerb = "water";
+			actionVerbIng = "watering";
+			actionDesc = "Watering";
+			break;
+		case FERTILIZE_ACTION:
+			menuEntry = "Fertilize";
+			actionVerb = "fertilize";
+			actionVerbIng = "fertilizing";
+			actionDesc = "Fertilizing";
+			break;
+		}
+	}
+//======================================================================
+	protected AbstractAction(String menu, ActionFlavor f)
+	{
+		this(f);
 		menuEntry = menu;
-		actionVerb = verb;
-		actionVerbIng = verbing;
-		actionDesc = desc;
 	}
-//======================================================================
-	public void registerAction()
-	{
-		actionId = (short)ModActions.getNextActionId();
-		actionEntry = ActionEntry.createEntry(actionId, menuEntry, actionVerbIng, new int[] {6, 48, 35});
-		ModActions.registerAction(actionEntry);
-		ModActions.registerAction(this);
-	}
-//======================================================================
-	@Override
-	public short getActionId(){ return actionId; }
-	@Override
-	public BehaviourProvider getBehaviourProvider(){ return this; }
-	@Override
-	public ActionPerformer getActionPerformer(){ return this; }
 //======================================================================
 	private static double interpolate(double limit, double value, double maxv)
 	{
@@ -133,7 +129,7 @@ public abstract class AbstractAction implements ModAction, BehaviourProvider, Ac
 			performer.getCommunicator().sendNormalServerMessage("You cannot use " + source.getNameWithGenus() + " to " + actionVerb + " the " + tilename + ".", (byte)1);
 			return true;
 		}
-		
+
 		int available = source.getWeightGrams();
 		if (available < amount){
 			performer.getCommunicator().sendNormalServerMessage("You have too little " + source.getActualName() + " to " + actionVerb + " the " + tilename + ".", (byte)1);

@@ -1,32 +1,25 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 
 import com.wurmonline.server.behaviours.Action;
-import com.wurmonline.server.behaviours.ActionEntry;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.items.ItemList;
 import com.wurmonline.server.skills.Skill;
-import com.wurmonline.server.zones.Zones;
 
-public class PlanterAction extends AbstractAction
+public class PlanterAction extends ItemAction
 {
 //======================================================================
 	private static double costMultiplier = 0.5;
 	public static void setCostMultiplier(double d){ costMultiplier = d; }
 	public static double getCostMultiplier(){ return costMultiplier; }
 //======================================================================
-	public PlanterAction()
-	{
-		this("Fertilize");
-	}
+	public PlanterAction(){ this("Fertilize"); }
 //======================================================================
-	protected PlanterAction(String s)
+	public PlanterAction(String s)
 	{
-		super(s, "fertilize", "fertilizing", "Fertilizing");
+		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
 
 		cost = 100;
 		time = 50;
@@ -34,11 +27,9 @@ public class PlanterAction extends AbstractAction
 		skill = 10045;
 	}
 //======================================================================
-	protected void performItemAction(Item item, double multiplier)
-	{
-		TaskPoller.addTask(new PlanterTask(item, multiplier));
-	}
+	protected PlanterAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
+	@Override
 	protected boolean checkItemConditions(Creature performer, Item item)
 	{
 		if(!PlanterTask.isFertilizable(item)){
@@ -54,21 +45,18 @@ public class PlanterAction extends AbstractAction
 		return false;
 	}
 //======================================================================
-	@Override
-	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Item target)
+	@Override protected boolean checkItemType(Item item){ return PlanterTask.checkItemType(item); }
+	@Override protected int getMaxAge(){ return 127; }
+	@Override protected int getAge(Item target){ return PlanterTask.getPlanterAge(target); }
+//======================================================================
+	@Override protected void performItemAction(Item item, double multiplier)
 	{
-		if(obeyProtection && Zones.protectedTiles[target.getTileX()][target.getTileY()]) return null;
-
-		if(PlanterTask.checkItemType(target)){
-			return Arrays.asList(actionEntry);
-		}
-		return null;
+		TaskPoller.addTask(new PlanterTask(item, multiplier));
 	}
 //======================================================================
-	@Override
-	public List<ActionEntry> getBehavioursFor(Creature performer, Item target)
+	@Override public int getActionCost(double knowledge, int age, int maxage)
 	{
-		return getBehavioursFor(performer, null, target);
+		return (int)(costMultiplier * super.getActionCost(knowledge, age, maxage));
 	}
 //======================================================================
 	@Override
@@ -77,11 +65,11 @@ public class PlanterAction extends AbstractAction
 		try{
 			Skill skl = performer.getSkills().getSkillOrLearn(skill);
 			int timeLeft = getActionTime(skl.knowledge);
-			int actioncost = (int)(costMultiplier * getActionCost(skl.knowledge, PlanterTask.getPlanterAge(target), 127));
+			int actioncost = getActionCost(skl.knowledge, getAge(target), getMaxAge());
 			String itemname = target.getName();
 
 			if(counter == 1.0f){
-				if(!PlanterTask.checkItemType(target)) return true;
+				if(!checkItemType(target)) return true;
 				if(checkConditions) if(checkItemConditions(performer, target)) return true;
 				if(checkIfPolled) if(checkStatus(performer, target.getWurmId())) return true;
 
@@ -110,12 +98,6 @@ public class PlanterAction extends AbstractAction
 			logger.log(Level.WARNING, e.getMessage(), e);
 			return true;
 		}
-	}
-//======================================================================
-	@Override
-	public boolean action(Action action, Creature performer, Item target, short num, float counter)
-	{
-		return action(action, performer, null, target, num, counter);
 	}
 //======================================================================
 }

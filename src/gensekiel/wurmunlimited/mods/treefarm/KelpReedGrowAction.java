@@ -1,7 +1,7 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import com.wurmonline.server.items.ItemList;
 import com.wurmonline.mesh.Tiles;
+import com.wurmonline.server.items.ItemList;
 
 public class KelpReedGrowAction extends GrassGrowAction
 {
@@ -13,14 +13,11 @@ public class KelpReedGrowAction extends GrassGrowAction
 	public static boolean getAllowKelp(){ return allowKelp; }
 	public static boolean getAllowReed(){ return allowReed; }
 //======================================================================
-	public KelpReedGrowAction()
-	{
-		this("Fertilize");
-	}
+	public KelpReedGrowAction(){ this("Fertilize"); }
 //======================================================================
 	public KelpReedGrowAction(String s)
 	{
-		super(s, "fertilize", "fertilizing", "Fertilizing");
+		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
 		item = ItemList.ash;
 	}
 //======================================================================
@@ -28,7 +25,7 @@ public class KelpReedGrowAction extends GrassGrowAction
 	protected boolean checkTileType(int rawtile)
 	{
 		byte type = Tiles.decodeType(rawtile);
-		return (     GrassGrowTask.checkTileType(rawtile) 
+		return (     GrassGrowTask.checkTileType(rawtile)
 		         && (    (allowReed && type == Tiles.Tile.TILE_REED.id)
 		              || (allowKelp && type == Tiles.Tile.TILE_KELP.id) ));
 	}

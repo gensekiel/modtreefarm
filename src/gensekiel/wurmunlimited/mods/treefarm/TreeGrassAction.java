@@ -1,27 +1,23 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
+import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
-import com.wurmonline.mesh.Tiles;
 
 public class TreeGrassAction extends TileAction
 {
 //======================================================================
-	public TreeGrassAction()
-	{
-		this("Water ground");
-	}
+	public TreeGrassAction(){ this("Water ground"); }
 //======================================================================
 	public TreeGrassAction(String s)
 	{
-		this(s, "water", "watering", "Watering");
-
+		this(s, AbstractAction.ActionFlavor.WATER_ACTION);
 		item = ItemList.water;
 	}
 //======================================================================
-	protected TreeGrassAction(String s1, String s2, String s3, String s4)
+	protected TreeGrassAction(String s, AbstractAction.ActionFlavor f)
 	{
-		super(s1, s2, s3, s4);
+		super(s, f);
 
 		cost = 5000;
 		time = 30;
@@ -35,10 +31,7 @@ public class TreeGrassAction extends TileAction
 	}
 //======================================================================
 	@Override
-	protected byte getMaxAge()
-	{
-		return 3;
-	}
+	protected byte getMaxAge(){ return 3; }
 //======================================================================
 	@Override
 	protected boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley)
@@ -46,7 +39,7 @@ public class TreeGrassAction extends TileAction
 		byte data = Tiles.decodeData(rawtile);
 		byte age = TreeGrassTask.getGrowthStage(data);
 		String tilename = TileTask.getTileName(rawtile);
-		
+
 		if(age >= 3){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + "'s grass has reached its maximum height.", (byte)1);
 			return true;

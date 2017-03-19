@@ -44,16 +44,16 @@ public class TreeFarmMod implements
 	{
 		boolean kelpreed = (KelpReedGrowAction.getAllowReed() || KelpReedGrowAction.getAllowKelp());
 		boolean treebush = (TileAction.getAllowTrees() || TileAction.getAllowBushes());
-		if(allowGrow && treebush)    wateringaction.registerAction();
-		if(allowFert && treebush)    fertilizingaction.registerAction();
-		if(allowGrow && allowHedges) hedgeaction.registerAction();
-		if(allowGrow && allowGrass)  grassaction.registerAction();
-		if(allowGrow && allowGrass)  treegrassaction.registerAction();
-		if(allowGrow && kelpreed)    kelpreedaction.registerAction();
-		if(allowFert && allowFandB)  foragebotanizeaction.registerAction();
-		if(allowFert && allowTrell)  itemaction.registerAction();
-		if(allowFert && allowPlant)  planteraction.registerAction();
-		if(allowGrow && allowPlant)  planterageaction.registerAction();
+		if(allowGrow && treebush)    wateringaction.register();
+		if(allowFert && treebush)    fertilizingaction.register();
+		if(allowGrow && allowHedges) hedgeaction.register();
+		if(allowGrow && allowGrass)  grassaction.register();
+		if(allowGrow && allowGrass)  treegrassaction.register();
+		if(allowGrow && kelpreed)    kelpreedaction.register();
+		if(allowFert && allowFandB)  foragebotanizeaction.register();
+		if(allowFert && allowTrell)  itemaction.register();
+		if(allowFert && allowPlant)  planteraction.register();
+		if(allowGrow && allowPlant)  planterageaction.register();
 		if(augmentExamine)           ModActions.registerAction(new ExamineAction());
 
 		if(debug){
@@ -79,21 +79,21 @@ public class TreeFarmMod implements
 			pa2.setCost(0); pa2.setTime(0); pa2.setItem(0);
 			pl2.setCost(0); pl2.setTime(0); pl2.setItem(0);
 
-			wa2.registerAction();
-			fa2.registerAction();
-			ha2.registerAction();
-			ga2.registerAction();
-			tg2.registerAction();
-			kr2.registerAction();
-			fb2.registerAction();
-			ia2.registerAction();
-			pa2.registerAction();
-			pl2.registerAction();
+			wa2.register();
+			fa2.register();
+			ha2.register();
+			ga2.register();
+			tg2.register();
+			kr2.register();
+			fb2.register();
+			ia2.register();
+			pa2.register();
+			pl2.register();
 
-			new HedgePollAction().registerAction();
-			new SkillAction("-> Max skills!").registerAction();
-			new SproutAction("-> Sprouts! Now!").registerAction();
-			new NoSproutAction("-> Delete sprouts!").registerAction();
+			new HedgePollAction().register();
+			new SkillAction("-> Max skills!").register();
+			new SproutAction("-> Sprouts! Now!").register();
+			new NoSproutAction("-> Delete sprouts!").register();
 		}
 	}
 //======================================================================

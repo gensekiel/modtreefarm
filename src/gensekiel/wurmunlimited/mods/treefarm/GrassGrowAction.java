@@ -1,9 +1,9 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import com.wurmonline.server.creatures.Creature;
-import com.wurmonline.server.items.ItemList;
 import com.wurmonline.mesh.GrassData;
 import com.wurmonline.mesh.Tiles;
+import com.wurmonline.server.creatures.Creature;
+import com.wurmonline.server.items.ItemList;
 
 public class GrassGrowAction extends TileAction
 {
@@ -11,21 +11,17 @@ public class GrassGrowAction extends TileAction
 	public static void setAllowFlowers(boolean b){ allowFlowers = b; }
 	public static boolean getAllowFlowers(){ return allowFlowers; }
 //======================================================================
-	public GrassGrowAction()
-	{
-		this("Water ground");
-	}
+	public GrassGrowAction(){ this("Water ground"); }
 //======================================================================
 	public GrassGrowAction(String s)
 	{
-		this(s, "water", "watering", "Watering");
-
+		this(s, AbstractAction.ActionFlavor.WATER_ACTION);
 		item = ItemList.water;
 	}
 //======================================================================
-	protected GrassGrowAction(String s1, String s2, String s3, String s4)
+	protected GrassGrowAction(String s, AbstractAction.ActionFlavor f)
 	{
-		super(s1, s2, s3, s4);
+		super(s, f);
 
 		cost = 5000;
 		time = 30;
@@ -55,7 +51,7 @@ public class GrassGrowAction extends TileAction
 		byte data = Tiles.decodeData(rawtile);
 		String tilename = TileTask.getTileName(rawtile);
 		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(data);
-		
+
 		if(gs.isMax() && (!allowFlowers || !isPureGrassTile(rawtile) || FlowerGrowTask.containsFlowers(rawtile))){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " has reached its maximum height.", (byte)1);
 			return true;

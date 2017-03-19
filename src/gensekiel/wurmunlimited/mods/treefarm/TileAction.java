@@ -22,10 +22,7 @@ public abstract class TileAction extends AbstractAction
 	public static boolean getAllowTrees(){ return allowTrees; }
 	public static boolean getAllowBushes(){ return allowBushes; }
 //======================================================================
-	protected TileAction(String menu, String verb, String verbing, String desc)
-	{
-		super(menu, verb, verbing, desc);
-	}
+	protected TileAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
 	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier);
 	protected abstract boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley);
@@ -39,7 +36,7 @@ public abstract class TileAction extends AbstractAction
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)
 	{
 		if(obeyProtection && Zones.protectedTiles[tilex][tiley]) return null;
-		
+
 		if(   checkTileType(rawtile)
 			&& performer instanceof Player)
 		{
@@ -62,14 +59,14 @@ public abstract class TileAction extends AbstractAction
 			Skill skl = performer.getSkills().getSkillOrLearn(skill);
 			int timeLeft = getActionTime(skl.knowledge);
 			int actioncost = getActionCost(skl.knowledge, getAge(tiledata), getMaxAge());
-			
+
 			if(counter == 1.0f){
 				if(!checkTileType(rawtile)) return true;
 				if(checkConditions) if(checkTileConditions(performer, rawtile, tilex, tiley)) return true;
 				if(checkIfPolled) if(checkStatus(performer, TreeTileTask.getTaskKey(tilex, tiley))) return true;
 
 				if(item != 0) if(checkItem(performer, source, tilename, actioncost)) return true;
-				
+
 				startAction(performer, tilename, timeLeft);
 				if(gainSkill) gainSkill(skl);
 			}else{
@@ -78,7 +75,7 @@ public abstract class TileAction extends AbstractAction
 			if(counter * 10.0F > timeLeft){
 				double quality = 100.0;
 				if(item != 0) quality = source.getCurrentQualityLevel();
-				
+
 				// Can the tile change while action is performed?
 				// There seems to be a flag that could lock a tile.
 				double multiplier = getTaskTimeMultiplier(quality, skl.knowledge);
@@ -88,7 +85,7 @@ public abstract class TileAction extends AbstractAction
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
 
 				finishAction(performer, tilename);
-				// What if item is moved to container while action is 
+				// What if item is moved to container while action is
 				// performed?
 				// Tested: Used item cannot be moved.
 				return true;

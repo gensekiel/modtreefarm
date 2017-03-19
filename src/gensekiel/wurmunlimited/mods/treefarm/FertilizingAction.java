@@ -6,17 +6,14 @@ import com.wurmonline.mesh.TreeData;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.ItemList;
 
-public class FertilizingAction extends TileAction 
+public class FertilizingAction extends TileAction
 {
 //======================================================================
-	public FertilizingAction()
-	{
-		this("Fertilize");
-	}
+	public FertilizingAction(){ this("Fertilize"); }
 //======================================================================
 	public FertilizingAction(String s)
 	{
-		super(s, "fertilize", "fertilizing", "Fertilizing");
+		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
 
 		cost = 100;
 		time = 50;
@@ -44,7 +41,7 @@ public class FertilizingAction extends TileAction
 
 		Tiles.Tile tt = TileTask.getTile(rawtile);
 		String tilename = TileTask.getTileName(rawtile);
-		
+
 		if(age <= FoliageAge.YOUNG_FOUR.getAgeId()){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too young to bear fruit.", (byte)1);
 			return true;

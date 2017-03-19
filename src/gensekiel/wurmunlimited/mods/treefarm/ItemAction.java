@@ -15,14 +15,11 @@ import com.wurmonline.server.zones.Zones;
 public class ItemAction extends AbstractAction
 {
 //======================================================================
-	public ItemAction()
-	{
-		this("Fertilize");
-	}
+	public ItemAction(){ this("Fertilize"); }
 //======================================================================
-	protected ItemAction(String s)
+	public ItemAction(String s)
 	{
-		super(s, "fertilize", "fertilizing", "Fertilizing");
+		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
 
 		cost = 100;
 		time = 50;
@@ -30,10 +27,7 @@ public class ItemAction extends AbstractAction
 		skill = 10045;
 	}
 //======================================================================
-	protected void performItemAction(Item item, double multiplier)
-	{
-		TaskPoller.addTask(new ItemTask(item, multiplier));
-	}
+	protected ItemAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
 	protected boolean checkItemConditions(Creature performer, Item item)
 	{
@@ -45,9 +39,13 @@ public class ItemAction extends AbstractAction
 		return false;
 	}
 //======================================================================
-	protected boolean checkItemType(Item item)
+	protected boolean checkItemType(Item item){ return ItemTask.checkItemType(item); }
+	protected int getAge(Item target){ return 1; }
+	protected int getMaxAge(){ return 1; }
+//======================================================================
+	protected void performItemAction(Item item, double multiplier)
 	{
-		return ItemTask.checkItemType(item);
+		TaskPoller.addTask(new ItemTask(item, multiplier));
 	}
 //======================================================================
 	@Override
@@ -55,7 +53,7 @@ public class ItemAction extends AbstractAction
 	{
 		if(obeyProtection && Zones.protectedTiles[target.getTileX()][target.getTileY()]) return null;
 
-		if(ItemTask.checkItemType(target)){
+		if(checkItemType(target)){
 			return Arrays.asList(actionEntry);
 		}
 		return null;
@@ -73,11 +71,11 @@ public class ItemAction extends AbstractAction
 		try{
 			Skill skl = performer.getSkills().getSkillOrLearn(skill);
 			int timeLeft = getActionTime(skl.knowledge);
-			int actioncost = getActionCost(skl.knowledge, 1, 1);
+			int actioncost = getActionCost(skl.knowledge, getAge(target), getMaxAge());
 			String itemname = target.getName();
 
 			if(counter == 1.0f){
-				if(!ItemTask.checkItemType(target)) return true;
+				if(!checkItemType(target)) return true;
 				if(checkConditions) if(checkItemConditions(performer, target)) return true;
 				if(checkIfPolled) if(checkStatus(performer, target.getWurmId())) return true;
 
