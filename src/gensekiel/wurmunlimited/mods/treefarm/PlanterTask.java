@@ -1,33 +1,43 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import com.wurmonline.server.Items;
-import com.wurmonline.server.NoSuchItemException;
 import com.wurmonline.server.items.Item;
 
-public class ItemTask extends AbstractTask
+public class PlanterTask extends ItemTask
 {
 	private static final long serialVersionUID = 3L;
 //======================================================================
-	private long id;
-	private static int allowed_ids[] = {920, 1018, 1274};
+	private static int planter_id = 1162;
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
-	public ItemTask(Item item, double multiplier)
+	public PlanterTask(Item item, double multiplier)
 	{
-		super(multiplier);
-
-		tasktime *= growthMultiplier;
-
-		id = item.getWurmId();
+		super(item, multiplier);
 	}
 //======================================================================
 	public static boolean checkItemType(Item item)
 	{
-		for(int id : allowed_ids) if(id == item.getTemplateId()) return true;
-		return false;
+		if(planter_id == item.getTemplateId()) return true;
+		else return false;
+	}
+//======================================================================
+	public static int getPlanterAge(Item item)
+	{
+		return item.getAuxData() & 0x7F;
+	}
+//======================================================================
+	public static boolean isFertilizable(Item item)
+	{
+		int age = getPlanterAge(item);
+		if(age > 5 && age < 95) return true;
+		else return false;
+	}
+//======================================================================
+	public static boolean isPickable(Item item)
+	{
+		return ((item.getAuxData() & 0x80) != 0);
 	}
 //======================================================================
 	@Override
@@ -37,6 +47,7 @@ public class ItemTask extends AbstractTask
 		if(item == null) return true;
 
 		if(!checkItemType(item)) return true;
+		if(!isFertilizable(item)) return true;
 
 		return false;
 	}
@@ -46,32 +57,9 @@ public class ItemTask extends AbstractTask
 	{
 		Item item = getItem();
 		if(item != null){
-			item.setHarvestable(true);
+			item.setAuxData((byte)(item.getAuxData() | 0x80));
 		}
 		return true;
-	}
-//======================================================================
-	@Override
-	public long getTaskKey()
-	{
-		return id;
-	}
-//======================================================================
-	@Override
-	public String getDescription()
-	{
-		Item item = getItem();
-		if(item == null) return "It has been fertilized recently.";
-		return "This " + item.getName() + " has been fertilized recently.";
-	}
-//======================================================================
-	public Item getItem()
-	{
-		try {
-			return Items.getItem(id);
-		}catch(NoSuchItemException e){
-			return null;
-		}
 	}
 //======================================================================
 }

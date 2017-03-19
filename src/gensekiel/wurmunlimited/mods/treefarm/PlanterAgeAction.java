@@ -12,42 +12,41 @@ import com.wurmonline.server.items.ItemList;
 import com.wurmonline.server.skills.Skill;
 import com.wurmonline.server.zones.Zones;
 
-public class ItemAction extends AbstractAction
+public class PlanterAgeAction extends AbstractAction
 {
 //======================================================================
-	public ItemAction()
+	private static double costMultiplier = 0.5;
+	public static void setCostMultiplier(double d){ costMultiplier = d; }
+	public static double getCostMultiplier(){ return costMultiplier; }
+//======================================================================
+	public PlanterAgeAction()
 	{
-		this("Fertilize");
+		this("Water");
 	}
 //======================================================================
-	protected ItemAction(String s)
+	protected PlanterAgeAction(String s)
 	{
-		super(s, "fertilize", "fertilizing", "Fertilizing");
+		super(s, "water", "watering", "Watering");
 
-		cost = 100;
-		time = 50;
-		item = ItemList.ash;
-		skill = 10045;
+		cost = 5000;
+		time = 30;
+		item = ItemList.water;
+		skill = 10048;
 	}
 //======================================================================
 	protected void performItemAction(Item item, double multiplier)
 	{
-		TaskPoller.addTask(new ItemTask(item, multiplier));
+		TaskPoller.addTask(new PlanterAgeTask(item, multiplier));
 	}
 //======================================================================
 	protected boolean checkItemConditions(Creature performer, Item item)
 	{
-		if(item.isHarvestable()){
-			performer.getCommunicator().sendNormalServerMessage("This " + item.getName() + " can already be harvested.", (byte)1);
+		if(!PlanterAgeTask.canGrow(item)){
+			performer.getCommunicator().sendNormalServerMessage("This " + item.getName() + " is too old.", (byte)1);
 			return true;
 		}
 
 		return false;
-	}
-//======================================================================
-	protected boolean checkItemType(Item item)
-	{
-		return ItemTask.checkItemType(item);
 	}
 //======================================================================
 	@Override
@@ -55,7 +54,7 @@ public class ItemAction extends AbstractAction
 	{
 		if(obeyProtection && Zones.protectedTiles[target.getTileX()][target.getTileY()]) return null;
 
-		if(ItemTask.checkItemType(target)){
+		if(PlanterTask.checkItemType(target)){
 			return Arrays.asList(actionEntry);
 		}
 		return null;
@@ -73,11 +72,11 @@ public class ItemAction extends AbstractAction
 		try{
 			Skill skl = performer.getSkills().getSkillOrLearn(skill);
 			int timeLeft = getActionTime(skl.knowledge);
-			int actioncost = getActionCost(skl.knowledge, 1, 1);
+			int actioncost = (int)(costMultiplier * getActionCost(skl.knowledge, PlanterTask.getPlanterAge(target), 127));
 			String itemname = target.getName();
 
 			if(counter == 1.0f){
-				if(!ItemTask.checkItemType(target)) return true;
+				if(!PlanterTask.checkItemType(target)) return true;
 				if(checkConditions) if(checkItemConditions(performer, target)) return true;
 				if(checkIfPolled) if(checkStatus(performer, target.getWurmId())) return true;
 
