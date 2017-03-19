@@ -1,9 +1,10 @@
 # Accelerated Forestry & Gardening Server Mod for Wurm Unlimited
 
 This mod allows to speed up the growth of trees, bushes, fruit (and
-other harvestables), hedges, grass, kelp, reed, flowers and to refresh
-foraging and botanizing for tiles that allow it. The default items for 
-watering and fertilizing are water and ash, respectively.
+other harvestables), hedges, grass, kelp, reed, flowers, trellises,
+herb planters and to refresh foraging and botanizing for tiles that
+allow it. The default items for watering and fertilizing are water and
+ash, respectively.
 
 Every action to start a task consumes a certain amount of a watering or
 fertilizing item. After the action is performed, a certain time span is
@@ -29,6 +30,12 @@ same probability. *(gardening)*
 visual indicator of height for these tiles. *(gardening)*
 * Refresh the ability to forage and/or botanize tiles that allow it by
 fertilizing them. *(gardening)*
+* Make trellises (except ivy) harvestable out of season by fertilizing
+them. *(gardening)*
+* Make herb planters age faster by watering them to reach the age at
+which they can be harvested. *(gardening)*
+* Make herb planters harvestable by fertilizing them when at the right
+age. *(gardening)*
 
 Almost every aspect can be modified via the configuration file.
 
@@ -93,8 +100,8 @@ Planned features:
 
 Requirements:
 
-* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.21 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
-* Intended for Wurm Unlimited 1.1.2.3
+* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.24 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
+* Intended for Wurm Unlimited 1.3.1.3
 
 As always with modded content, I rid me of all liability. Although the 
 mod is non-invasive and can be removed at any time without any effect on 
