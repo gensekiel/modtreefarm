@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.zones.TilePoller;
-import com.wurmonline.server.zones.VolaTile;
 
 public class ForageBotanizeTask extends GrassTileTask
 {
@@ -36,10 +35,10 @@ public class ForageBotanizeTask extends GrassTileTask
 	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 		Tiles.Tile ttile = getTile(rawtile);
-		
+
 		// Generic check
 		if(ttile == null) return true;
-		
+
 		if(!checkTileType(rawtile)) return true;
 
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
@@ -49,11 +48,11 @@ public class ForageBotanizeTask extends GrassTileTask
 			boolean canbotanize = ttile.canBotanize();
 			boolean foragable   = Server.isForagable  (x, y);
 			boolean botanizable = Server.isBotanizable(x, y);
-			if( canforage && !canbotanize && foragable  ) return true; 
-			if(!canforage &&  canbotanize && botanizable) return true; 
-			if( canforage &&  canbotanize && botanizable && foragable) return true; 
+			if( canforage && !canbotanize && foragable  ) return true;
+			if(!canforage &&  canbotanize && botanizable) return true;
+			if( canforage &&  canbotanize && botanizable && foragable) return true;
 		}
-		
+
 		return false;
 	}
 //======================================================================
@@ -89,8 +88,8 @@ public class ForageBotanizeTask extends GrassTileTask
 	public void forceSeedGrowth(int rawtile, int tilex, int tiley)
 	{
 		Tiles.Tile tt = getTile(rawtile);
-		VolaTile vtile = getVolaTile(tilex, tiley);
-		if(vtile == null) return;
+//		VolaTile vtile = getVolaTile(tilex, tiley);
+//		if(vtile == null) return;
 		// Should be okay to remove these
 //		if(vtile.getStructure() != null) return;
 //		if(vtile.getFences().length > 0) return;
