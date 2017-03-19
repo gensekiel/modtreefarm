@@ -178,6 +178,22 @@ public class TreeFarmMod implements
 		fertilizingaction.setTime(getOption("FertilizingTime", fertilizingaction.getTime(), properties));
 		fertilizingaction.setItem(getOption("FertilizingItem", fertilizingaction.getItem(), properties));
 
+		foragebotanizeaction.setCost(getOption("FertilizingCost", foragebotanizeaction.getCost(), properties));
+		foragebotanizeaction.setTime(getOption("FertilizingTime", foragebotanizeaction.getTime(), properties));
+		foragebotanizeaction.setItem(getOption("FertilizingItem", foragebotanizeaction.getItem(), properties));
+
+		itemaction.setCost(getOption("FertilizingCost", itemaction.getCost(), properties));
+		itemaction.setTime(getOption("FertilizingTime", itemaction.getTime(), properties));
+		itemaction.setItem(getOption("FertilizingItem", itemaction.getItem(), properties));
+
+		planteraction.setCost(getOption("FertilizingCost", planteraction.getCost(), properties));
+		planteraction.setTime(getOption("FertilizingTime", planteraction.getTime(), properties));
+		planteraction.setItem(getOption("FertilizingItem", planteraction.getItem(), properties));
+
+		planterageaction.setCost(getOption("WateringCost", planterageaction.getCost(), properties));
+		planterageaction.setTime(getOption("WateringTime", planterageaction.getTime(), properties));
+		planterageaction.setItem(getOption("WateringItem", planterageaction.getItem(), properties));
+
 		useOriginalGrowthFunction = getOption("UseOriginalGrowthFunction", useOriginalGrowthFunction, properties);
 		TreeGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
 		GrassGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
