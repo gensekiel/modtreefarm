@@ -24,7 +24,8 @@ public class TreeFarmMod implements
 	private static TreeGrassAction treegrassaction = new TreeGrassAction();
 	private static KelpReedGrowAction kelpreedaction = new KelpReedGrowAction();
 	private static ForageBotanizeAction foragebotanizeaction = new ForageBotanizeAction();
-	private static ItemAction itemaction = new ItemAction();
+	private static TrellisAction itemaction = new TrellisAction();
+	private static TrellisAgeAction itemageaction = new TrellisAgeAction();
 	private static PlanterAction planteraction = new PlanterAction();
 	private static PlanterAgeAction planterageaction = new PlanterAgeAction();
 
@@ -52,6 +53,7 @@ public class TreeFarmMod implements
 		if(allowGrow && kelpreed)    kelpreedaction.register();
 		if(allowFert && allowFandB)  foragebotanizeaction.register();
 		if(allowFert && allowTrell)  itemaction.register();
+		if(allowGrow && allowTrell)  itemageaction.register();
 		if(allowFert && allowPlant)  planteraction.register();
 		if(allowGrow && allowPlant)  planterageaction.register();
 		if(augmentExamine)           ModActions.registerAction(new ExamineAction());
@@ -64,7 +66,8 @@ public class TreeFarmMod implements
 			TreeGrassAction tg2 = new TreeGrassAction("Water ground (debug)");
 			KelpReedGrowAction kr2 = new KelpReedGrowAction("Fertilize (debug)");
 			ForageBotanizeAction fb2 = new ForageBotanizeAction("Fertilize ground (debug)");
-			ItemAction ia2 = new ItemAction("Fertilize (debug)");
+			TrellisAction ia2 = new TrellisAction("Fertilize (debug)");
+			TrellisAgeAction ia3 = new TrellisAgeAction("Water (debug)");
 			PlanterAction pa2 = new PlanterAction("Fertilize (debug)");
 			PlanterAgeAction pl2 = new PlanterAgeAction("Water (debug)");
 
@@ -76,6 +79,7 @@ public class TreeFarmMod implements
 			kr2.setCost(0); kr2.setTime(0); kr2.setItem(0);
 			fb2.setCost(0); fb2.setTime(0); fb2.setItem(0);
 			ia2.setCost(0); ia2.setTime(0); ia2.setItem(0);
+			ia3.setCost(0); ia3.setTime(0); ia3.setItem(0);
 			pa2.setCost(0); pa2.setTime(0); pa2.setItem(0);
 			pl2.setCost(0); pl2.setTime(0); pl2.setItem(0);
 
@@ -87,6 +91,7 @@ public class TreeFarmMod implements
 			kr2.register();
 			fb2.register();
 			ia2.register();
+			ia3.register();
 			pa2.register();
 			pl2.register();
 
@@ -186,6 +191,10 @@ public class TreeFarmMod implements
 		itemaction.setTime(getOption("FertilizingTime", itemaction.getTime(), properties));
 		itemaction.setItem(getOption("FertilizingItem", itemaction.getItem(), properties));
 
+		itemageaction.setCost(getOption("WateringCost", itemageaction.getCost(), properties));
+		itemageaction.setTime(getOption("WateringTime", itemageaction.getTime(), properties));
+		itemageaction.setItem(getOption("WateringItem", itemageaction.getItem(), properties));
+
 		planteraction.setCost(getOption("FertilizingCost", planteraction.getCost(), properties));
 		planteraction.setTime(getOption("FertilizingTime", planteraction.getTime(), properties));
 		planteraction.setItem(getOption("FertilizingItem", planteraction.getItem(), properties));
@@ -234,7 +243,8 @@ public class TreeFarmMod implements
 		GrassTileTask.setGrowthMultiplier(getOption("TimeMultiplierGrass", GrassTileTask.getGrowthMultiplier(), properties));
 		ForageBotanizeTask.setGrowthMultiplier(getOption("TimeMultiplierForageBotanize", ForageBotanizeTask.getGrowthMultiplier(), properties));
 		FlowerGrowTask.setGrowthMultiplier(getOption("TimeMultiplierFlowers", FlowerGrowTask.getGrowthMultiplier(), properties));
-		ItemTask.setGrowthMultiplier(getOption("TimeMultiplierTrellises", ItemTask.getGrowthMultiplier(), properties));
+		TrellisTask.setGrowthMultiplier(getOption("TimeMultiplierTrellises", TrellisTask.getGrowthMultiplier(), properties));
+		TrellisAgeTask.setGrowthMultiplier(getOption("TimeMultiplierTrellises", TrellisAgeTask.getGrowthMultiplier(), properties));
 		PlanterTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterTask.getGrowthMultiplier(), properties));
 		PlanterAgeTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterAgeTask.getGrowthMultiplier(), properties));
 

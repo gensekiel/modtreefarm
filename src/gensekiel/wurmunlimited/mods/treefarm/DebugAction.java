@@ -28,8 +28,8 @@ public abstract class DebugAction extends ActionTemplate
 		else return null;
 	}
 //======================================================================
-	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, boolean corner, int tile, short num, float counter){ action(performer); return true; }
-	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile, short num, float counter){ action(performer); return true; }
+//	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, boolean corner, int tile, short num, float counter){ action(performer); return true; }
+//	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, int tile, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, int tile, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, int planetId, short num, float counter){ action(performer); return true; }
@@ -61,8 +61,8 @@ public abstract class DebugAction extends ActionTemplate
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, int tile, int dir){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, Tiles.TileBorderDirection dir, boolean border, int heightOffset){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, Tiles.TileBorderDirection dir, boolean border, int heightOffset){ return getBehaviorsFor(performer); }
-	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, boolean corner, int tile){ return getBehaviorsFor(performer); }
-	@Override public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile){ return getBehaviorsFor(performer); }
+//	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, boolean corner, int tile){ return getBehaviorsFor(performer); }
+//	@Override public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Skill skill){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Skill skill){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item target){ return getBehaviorsFor(performer); }

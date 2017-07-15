@@ -30,6 +30,7 @@ same probability. *(gardening)*
 visual indicator of height for these tiles. *(gardening)*
 * Refresh the ability to forage and/or botanize tiles that allow it by
 fertilizing them. *(gardening)*
+* Make trellises grow by watering them. *(gardening)*
 * Make trellises (except ivy) harvestable out of season by fertilizing
 them. *(gardening)*
 * Make herb planters age faster by watering them to reach the age at
@@ -100,8 +101,8 @@ Planned features:
 
 Requirements:
 
-* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.24 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
-* Intended for Wurm Unlimited 1.3.1.3
+* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.26.3 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
+* Intended for Wurm Unlimited 1.4.0.1
 
 As always with modded content, I rid me of all liability. Although the 
 mod is non-invasive and can be removed at any time without any effect on 

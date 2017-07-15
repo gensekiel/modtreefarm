@@ -8,45 +8,20 @@ import com.wurmonline.server.behaviours.Action;
 import com.wurmonline.server.behaviours.ActionEntry;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
-import com.wurmonline.server.items.ItemList;
 import com.wurmonline.server.skills.Skill;
 import com.wurmonline.server.zones.Zones;
 
-public class ItemAction extends AbstractAction
+public abstract class ItemAction extends AbstractAction
 {
-//======================================================================
-	public ItemAction(){ this("Fertilize"); }
-//======================================================================
-	public ItemAction(String s)
-	{
-		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
-
-		cost = 100;
-		time = 50;
-		item = ItemList.ash;
-		skill = 10045;
-	}
 //======================================================================
 	protected ItemAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
-	protected boolean checkItemConditions(Creature performer, Item item)
-	{
-		if(item.isHarvestable()){
-			performer.getCommunicator().sendNormalServerMessage("This " + item.getName() + " can already be harvested.", (byte)1);
-			return true;
-		}
-
-		return false;
-	}
+	protected abstract int getAge(Item target);
+	protected abstract int getMaxAge();
 //======================================================================
-	protected boolean checkItemType(Item item){ return ItemTask.checkItemType(item); }
-	protected int getAge(Item target){ return 1; }
-	protected int getMaxAge(){ return 1; }
-//======================================================================
-	protected void performItemAction(Item item, double multiplier)
-	{
-		TaskPoller.addTask(new ItemTask(item, multiplier));
-	}
+	protected abstract boolean checkItemType(Item item);
+	protected abstract boolean checkItemConditions(Creature performer, Item item);
+	protected abstract void performItemAction(Item item, double multiplier);
 //======================================================================
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Item target)

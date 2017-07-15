@@ -17,6 +17,7 @@ public class PlanterAgeTask extends ItemTask
 	public PlanterAgeTask(Item item, double multiplier)
 	{
 		super(item, multiplier);
+		tasktime *= growthMultiplier;
 	}
 //======================================================================
 	public static boolean canGrow(Item item)
@@ -49,12 +50,6 @@ public class PlanterAgeTask extends ItemTask
 		return true;
 	}
 //======================================================================
-	@Override
-	public String getDescription()
-	{
-		Item item = getItem();
-		if(item == null) return "It has been watered recently.";
-		return "This " + item.getName() + " has been watered recently.";
-	}
+	@Override public String getDescription(){ return getDescription("watered"); }
 //======================================================================
 }

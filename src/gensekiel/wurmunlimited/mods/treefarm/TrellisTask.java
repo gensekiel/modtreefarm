@@ -1,18 +1,19 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
+import com.wurmonline.mesh.FoliageAge;
 import com.wurmonline.server.items.Item;
 
-public class PlanterTask extends ItemTask
+public class TrellisTask extends ItemTask
 {
 	private static final long serialVersionUID = 3L;
 //======================================================================
-	private static int planter_id = 1162;
+	private static int allowed_ids[] = {920, 1018, 1274};
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
-	public PlanterTask(Item item, double multiplier)
+	public TrellisTask(Item item, double multiplier)
 	{
 		super(item, multiplier);
 		tasktime *= growthMultiplier;
@@ -20,25 +21,14 @@ public class PlanterTask extends ItemTask
 //======================================================================
 	public static boolean checkItemType(Item item)
 	{
-		if(planter_id == item.getTemplateId()) return true;
-		else return false;
-	}
-//======================================================================
-	public static int getPlanterAge(Item item)
-	{
-		return item.getAuxData() & 0x7F;
+		return checkItemType(allowed_ids, item);
 	}
 //======================================================================
 	public static boolean isFertilizable(Item item)
 	{
-		int age = getPlanterAge(item);
-		if(age > 5 && age < 95) return true;
-		else return false;
-	}
-//======================================================================
-	public static boolean isPickable(Item item)
-	{
-		return ((item.getAuxData() & 0x80) != 0);
+		int age = item.getLeftAuxData();
+		if(age > FoliageAge.YOUNG_FOUR.getAgeId() && age < FoliageAge.OVERAGED.getAgeId()) return true;
+		return false;
 	}
 //======================================================================
 	@Override
@@ -58,7 +48,7 @@ public class PlanterTask extends ItemTask
 	{
 		Item item = getItem();
 		if(item != null){
-			item.setAuxData((byte)(item.getAuxData() | 0x80));
+			item.setHarvestable(true);
 		}
 		return true;
 	}
