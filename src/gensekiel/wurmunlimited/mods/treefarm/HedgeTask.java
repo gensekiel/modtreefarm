@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.wurmonline.server.structures.Fence;
 import com.wurmonline.server.zones.VolaTile;
+import com.wurmonline.shared.constants.StructureConstantsEnum;
 
 public class HedgeTask extends AbstractTask
 {
@@ -23,9 +24,9 @@ public class HedgeTask extends AbstractTask
 	public HedgeTask(Fence fence, double multiplier)
 	{
 		super(multiplier);
-		
+
 		tasktime *= growthMultiplier;
-		
+
 		key = fence.getId();
 		zoneID = fence.getZoneId();
 		x = fence.getTileX();
@@ -53,7 +54,7 @@ public class HedgeTask extends AbstractTask
 		if(checkForWUPoll){
 			if(!keepGrowing && getHedgeAge(fence) != age) return true;
 		}
-		
+
 		if(!canGrow(fence)) return true;
 
 		return false;
@@ -98,24 +99,24 @@ public class HedgeTask extends AbstractTask
 //======================================================================
 	public static boolean canGrow(Fence fence)
 	{
-		if(fence.getType() == 105) return false; // Low Lavender
-		if(fence.getType() == 112) return false; // Medium Camellia
+		if(fence.getType() == StructureConstantsEnum.HEDGE_FLOWER1_LOW) return false; // Low Lavender
+		if(fence.getType() == StructureConstantsEnum.HEDGE_FLOWER3_MEDIUM) return false; // Medium Camellia
 		return !fence.isHighHedge();
 	}
 //======================================================================
 	public static int getHedgeAge(Fence fence)
 	{
-		return (fence.getType() - 105) % 3;
+		return (fence.getType().value - StructureConstantsEnum.HEDGE_FLOWER1_LOW.value) % 3;
 	}
 //======================================================================
 	public static int getHedgeType(Fence fence)
 	{
-		return (fence.getType() - 105) / 3;
+		return (fence.getType().value - StructureConstantsEnum.HEDGE_FLOWER1_LOW.value) / 3;
 	}
 //======================================================================
 	public static void forceHedgeGrowth(Fence fence, VolaTile vtile)
 	{
-		fence.setType((byte)(fence.getType() + 1));
+		fence.setType(StructureConstantsEnum.getEnumByValue((short)(fence.getType().value + 1)));
 		try{
 			fence.save();
 			if(vtile != null) vtile.updateFence(fence);
