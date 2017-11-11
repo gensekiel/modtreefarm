@@ -56,6 +56,13 @@ public class GrassGrowTask extends GrassTileTask
 		return GrassData.GrowthStage.decodeTileData(data).getCode();
 	}
 //======================================================================
+	public boolean canGrow()
+	{
+		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(Tiles.decodeData(tile));
+		if(gs.isMax()) return false;
+		return true;
+	}
+//======================================================================
 	@Override
 	public boolean performCheck()
 	{
@@ -74,11 +81,7 @@ public class GrassGrowTask extends GrassTileTask
 				return true;
 		}
 
-//		byte age = getGrowthStage(Tiles.decodeData(rawtile));
-//		if(age >= 3) return true;
-
-		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(Tiles.decodeData(rawtile));
-		if(gs.isMax()) return true;
+		if(!canGrow()) return true;
 
 		return false;
 	}
@@ -95,7 +98,10 @@ public class GrassGrowTask extends GrassTileTask
 
 		if(keepGrowing){
 			tile = rawtile;
-			return false;
+			if(canGrow()){
+				resetTimestamp();
+				return false;
+			}
 		}
 		return true;
 	}

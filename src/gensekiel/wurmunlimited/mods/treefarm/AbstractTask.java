@@ -44,6 +44,11 @@ public abstract class AbstractTask implements Serializable
 		tasktime = BaseGrowthTime;
 		tasktime *= multiplier;
 
+		resetTimestamp();
+	}
+//======================================================================
+	protected void resetTimestamp()
+	{
 		timestamp = System.currentTimeMillis();
 	}
 //======================================================================

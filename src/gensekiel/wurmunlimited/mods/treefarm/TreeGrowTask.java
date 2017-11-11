@@ -74,6 +74,7 @@ public class TreeGrowTask extends TreeTileTask
 
 		if(keepGrowing && getAge(Tiles.decodeData(rawtile)) < ageLimit){
 			tile = rawtile;
+			resetTimestamp();
 			return false;
 		}
 		return true;

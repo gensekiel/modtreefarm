@@ -67,7 +67,11 @@ public class HedgeTask extends AbstractTask
 		Fence fence = getFence(vtile, key);
 		if(fence != null){
 			forceHedgeGrowth(fence, vtile);
-			if(keepGrowing) return false;
+
+			if(keepGrowing && canGrow(fence)){
+				resetTimestamp();
+				return false;
+			}
 		}
 		return true;
 	}

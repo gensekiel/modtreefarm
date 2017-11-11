@@ -52,6 +52,13 @@ public class TreeGrassTask extends GrassTileTask
 		         || getTile(rawtile).isBush() );
 	}
 //======================================================================
+	public boolean canGrow()
+	{
+		GrassData.GrowthTreeStage grassheight = GrassData.GrowthTreeStage.decodeTileData(Tiles.decodeData(tile));
+		if(grassheight.isMax()) return false;
+		return true;
+	}
+//======================================================================
 	@Override
 	public boolean performCheck()
 	{
@@ -70,11 +77,7 @@ public class TreeGrassTask extends GrassTileTask
 				return true;
 		}
 
-//		byte age = getGrowthStage(Tiles.decodeData(rawtile));
-//		if(age >= 3) return true;
-
-		GrassData.GrowthTreeStage grassheight = GrassData.GrowthTreeStage.decodeTileData(Tiles.decodeData(rawtile));
-		if(grassheight.isMax()) return true;
+		if(!canGrow()) return true;
 
 		return false;
 	}
@@ -91,7 +94,10 @@ public class TreeGrassTask extends GrassTileTask
 
 		if(keepGrowing){
 			tile = rawtile;
-			return false;
+			if(canGrow()){
+				resetTimestamp();
+				return false;
+			}
 		}
 		return true;
 	}
