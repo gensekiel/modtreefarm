@@ -11,10 +11,6 @@ public class TreeGrowTask extends TreeTileTask
 {
 	private static final long serialVersionUID = 3L;
 //======================================================================
-	private static byte ageLimit = 15;
-	public static void setAgeLimit(byte b){ ageLimit = b; }
-	public static byte getAgeLimit(){ return ageLimit; }
-//----------------------------------------------------------------------
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
@@ -76,13 +72,9 @@ public class TreeGrowTask extends TreeTileTask
 		else
 			forceTreeGrowth(rawtile, x, y, getType(), getData());
 
-		if(keepGrowing){
-			if(getAge(Tiles.decodeData(rawtile)) >= ageLimit){
-				return true;
-			}else{
-				tile = rawtile;
-				return false;
-			}
+		if(keepGrowing && getAge(Tiles.decodeData(rawtile)) < ageLimit){
+			tile = rawtile;
+			return false;
 		}
 		return true;
 	}

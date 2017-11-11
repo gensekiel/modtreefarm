@@ -19,6 +19,10 @@ public abstract class AbstractTask implements Serializable
 	public static void setKeepGrowing(boolean b){ keepGrowing = b; }
 	public static boolean getKeepGrowing(){ return keepGrowing; }
 //----------------------------------------------------------------------
+	protected static byte ageLimit = 14;
+	public static void setAgeLimit(byte b){ ageLimit = b; }
+	public static byte getAgeLimit(){ return ageLimit; }
+//----------------------------------------------------------------------
 	protected static long BaseGrowthTime = 600000;
 	public static void setBaseGrowthTime(long l){ BaseGrowthTime = l; }
 	public static long getBaseGrowthTime(){ return BaseGrowthTime; }

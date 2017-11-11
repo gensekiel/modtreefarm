@@ -228,8 +228,7 @@ public class TreeFarmMod implements
 		AbstractTask.setKeepGrowing(getOption("KeepGrowing", AbstractTask.getKeepGrowing(), properties));
 		AbstractTask.setCheckForWUPoll(getOption("CheckForWUPoll", AbstractTask.getCheckForWUPoll(), properties));
 		AbstractTask.setBaseGrowthTime(getOption("BaseTaskTime", AbstractTask.getBaseGrowthTime(), properties));
-
-		TreeGrowTask.setAgeLimit(getOption("AgeLimit", TreeGrowTask.getAgeLimit(), properties));
+		AbstractTask.setAgeLimit(getOption("AgeLimit", AbstractTask.getAgeLimit(), properties));
 
 		double growthMultiplierGrow = getOption("TimeMultiplierGrow", 1.0, properties);
 		TreeGrowTask .setGrowthMultiplier(growthMultiplierGrow);

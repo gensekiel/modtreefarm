@@ -24,9 +24,14 @@ public class TrellisAgeTask extends ItemTask
 		return checkItemType(allowed_ids, item);
 	}
 //======================================================================
+	public static int getAge(Item item)
+	{
+		return item.getLeftAuxData();
+	}
+//======================================================================
 	public static boolean canGrow(Item item)
 	{
-		int age = item.getLeftAuxData();
+		int age = getAge(item);
 		if(age < FoliageAge.SHRIVELLED.getAgeId()) return true;
 		else return false;
 	}
@@ -50,6 +55,8 @@ public class TrellisAgeTask extends ItemTask
 		if(item != null){
 			item.setLeftAuxData(item.getLeftAuxData() + 1);
 			item.updateName();
+
+			if(keepGrowing && getAge(item) < ageLimit) return false;
 		}
 		return true;
 	}
