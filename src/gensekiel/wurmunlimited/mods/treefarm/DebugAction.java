@@ -29,15 +29,18 @@ public abstract class DebugAction extends ActionTemplate
 	}
 //======================================================================
 //	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, boolean corner, int tile, short num, float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, boolean corner, int tile, int heightOffset, short num, float counter){ action(performer); return true; }
 //	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile, short num, float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile, int heightOffset, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, int tile, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, int tile, short num, float counter){ action(performer); return true; }
-	@Override public boolean action(Action action, Creature performer, int planetId, short num, float counter){ action(performer); return true; }
-	@Override public boolean action(Action action, Creature performer, Item source, int planetId, short num, float counter){ action(performer); return true; }
-	@Override public boolean action(Action action, Creature performer, Item source, Item target, short num, float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, int id, short num, float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, Item source, int id, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Wound target, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item source, Wound target, short num, float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, Item source, Item target, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item target, short num, float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, Item[] targets, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item source, Creature target, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Creature target, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item source, Wall target, short num, float counter){ action(performer); return true; }
@@ -47,12 +50,13 @@ public abstract class DebugAction extends ActionTemplate
 	@Override public boolean action(Action action, Creature performer, Item source, Skill skill, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Skill skill, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item source, boolean onSurface, Floor target, int encodedTile, short num, float counter){ action(performer); return true; }
-	@Override public boolean action(Action action, Creature performer, boolean onSurface, Floor floor, int encodedTile, short num, float counter){ action(performer); return true; }
+//	@Override public boolean action(Action action, Creature performer, boolean onSurface, Floor floor, int encodedTile, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, Tiles.TileBorderDirection dir, long borderId, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, Tiles.TileBorderDirection dir, long borderId, short num, float counter){ action(performer); return true; }
-	@Override public boolean action(Action action, Creature performer, Item[] targets, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, boolean onSurface, BridgePart bridgePart, int encodedTile, short num, float counter){ action(performer); return true; }
 	@Override public boolean action(Action action, Creature performer, Item item, boolean onSurface, BridgePart bridgePart, int encodedTile, short num, float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, int tilex, int tiley, boolean onSurface, int tile, int dir, short num, final float counter){ action(performer); return true; }
+	@Override public boolean action(Action action, Creature performer, Item source, int tilex, int tiley, boolean onSurface, int heightOffset, int tile, int dir, short num, float counter){ action(performer); return true; }
 //======================================================================
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, long target){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int tile){ return getBehaviorsFor(performer); }
@@ -62,7 +66,9 @@ public abstract class DebugAction extends ActionTemplate
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, Tiles.TileBorderDirection dir, boolean border, int heightOffset){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, Tiles.TileBorderDirection dir, boolean border, int heightOffset){ return getBehaviorsFor(performer); }
 //	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, boolean corner, int tile){ return getBehaviorsFor(performer); }
+	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, boolean corner, int tile, int heightOffset){ return getBehaviorsFor(performer); }
 //	@Override public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile){ return getBehaviorsFor(performer); }
+	@Override public List<ActionEntry> getBehavioursFor(Creature performer, int tilex, int tiley, boolean onSurface, boolean corner, int tile, int heightOffset){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Skill skill){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Skill skill){ return getBehaviorsFor(performer); }
 	@Override public List<ActionEntry> getBehavioursFor(Creature performer, Item target){ return getBehaviorsFor(performer); }
