@@ -61,7 +61,7 @@ public class TreeGrowTask extends TreeTileTask
 		}
 
 		byte age = getAge(Tiles.decodeData(rawtile));
-		if(age >= ageLimit) return true;
+		if(age >= getMaxAge()) return true;
 
 		return false;
 	}
@@ -77,8 +77,12 @@ public class TreeGrowTask extends TreeTileTask
 			forceTreeGrowth(rawtile, x, y, getType(), getData());
 
 		if(keepGrowing){
-			tile = rawtile;
-			return false;
+			if(getAge(Tiles.decodeData(rawtile)) >= ageLimit){
+				return true;
+			}else{
+				tile = rawtile;
+				return false;
+			}
 		}
 		return true;
 	}

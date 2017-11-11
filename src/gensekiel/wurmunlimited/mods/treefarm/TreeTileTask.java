@@ -44,13 +44,13 @@ public abstract class TreeTileTask extends TileTask
 	public TreeTileTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
 		super(rawtile, tilex, tiley, multiplier);
-		
+
 		byte tdata = getData();
 		Tiles.Tile tiletype = getTile(tile);
-		
+
 		if(tiletype.isTree()){
 			tasktime *= GrowthMultiplierTree;
-			
+
 			     if(tiletype.getTreeType(tdata) == TreeData.TreeType.BIRCH)    tasktime *= GrowthMultiplierBirch;
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.PINE)     tasktime *= GrowthMultiplierPine;
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.OAK)      tasktime *= GrowthMultiplierOak;
@@ -67,10 +67,10 @@ public abstract class TreeTileTask extends TileTask
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.LINDEN)   tasktime *= GrowthMultiplierLinden;
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.ORANGE)   tasktime *= GrowthMultiplierOrange;
 		}
-		
+
 		if(tiletype.isBush()){
 			tasktime *= GrowthMultiplierBush;
-			
+
 			     if(tiletype.getBushType(tdata) == BushData.BushType.CAMELLIA) tasktime *= GrowthMultiplierCamellia;
 			else if(tiletype.getBushType(tdata) == BushData.BushType.GRAPE)    tasktime *= GrowthMultiplierGrape;
 			else if(tiletype.getBushType(tdata) == BushData.BushType.LAVENDER) tasktime *= GrowthMultiplierLavender;
@@ -79,7 +79,7 @@ public abstract class TreeTileTask extends TileTask
 			else if(tiletype.getBushType(tdata) == BushData.BushType.THORN)    tasktime *= GrowthMultiplierThorn;
 			else if(tiletype.getBushType(tdata) == BushData.BushType.HAZELNUT) tasktime *= GrowthMultiplierHazelnut;
 		}
-	
+
 		byte tage = getAge();
 		if(tage < 15) tasktime *= GrowthMultiplierAge[tage];
 	}
@@ -92,6 +92,11 @@ public abstract class TreeTileTask extends TileTask
 	public static byte getAge(byte data)
 	{
 		return (byte)(data >> 4 & 0xF);
+	}
+//======================================================================
+	public static byte getMaxAge()
+	{
+		return 15;
 	}
 //======================================================================
 	public static byte convertTile(byte type, byte data)

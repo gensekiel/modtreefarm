@@ -28,7 +28,7 @@ public class WateringAction extends TileAction
 	@Override
 	protected byte getMaxAge()
 	{
-		return 15;
+		return TreeTileTask.getMaxAge();
 	}
 //======================================================================
 	@Override
@@ -38,7 +38,7 @@ public class WateringAction extends TileAction
 		int age = TreeTileTask.getAge(data);
 		String tilename = TileTask.getTileName(rawtile);
 
-		if(age >= TreeGrowTask.getAgeLimit()){
+		if(age >= TreeTileTask.getMaxAge()){
 			performer.getCommunicator().sendNormalServerMessage("This " + tilename + " is too old to make it grow by watering it.", (byte)1);
 			return true;
 		}
