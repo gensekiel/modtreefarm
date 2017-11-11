@@ -25,6 +25,7 @@ public class ExamineAction implements ModAction, ActionPerformer
 			long now = System.currentTimeMillis();
 			long lastpoll = TaskPoller.getLastPolled();
 			long nextpoll = lastpoll + TaskPoller.getPollInterval();
+			performer.getCommunicator().sendNormalServerMessage("========== ModTreeFarm ==========");
 			performer.getCommunicator().sendNormalServerMessage("Last polled  " + (now - lastpoll) / 1000.0 + " seconds ago.");
 			performer.getCommunicator().sendNormalServerMessage("Next poll in " + (nextpoll - now) / 1000.0 + " seconds.");
 			if(at != null){
@@ -33,7 +34,10 @@ public class ExamineAction implements ModAction, ActionPerformer
 				performer.getCommunicator().sendNormalServerMessage("Task timestamp : " + timestamp);
 				performer.getCommunicator().sendNormalServerMessage("Task time total: " + (tasktime / 1000.0) + " seconds.");
 				performer.getCommunicator().sendNormalServerMessage("Task time left : " + (tasktime - now + timestamp) / 1000.0 + " seconds.");
+			}else{
+				performer.getCommunicator().sendNormalServerMessage("No task pending.");
 			}
+			performer.getCommunicator().sendNormalServerMessage("=================================");
 		}
 		if(at != null){
 			performer.getCommunicator().sendNormalServerMessage(at.getDescription());
@@ -59,7 +63,7 @@ public class ExamineAction implements ModAction, ActionPerformer
 	@Override
 	public boolean action(Action action, Creature performer, Item source, boolean onSurface, Fence target, short num, float counter)
 	{
-		boolean ret = ActionPerformer.super.action(action, performer, source, onSurface, target, num, counter); 
+		boolean ret = ActionPerformer.super.action(action, performer, source, onSurface, target, num, counter);
 		action(performer, target.getId());
 		return ret;
 	}
