@@ -47,10 +47,10 @@ public class TreeGrowTask extends TreeTileTask
 	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 		Tiles.Tile ttile = getTile(rawtile);
-		
+
 		// Generic check
 		if(ttile == null) return true;
-		
+
 		if(!checkTileType(rawtile)) return true;
 
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
@@ -59,10 +59,10 @@ public class TreeGrowTask extends TreeTileTask
 			if(!keepGrowing && (tile & 0x00F00000) != (rawtile & 0x00F00000))
 				return true;
 		}
-		
+
 		byte age = getAge(Tiles.decodeData(rawtile));
 		if(age >= ageLimit) return true;
-		
+
 		return false;
 	}
 //======================================================================
@@ -75,8 +75,11 @@ public class TreeGrowTask extends TreeTileTask
 			callTreeGrowthWrapper(rawtile, x, y, getType(), getData());
 		else
 			forceTreeGrowth(rawtile, x, y, getType(), getData());
-		
-		if(keepGrowing) return false;
+
+		if(keepGrowing){
+			tile = rawtile;
+			return false;
+		}
 		return true;
 	}
 //======================================================================
@@ -106,11 +109,11 @@ public class TreeGrowTask extends TreeTileTask
 		// centered there. It seems that this function here is intended
 		// for translating old tiles to the new format.
 		// byte new_type = convertToNewType(Tiles.getTile(type), new_data);
-		
+
 		// Manual conversion as the above method is private and I don't
 		// want to use an injected method just for that.
 		byte new_type = convertTile(type, data);
-		
+
 		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), new_type, new_data));
 		Server.modifyFlagsByTileType(tilex, tiley, new_type);
 		Players.getInstance().sendChangedTile(tilex, tiley, true, false);

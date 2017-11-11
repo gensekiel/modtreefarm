@@ -57,10 +57,10 @@ public class TreeGrassTask extends GrassTileTask
 	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 		Tiles.Tile ttile = getTile(rawtile);
-		
+
 		// Generic check
 		if(ttile == null) return true;
-		
+
 		if(!checkTileType(rawtile)) return true;
 
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
@@ -69,13 +69,13 @@ public class TreeGrassTask extends GrassTileTask
 			if(!keepGrowing && (tile & 0x00030000) != (rawtile & 0x00030000))
 				return true;
 		}
-		
+
 //		byte age = getGrowthStage(Tiles.decodeData(rawtile));
 //		if(age >= 3) return true;
-		
+
 		GrassData.GrowthTreeStage grassheight = GrassData.GrowthTreeStage.decodeTileData(Tiles.decodeData(rawtile));
 		if(grassheight.isMax()) return true;
-		
+
 		return false;
 	}
 //======================================================================
@@ -88,8 +88,11 @@ public class TreeGrassTask extends GrassTileTask
 			callTreeGrassGrowthWrapper(rawtile, x, y, getType(), getData());
 		else
 			forceTreeGrassGrowth(rawtile, x, y, getType(), getData());
-		
-		if(keepGrowing) return false;
+
+		if(keepGrowing){
+			tile = rawtile;
+			return false;
+		}
 		return true;
 	}
 //======================================================================

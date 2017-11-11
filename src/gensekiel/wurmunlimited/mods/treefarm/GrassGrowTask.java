@@ -61,10 +61,10 @@ public class GrassGrowTask extends GrassTileTask
 	{
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 		Tiles.Tile ttile = getTile(rawtile);
-		
+
 		// Generic check
 		if(ttile == null) return true;
-		
+
 		if(!checkTileType(rawtile)) return true;
 
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
@@ -73,13 +73,13 @@ public class GrassGrowTask extends GrassTileTask
 			if(!keepGrowing && (tile & 0x00C00000) != (rawtile & 0x00C00000))
 				return true;
 		}
-		
+
 //		byte age = getGrowthStage(Tiles.decodeData(rawtile));
 //		if(age >= 3) return true;
 
 		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(Tiles.decodeData(rawtile));
 		if(gs.isMax()) return true;
-		
+
 		return false;
 	}
 //======================================================================
@@ -92,8 +92,11 @@ public class GrassGrowTask extends GrassTileTask
 			callGrassGrowthWrapper(rawtile, x, y, getType(), getData());
 		else
 			forceGrassGrowth(rawtile, x, y, getType(), getData());
-		
-		if(keepGrowing) return false;
+
+		if(keepGrowing){
+			tile = rawtile;
+			return false;
+		}
 		return true;
 	}
 //======================================================================
