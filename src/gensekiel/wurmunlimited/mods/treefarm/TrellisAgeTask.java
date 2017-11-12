@@ -5,9 +5,10 @@ import com.wurmonline.server.items.Item;
 
 public class TrellisAgeTask extends ItemTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 4L;
 //======================================================================
 	private static int allowed_ids[] = {919, 920, 1018, 1274};
+	private int age;
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
@@ -20,6 +21,7 @@ public class TrellisAgeTask extends ItemTask
 	public TrellisAgeTask(Item item, double multiplier)
 	{
 		super(item, multiplier);
+		age = getAge(item);
 		tasktime *= growthMultiplier;
 	}
 //======================================================================
@@ -47,6 +49,15 @@ public class TrellisAgeTask extends ItemTask
 		if(item == null) return true;
 
 		if(!checkItemType(item)) return true;
+
+		int newage = getAge(item);
+
+		if(checkForWUPoll && newage > ageLimit){
+			if(newage != age) return true;
+		}
+
+		if(age < ageLimit && newage == ageLimit) return true;
+
 		if(!canGrow(item)) return true;
 
 		return false;

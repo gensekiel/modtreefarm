@@ -83,6 +83,8 @@ public class TreeGrassTask extends GrassTileTask
 				return true;
 		}
 
+		if(getGrowthStage(getData(tile)) < ageLimit && age == ageLimit) return true;
+
 		if(!canGrow()) return true;
 
 		return false;

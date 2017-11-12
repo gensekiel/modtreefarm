@@ -61,6 +61,8 @@ public class HedgeTask extends AbstractTask
 			if(newage != age) return true;
 		}
 
+		if(age < ageLimit && newage == ageLimit) return true;
+
 		if(!canGrow(fence)) return true;
 
 		return false;

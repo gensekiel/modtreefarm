@@ -4,7 +4,9 @@ import com.wurmonline.server.items.Item;
 
 public class PlanterAgeTask extends ItemTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 4L;
+//======================================================================
+	private int age;
 //======================================================================
 	private static int planterAgeStep = 1;
 	public static void setPlanterAgeStep(int i){ planterAgeStep = i; }
@@ -21,6 +23,7 @@ public class PlanterAgeTask extends ItemTask
 	public PlanterAgeTask(Item item, double multiplier)
 	{
 		super(item, multiplier);
+		age = PlanterTask.getPlanterAge(item);
 		tasktime *= growthMultiplier;
 	}
 //======================================================================
@@ -38,6 +41,15 @@ public class PlanterAgeTask extends ItemTask
 		if(item == null) return true;
 
 		if(!PlanterTask.checkItemType(item)) return true;
+
+		int newage = PlanterTask.getPlanterAge(item);
+
+		if(checkForWUPoll && newage > ageLimit){
+			if(newage != age) return true;
+		}
+
+		if(age < ageLimit && newage == ageLimit) return true;
+
 		if(!canGrow(item)) return true;
 
 		return false;

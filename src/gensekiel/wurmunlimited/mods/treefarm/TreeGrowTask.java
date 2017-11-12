@@ -62,6 +62,8 @@ public class TreeGrowTask extends TreeTileTask
 				return true;
 		}
 
+		if(getAge(getData(tile)) < ageLimit && age == ageLimit) return true;
+
 		if(age >= getMaxAge()) return true;
 
 		return false;
