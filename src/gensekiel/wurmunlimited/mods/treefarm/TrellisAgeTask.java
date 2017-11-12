@@ -12,6 +12,10 @@ public class TrellisAgeTask extends ItemTask
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
+//----------------------------------------------------------------------
+	protected static byte ageLimit = 1;
+	public static void setAgeLimit(byte b){ ageLimit = b; }
+	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
 	public TrellisAgeTask(Item item, double multiplier)
 	{
@@ -56,7 +60,7 @@ public class TrellisAgeTask extends ItemTask
 			item.setLeftAuxData(item.getLeftAuxData() + 1);
 			item.updateName();
 
-			if(keepGrowing && getAge(item) < ageLimit){
+			if(ageLimit > 1 && getAge(item) < ageLimit){
 				resetTimestamp();
 				return false;
 			}

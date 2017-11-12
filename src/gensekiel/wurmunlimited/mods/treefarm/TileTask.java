@@ -30,13 +30,13 @@ public abstract class TileTask extends AbstractTask
 	protected TileTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
 		super(multiplier);
-		
+
 		tile = rawtile;
 		x = tilex;
 		y = tiley;
 
 		Tiles.Tile tiletype = getTile(tile);
-		
+
 		     if(tiletype.isNormalTree())    tasktime *= GrowthMultiplierNormal;
 		else if(tiletype.isEnchantedTree()) tasktime *= GrowthMultiplierEnchanted;
 		else if(tiletype.isMyceliumTree())  tasktime *= GrowthMultiplierMycelium;
@@ -65,6 +65,16 @@ public abstract class TileTask extends AbstractTask
 	public byte getData()
 	{
 		return Tiles.decodeData(tile);
+	}
+//======================================================================
+	public static byte getType(int rawtile)
+	{
+		return Tiles.decodeType(rawtile);
+	}
+//======================================================================
+	public static byte getData(int rawtile)
+	{
+		return Tiles.decodeData(rawtile);
 	}
 //======================================================================
 	public static Tiles.Tile getTile(int x, int y)

@@ -23,6 +23,10 @@ public class GrassGrowTask extends GrassTileTask
 	protected static boolean useOriginalGrowthFunction = false;
 	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
 	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
+//----------------------------------------------------------------------
+	protected static byte ageLimit = 1;
+	public static void setAgeLimit(byte b){ ageLimit = b; }
+	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
 	public GrassGrowTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
@@ -77,7 +81,7 @@ public class GrassGrowTask extends GrassTileTask
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
 
 		if(checkForWUPoll){ // Check age
-			if(!keepGrowing && (tile & 0x00C00000) != (rawtile & 0x00C00000))
+			if(ageLimit < 2 && (tile & 0x00C00000) != (rawtile & 0x00C00000))
 				return true;
 		}
 
@@ -96,7 +100,7 @@ public class GrassGrowTask extends GrassTileTask
 		else
 			forceGrassGrowth(rawtile, x, y, getType(), getData());
 
-		if(keepGrowing){
+		if(ageLimit > 1){
 			tile = rawtile;
 			if(canGrow()){
 				resetTimestamp();

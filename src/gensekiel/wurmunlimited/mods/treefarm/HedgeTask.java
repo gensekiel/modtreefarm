@@ -20,6 +20,10 @@ public class HedgeTask extends AbstractTask
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
+//----------------------------------------------------------------------
+	protected static byte ageLimit = 1;
+	public static void setAgeLimit(byte b){ ageLimit = b; }
+	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
 	public HedgeTask(Fence fence, double multiplier)
 	{
@@ -52,7 +56,7 @@ public class HedgeTask extends AbstractTask
 		if(getHedgeType(fence) != type) return true;
 
 		if(checkForWUPoll){
-			if(!keepGrowing && getHedgeAge(fence) != age) return true;
+			if(ageLimit < 2 && getHedgeAge(fence) != age) return true;
 		}
 
 		if(!canGrow(fence)) return true;
@@ -68,7 +72,7 @@ public class HedgeTask extends AbstractTask
 		if(fence != null){
 			forceHedgeGrowth(fence, vtile);
 
-			if(keepGrowing && canGrow(fence)){
+			if(ageLimit > 1 && canGrow(fence)){
 				resetTimestamp();
 				return false;
 			}

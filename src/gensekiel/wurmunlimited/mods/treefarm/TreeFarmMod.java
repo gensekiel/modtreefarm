@@ -225,10 +225,15 @@ public class TreeFarmMod implements
 		TaskPoller.setPreserveList(getOption("PreserveList", TaskPoller.getPreserveList(), properties));
 		TaskPoller.setProtectTasks(getOption("ProtectTasks", TaskPoller.getProtectTasks(), properties));
 
-		AbstractTask.setKeepGrowing(getOption("KeepGrowing", AbstractTask.getKeepGrowing(), properties));
 		AbstractTask.setCheckForWUPoll(getOption("CheckForWUPoll", AbstractTask.getCheckForWUPoll(), properties));
 		AbstractTask.setBaseGrowthTime(getOption("BaseTaskTime", AbstractTask.getBaseGrowthTime(), properties));
-		AbstractTask.setAgeLimit(getOption("AgeLimit", AbstractTask.getAgeLimit(), properties));
+
+		TreeGrowTask.setAgeLimit(getOption("TreeAgeLimit", TreeGrowTask.getAgeLimit(), properties));
+		HedgeTask.setAgeLimit(getOption("HedgeAgeLimit", HedgeTask.getAgeLimit(), properties));
+		GrassGrowTask.setAgeLimit(getOption("GrassAgeLimit", GrassGrowTask.getAgeLimit(), properties));
+		TreeGrassTask.setAgeLimit(getOption("GrassAgeLimit", TreeGrassTask.getAgeLimit(), properties));
+		TrellisAgeTask.setAgeLimit(getOption("TrellisAgeLimit", TrellisAgeTask.getAgeLimit(), properties));
+		PlanterAgeTask.setAgeLimit(getOption("PlanterAgeLimit", PlanterAgeTask.getAgeLimit(), properties));
 
 		double growthMultiplierGrow = getOption("TimeMultiplierGrow", 1.0, properties);
 		TreeGrowTask .setGrowthMultiplier(growthMultiplierGrow);

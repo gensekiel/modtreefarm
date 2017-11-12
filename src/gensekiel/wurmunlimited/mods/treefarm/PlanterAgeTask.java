@@ -9,10 +9,14 @@ public class PlanterAgeTask extends ItemTask
 	private static int planterAgeStep = 1;
 	public static void setPlanterAgeStep(int i){ planterAgeStep = i; }
 	public static int getPlanterAgeStep(){ return planterAgeStep; }
-//======================================================================
+//----------------------------------------------------------------------
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
+//----------------------------------------------------------------------
+	protected static byte ageLimit = 1;
+	public static void setAgeLimit(byte b){ ageLimit = b; }
+	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
 	public PlanterAgeTask(Item item, double multiplier)
 	{
@@ -47,7 +51,7 @@ public class PlanterAgeTask extends ItemTask
 			byte aux = item.getAuxData();
 			item.setAuxData((byte)( (aux & 0x80) | ((aux & 0x7F) + planterAgeStep) ));
 
-			if(keepGrowing && PlanterTask.getPlanterAge(item) < ageLimit){
+			if(ageLimit > 1 && PlanterTask.getPlanterAge(item) < ageLimit){
 				resetTimestamp();
 				return false;
 			}

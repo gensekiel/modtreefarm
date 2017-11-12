@@ -18,6 +18,10 @@ public class TreeGrowTask extends TreeTileTask
 	protected static boolean useOriginalGrowthFunction = false;
 	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
 	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
+//----------------------------------------------------------------------
+	protected static byte ageLimit = 1;
+	public static void setAgeLimit(byte b){ ageLimit = b; }
+	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
 	public TreeGrowTask(int rawtile, int tilex, int tiley, double multiplier)
 	{
@@ -52,7 +56,7 @@ public class TreeGrowTask extends TreeTileTask
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
 
 		if(checkForWUPoll){ // Check age
-			if(!keepGrowing && (tile & 0x00F00000) != (rawtile & 0x00F00000))
+			if(ageLimit < 2 && (tile & 0x00F00000) != (rawtile & 0x00F00000))
 				return true;
 		}
 
@@ -72,7 +76,7 @@ public class TreeGrowTask extends TreeTileTask
 		else
 			forceTreeGrowth(rawtile, x, y, getType(), getData());
 
-		if(keepGrowing && getAge(Tiles.decodeData(rawtile)) < ageLimit){
+		if(ageLimit > 1 && getAge(Tiles.decodeData(rawtile)) < ageLimit){
 			tile = rawtile;
 			resetTimestamp();
 			return false;
