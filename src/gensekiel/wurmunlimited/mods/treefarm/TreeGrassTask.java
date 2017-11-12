@@ -76,8 +76,10 @@ public class TreeGrassTask extends GrassTileTask
 
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
 
-		if(checkForWUPoll){
-			if(ageLimit < 2 && (tile & 0x00030000) != (rawtile & 0x00030000))
+		byte age = getGrowthStage(getData(rawtile));
+
+		if(checkForWUPoll && age >= ageLimit){
+			if((tile & 0x00030000) != (rawtile & 0x00030000))
 				return true;
 		}
 
@@ -92,16 +94,13 @@ public class TreeGrassTask extends GrassTileTask
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 
 		if(useOriginalGrowthFunction)
-			callTreeGrassGrowthWrapper(rawtile, x, y, getType(), getData());
+			callTreeGrassGrowthWrapper(rawtile, x, y, getType(rawtile), getData(rawtile));
 		else
-			forceTreeGrassGrowth(rawtile, x, y, getType(), getData());
+			forceTreeGrassGrowth(rawtile, x, y, getType(rawtile), getData(rawtile));
 
-		if(ageLimit > 1){
-			tile = rawtile;
-			if(canGrow()){
-				resetTimestamp();
-				return false;
-			}
+		if(getGrowthStage(getData(rawtile)) + 1 < ageLimit){
+			resetTimestamp();
+			return false;
 		}
 		return true;
 	}

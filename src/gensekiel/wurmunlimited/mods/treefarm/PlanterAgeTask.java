@@ -51,7 +51,7 @@ public class PlanterAgeTask extends ItemTask
 			byte aux = item.getAuxData();
 			item.setAuxData((byte)( (aux & 0x80) | ((aux & 0x7F) + planterAgeStep) ));
 
-			if(ageLimit > 1 && PlanterTask.getPlanterAge(item) < ageLimit){
+			if(PlanterTask.getPlanterAge(item) < ageLimit){
 				resetTimestamp();
 				return false;
 			}

@@ -76,4 +76,19 @@ public class ExamineAction implements ModAction, ActionPerformer
 		return ret;
 	}
 //======================================================================
+	@Override
+	public boolean action(Action action, Creature performer, Item source, Item target, short num, float counter)
+	{
+		boolean ret = ActionPerformer.super.action(action, performer, source, target, num, counter);
+		action(performer, target.getWurmId());
+		return ret;
+	}
+	//======================================================================
+	@Override
+	public boolean action(Action action, Creature performer, Item target, short num, float counter)
+	{
+		boolean ret = ActionPerformer.super.action(action, performer, target, num, counter);
+		action(performer, target.getWurmId());
+		return ret;
+	}
 }

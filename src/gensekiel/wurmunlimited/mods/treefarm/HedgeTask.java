@@ -55,8 +55,10 @@ public class HedgeTask extends AbstractTask
 		if(!fence.isFinished()) return true;
 		if(getHedgeType(fence) != type) return true;
 
-		if(checkForWUPoll){
-			if(ageLimit < 2 && getHedgeAge(fence) != age) return true;
+		int newage = getHedgeAge(fence);
+
+		if(checkForWUPoll && newage > ageLimit){
+			if(newage != age) return true;
 		}
 
 		if(!canGrow(fence)) return true;
@@ -72,7 +74,7 @@ public class HedgeTask extends AbstractTask
 		if(fence != null){
 			forceHedgeGrowth(fence, vtile);
 
-			if(ageLimit > 1 && canGrow(fence)){
+			if(getHedgeAge(fence) < ageLimit){
 				resetTimestamp();
 				return false;
 			}

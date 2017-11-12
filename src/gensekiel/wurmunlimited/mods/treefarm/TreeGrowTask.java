@@ -55,12 +55,13 @@ public class TreeGrowTask extends TreeTileTask
 
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
 
-		if(checkForWUPoll){ // Check age
-			if(ageLimit < 2 && (tile & 0x00F00000) != (rawtile & 0x00F00000))
+		byte age = getAge(getData(rawtile));
+
+		if(checkForWUPoll && age >= ageLimit){ // Check age
+			if((tile & 0x00F00000) != (rawtile & 0x00F00000))
 				return true;
 		}
 
-		byte age = getAge(Tiles.decodeData(rawtile));
 		if(age >= getMaxAge()) return true;
 
 		return false;
@@ -72,12 +73,11 @@ public class TreeGrowTask extends TreeTileTask
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 
 		if(useOriginalGrowthFunction)
-			callTreeGrowthWrapper(rawtile, x, y, getType(), getData());
+			callTreeGrowthWrapper(rawtile, x, y, getType(rawtile), getData(rawtile));
 		else
-			forceTreeGrowth(rawtile, x, y, getType(), getData());
+			forceTreeGrowth(rawtile, x, y, getType(rawtile), getData(rawtile));
 
-		if(ageLimit > 1 && getAge(Tiles.decodeData(rawtile)) < ageLimit){
-			tile = rawtile;
+		if(getAge(getData(rawtile)) + 1 < ageLimit){
 			resetTimestamp();
 			return false;
 		}

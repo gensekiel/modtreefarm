@@ -60,7 +60,7 @@ public class TrellisAgeTask extends ItemTask
 			item.setLeftAuxData(item.getLeftAuxData() + 1);
 			item.updateName();
 
-			if(ageLimit > 1 && getAge(item) < ageLimit){
+			if(getAge(item) < ageLimit){
 				resetTimestamp();
 				return false;
 			}
