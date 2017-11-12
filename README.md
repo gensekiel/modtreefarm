@@ -52,7 +52,8 @@ Other options are:
 tile/object.
 * Enforce a cool down time for an object or tile after a task has been
 finished.
-* Continuous growth until the maximum age or height is reached.
+* Continuous growth until some age or height limit is reached
+(conventional step-wise growth after that).
 * Age limit for trees and bushes.
 * Gain skill for performing actions.
 * Persistent task list when shutting down the server.
@@ -101,8 +102,8 @@ Planned features:
 
 Requirements:
 
-* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.26.3 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
-* Intended for Wurm Unlimited 1.4.0.1
+* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.31.1 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
+* Intended for Wurm Unlimited 1.5.2.1
 
 As always with modded content, I rid me of all liability. Although the 
 mod is non-invasive and can be removed at any time without any effect on 
