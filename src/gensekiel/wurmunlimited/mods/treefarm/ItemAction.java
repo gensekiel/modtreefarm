@@ -45,8 +45,8 @@ public abstract class ItemAction extends AbstractAction
 	{
 		try{
 			Skill skl = performer.getSkills().getSkillOrLearn(skill);
-			int timeLeft = getActionTime(skl.knowledge);
-			int actioncost = getActionCost(skl.knowledge, getAge(target), getMaxAge());
+			int timeLeft = getActionTime(skl.getKnowledge());
+			int actioncost = getActionCost(skl.getKnowledge(), getAge(target), getMaxAge());
 			String itemname = target.getName();
 
 			if(counter == 1.0f){
@@ -65,7 +65,7 @@ public abstract class ItemAction extends AbstractAction
 				double quality = 100.0;
 				if(item != 0) quality = source.getCurrentQualityLevel();
 
-				double multiplier = getTaskTimeMultiplier(quality, skl.knowledge);
+				double multiplier = getTaskTimeMultiplier(quality, skl.getKnowledge());
 				performItemAction(target, multiplier);
 
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
