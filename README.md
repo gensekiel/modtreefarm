@@ -102,8 +102,8 @@ Planned features:
 
 Requirements:
 
-* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.31.1 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
-* Intended for Wurm Unlimited 1.5.2.1
+* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.34.1 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
+* Intended for Wurm Unlimited 1.6
 
 As always with modded content, I rid me of all liability. Although the 
 mod is non-invasive and can be removed at any time without any effect on 
