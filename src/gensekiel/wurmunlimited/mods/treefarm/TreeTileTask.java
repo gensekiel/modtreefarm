@@ -38,6 +38,8 @@ public abstract class TreeTileTask extends TileTask
 	private static double GrowthMultiplierRose = 1.0;
 	private static double GrowthMultiplierThorn = 1.0;
 	private static double GrowthMultiplierHazelnut = 1.0;
+	private static double GrowthMultiplierBlueberry = 1.0;
+	private static double GrowthMultiplierRaspberry = 1.0;
 //----------------------------------------------------------------------
 	private static double[] GrowthMultiplierAge = {1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5, 1.6, 1.6, 1.7};
 //======================================================================
@@ -71,13 +73,15 @@ public abstract class TreeTileTask extends TileTask
 		if(tiletype.isBush()){
 			tasktime *= GrowthMultiplierBush;
 
-			     if(tiletype.getBushType(tdata) == BushData.BushType.CAMELLIA) tasktime *= GrowthMultiplierCamellia;
-			else if(tiletype.getBushType(tdata) == BushData.BushType.GRAPE)    tasktime *= GrowthMultiplierGrape;
-			else if(tiletype.getBushType(tdata) == BushData.BushType.LAVENDER) tasktime *= GrowthMultiplierLavender;
-			else if(tiletype.getBushType(tdata) == BushData.BushType.OLEANDER) tasktime *= GrowthMultiplierOleander;
-			else if(tiletype.getBushType(tdata) == BushData.BushType.ROSE)     tasktime *= GrowthMultiplierRose;
-			else if(tiletype.getBushType(tdata) == BushData.BushType.THORN)    tasktime *= GrowthMultiplierThorn;
-			else if(tiletype.getBushType(tdata) == BushData.BushType.HAZELNUT) tasktime *= GrowthMultiplierHazelnut;
+			     if(tiletype.getBushType(tdata) == BushData.BushType.CAMELLIA)  tasktime *= GrowthMultiplierCamellia;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.GRAPE)     tasktime *= GrowthMultiplierGrape;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.LAVENDER)  tasktime *= GrowthMultiplierLavender;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.OLEANDER)  tasktime *= GrowthMultiplierOleander;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.ROSE)      tasktime *= GrowthMultiplierRose;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.THORN)     tasktime *= GrowthMultiplierThorn;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.HAZELNUT)  tasktime *= GrowthMultiplierHazelnut;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.BLUEBERRY) tasktime *= GrowthMultiplierBlueberry;
+			else if(tiletype.getBushType(tdata) == BushData.BushType.RASPBERRY) tasktime *= GrowthMultiplierRaspberry;
 		}
 
 		byte tage = getAge();
@@ -141,6 +145,8 @@ public abstract class TreeTileTask extends TileTask
 	public static void setGrowthMultiplierRose(double d){ GrowthMultiplierRose = d; }
 	public static void setGrowthMultiplierThorn(double d){ GrowthMultiplierThorn = d; }
 	public static void setGrowthMultiplierHazelnut(double d){ GrowthMultiplierHazelnut = d; }
+	public static void setGrowthMultiplierBlueberry(double d){ GrowthMultiplierBlueberry = d; }
+	public static void setGrowthMultiplierRaspberry(double d){ GrowthMultiplierRaspberry = d; }
 	public static void setGrowthMultiplierAge(int age, double d){ GrowthMultiplierAge[age] = d; }
 //======================================================================
 	public static double getGrowthMultiplierBirch(){ return GrowthMultiplierBirch; }
@@ -167,6 +173,8 @@ public abstract class TreeTileTask extends TileTask
 	public static double getGrowthMultiplierRose(){ return GrowthMultiplierRose; }
 	public static double getGrowthMultiplierThorn(){ return GrowthMultiplierThorn; }
 	public static double getGrowthMultiplierHazelnut(){ return GrowthMultiplierHazelnut; }
+	public static double getGrowthMultiplierBlueberry(){ return GrowthMultiplierBlueberry; }
+	public static double getGrowthMultiplierRaspberry(){ return GrowthMultiplierRaspberry; }
 	public static double getGrowthMultiplierAge(int age){ return GrowthMultiplierAge[age]; }
 //======================================================================
 }

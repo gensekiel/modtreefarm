@@ -38,9 +38,11 @@ public class SproutAction extends DebugAction
 			ItemMaterials.MATERIAL_WOOD_LINDEN,
 //			ItemMaterials.MATERIAL_WOOD_IVY,
 			ItemMaterials.MATERIAL_WOOD_HAZELNUT,
-			ItemMaterials.MATERIAL_WOOD_ORANGE
+			ItemMaterials.MATERIAL_WOOD_ORANGE,
+			ItemMaterials.MATERIAL_WOOD_BLUEBERRY,
+			ItemMaterials.MATERIAL_WOOD_RASPBERRY
 		};
-		
+
 		for(byte m : materials){
 			try {
 				Item sprout = ItemFactory.createItem(266, 99.0f, m, (byte)0, null);

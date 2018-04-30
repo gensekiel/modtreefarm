@@ -276,13 +276,15 @@ public class TreeFarmMod implements
 		TileTask.setGrowthMultiplierEnchanted(getOption("TimeMultiplierEnchanted", TileTask.getGrowthMultiplierEnchanted(), properties));
 		TileTask.setGrowthMultiplierMycelium (getOption("TimeMultiplierMycelium",  TileTask.getGrowthMultiplierMycelium(),  properties));
 
-		TreeTileTask.setGrowthMultiplierCamellia(getOption("TimeMultiplierCamellia", TreeTileTask.getGrowthMultiplierCamellia(), properties));
-		TreeTileTask.setGrowthMultiplierGrape   (getOption("TimeMultiplierGrape",    TreeTileTask.getGrowthMultiplierGrape(),    properties));
-		TreeTileTask.setGrowthMultiplierLavender(getOption("TimeMultiplierLavender", TreeTileTask.getGrowthMultiplierLavender(), properties));
-		TreeTileTask.setGrowthMultiplierOleander(getOption("TimeMultiplierOleander", TreeTileTask.getGrowthMultiplierOleander(), properties));
-		TreeTileTask.setGrowthMultiplierRose    (getOption("TimeMultiplierRose",     TreeTileTask.getGrowthMultiplierRose(),     properties));
-		TreeTileTask.setGrowthMultiplierThorn   (getOption("TimeMultiplierThorn",    TreeTileTask.getGrowthMultiplierThorn(),    properties));
-		TreeTileTask.setGrowthMultiplierHazelnut(getOption("TimeMultiplierHazelnut", TreeTileTask.getGrowthMultiplierHazelnut(), properties));
+		TreeTileTask.setGrowthMultiplierCamellia (getOption("TimeMultiplierCamellia",  TreeTileTask.getGrowthMultiplierCamellia(),  properties));
+		TreeTileTask.setGrowthMultiplierGrape    (getOption("TimeMultiplierGrape",     TreeTileTask.getGrowthMultiplierGrape(),     properties));
+		TreeTileTask.setGrowthMultiplierLavender (getOption("TimeMultiplierLavender",  TreeTileTask.getGrowthMultiplierLavender(),  properties));
+		TreeTileTask.setGrowthMultiplierOleander (getOption("TimeMultiplierOleander",  TreeTileTask.getGrowthMultiplierOleander(),  properties));
+		TreeTileTask.setGrowthMultiplierRose     (getOption("TimeMultiplierRose",      TreeTileTask.getGrowthMultiplierRose(),      properties));
+		TreeTileTask.setGrowthMultiplierThorn    (getOption("TimeMultiplierThorn",     TreeTileTask.getGrowthMultiplierThorn(),     properties));
+		TreeTileTask.setGrowthMultiplierHazelnut (getOption("TimeMultiplierHazelnut",  TreeTileTask.getGrowthMultiplierHazelnut(),  properties));
+		TreeTileTask.setGrowthMultiplierBlueberry(getOption("TimeMultiplierBlueberry", TreeTileTask.getGrowthMultiplierBlueberry(), properties));
+		TreeTileTask.setGrowthMultiplierRaspberry(getOption("TimeMultiplierRaspberry", TreeTileTask.getGrowthMultiplierRaspberry(), properties));
 
 		for(int i = 0; i < 15; i++){
 			TreeTileTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, TreeTileTask.getGrowthMultiplierAge(i), properties));
