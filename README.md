@@ -23,7 +23,7 @@ in parentheses)*:
 by fertilizing them. *(forestry)*
 * Increase the grass height on grass and tree tiles by watering the
 ground. *(gardening)*
-* Grow (random) flowers on a grass tile by watering it when at maximum 
+* Grow (random) flowers on a grass tile by watering it when at maximum
 height. In contrast to conventional flower growth, all flowers have the
 same probability. *(gardening)*
 * Make kelp and reed grow by fertilizing them. Note that there is no
@@ -42,7 +42,7 @@ Almost every aspect can be modified via the configuration file.
 
 * Time required by tasks and polling interval (see below).
 * Cost, time and item required for actions.
-* Influence of skill, item quality and age on task time, action 
+* Influence of skill, item quality and age on task time, action
 time and action cost.
 
 Other options are:
@@ -58,9 +58,9 @@ finished.
 * Gain skill for performing actions.
 * Persistent task list when shutting down the server.
 * Obey tile protection.
-* Active protection against conventional server poll for tracked 
+* Active protection against conventional server poll for tracked
 objects.
-* Use the original growth functions with all related effects and 
+* Use the original growth functions with all related effects and
 chances.
 
 Task time can be defined by a base time and several multipliers for
@@ -73,26 +73,26 @@ is
 where TaskTime is the time required for a task as specified by
 BaseTaskTime and a collection of multipliers.
 
-    TaskTime =   BaseTaskTime 
+    TaskTime =   BaseTaskTime
                * task_multiplier
                * type_multiplier
-               * species_multiplier 
+               * species_multiplier
                * age_multiplier
                * modifier_multiplier
                * skill_multiplier
                * quality_multiplier
 
-Multipliers can be tweaked separately for all kinds of conditions. For 
+Multipliers can be tweaked separately for all kinds of conditions. For
 more information, see the mod's properties file.
 
 Other information:
 
-* Accelerated tree and bush growth ignores all related effects that 
+* Accelerated tree and bush growth ignores all related effects that
 otherwise would be invoked when a tree or bush grows.\*
 * Accelerated fruit/harvestable growth ignores seasons.
 * Accelerated grass growth ignores seasonal growth rates.
 
-\* Such as tree death & self re-plant, mycelium decay, killing area 
+\* Such as tree death & self re-plant, mycelium decay, killing area
 checks for oaks and willows, sprouting to nearby tiles, mushrooms, etc.
 These effects still occur, but at a normal rate.
 
@@ -102,17 +102,17 @@ Planned features:
 
 Requirements:
 
-* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.34.1 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
-* Intended for Wurm Unlimited 1.6
+* [Ago's Mod Launcher](https://github.com/ago1024/WurmServerModLauncher), version 0.43 ([Wurm Forum page](http://forum.wurmonline.com/index.php?/topic/133085-released-server-mod-loader-priest-crops-seasons-server-packs-bag-of-holding/))
+* Intended for Wurm Unlimited 1.9.1.5
 
-As always with modded content, I rid me of all liability. Although the 
-mod is non-invasive and can be removed at any time without any effect on 
+As always with modded content, I rid me of all liability. Although the
+mod is non-invasive and can be removed at any time without any effect on
 the world, make a backup. Just to be sure.
 
 [Get it here](https://github.com/gensekiel/modtreefarm/releases/latest)
 
 [GitHub page](https://github.com/gensekiel/modtreefarm)
 
-**Installation:** Just extract the contents of the .zip file into the 
-mods folder in your WurmServerLauncher directory. If you don't have a 
-mods directory, you need to install Agos's mod launcher. 
+**Installation:** Just extract the contents of the .zip file into the
+mods folder in your WurmServerLauncher directory. If you don't have a
+mods directory, you need to install Agos's mod launcher.
