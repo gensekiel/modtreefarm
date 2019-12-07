@@ -16,7 +16,7 @@ public class TrellisAgeAction extends TrellisAction
 		cost = 5000;
 		time = 30;
 		item = ItemList.water;
-		skill = 10048;
+		skill = 10045;
 	}
 //======================================================================
 	protected boolean checkItemConditions(Creature performer, Item item)

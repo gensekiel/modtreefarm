@@ -57,7 +57,6 @@ public abstract class ItemAction extends AbstractAction
 				if(item != 0) if(checkItem(performer, source, itemname, actioncost)) return true;
 
 				startAction(performer, itemname, timeLeft);
-				if(gainSkill) gainSkill(skl);
 			}else{
 				timeLeft = performer.getCurrentAction().getTimeLeft();
 			}
@@ -69,6 +68,7 @@ public abstract class ItemAction extends AbstractAction
 				performItemAction(target, multiplier);
 
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
+				if(gainSkill) gainSkill(skl);
 
 				finishAction(performer, itemname);
 

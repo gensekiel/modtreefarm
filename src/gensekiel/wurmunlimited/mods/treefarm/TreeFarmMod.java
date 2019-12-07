@@ -97,6 +97,9 @@ public class TreeFarmMod implements
 
 			new HedgePollAction().register();
 			new SkillAction("-> Max skills!").register();
+			new NoSkillAction("-> Wipe skills!").register();
+			new GainSomeSkillAction("-> Max relevant skills!").register();
+			new WipeSomeSkillAction("-> Wipe relevant skills!").register();
 			new SproutAction("-> Sprouts! Now!").register();
 			new NoSproutAction("-> Delete sprouts!").register();
 		}

@@ -86,7 +86,6 @@ public class HedgeAction extends AbstractAction
 				if(item != 0) if(checkItem(performer, source, fencename, actioncost)) return true;
 
 				startAction(performer, fencename, timeLeft);
-				if(gainSkill) gainSkill(skl);
 			}else{
 				timeLeft = performer.getCurrentAction().getTimeLeft();
 			}
@@ -98,6 +97,7 @@ public class HedgeAction extends AbstractAction
 				performFenceAction(target, multiplier);
 
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
+				if(gainSkill) gainSkill(skl);
 
 				finishAction(performer, fencename);
 

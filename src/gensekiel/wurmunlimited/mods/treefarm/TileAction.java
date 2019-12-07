@@ -68,7 +68,6 @@ public abstract class TileAction extends AbstractAction
 				if(item != 0) if(checkItem(performer, source, tilename, actioncost)) return true;
 
 				startAction(performer, tilename, timeLeft);
-				if(gainSkill) gainSkill(skl);
 			}else{
 				timeLeft = performer.getCurrentAction().getTimeLeft();
 			}
@@ -83,6 +82,7 @@ public abstract class TileAction extends AbstractAction
 
 				// Source item can not change.
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
+				if(gainSkill) gainSkill(skl);
 
 				finishAction(performer, tilename);
 				// What if item is moved to container while action is
