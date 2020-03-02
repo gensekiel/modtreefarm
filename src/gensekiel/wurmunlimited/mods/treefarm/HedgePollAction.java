@@ -9,6 +9,7 @@ import com.wurmonline.server.behaviours.Action;
 import com.wurmonline.server.behaviours.ActionEntry;
 import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
+import com.wurmonline.server.players.Player;
 import com.wurmonline.server.structures.Fence;
 
 public class HedgePollAction extends ActionTemplate
@@ -20,7 +21,10 @@ public class HedgePollAction extends ActionTemplate
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Fence fence)
 	{
-		return Arrays.asList(actionEntry);
+		if(performer instanceof Player && performer.getPower() >= 5){
+			return Arrays.asList(actionEntry);
+		}
+		return null;
 	}
 //======================================================================
 	@Override

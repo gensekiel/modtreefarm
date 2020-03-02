@@ -106,6 +106,8 @@ public class TreeFarmMod implements
 			fg2.register();
 			ff2.register();
 
+			new ResetAction().register();
+			new BlessAction().register();
 			new HedgePollAction().register();
 			new SkillAction("-> Max skills!").register();
 			new NoSkillAction("-> Wipe skills!").register();
