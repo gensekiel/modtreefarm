@@ -1,8 +1,8 @@
-# Accelerated Forestry & Gardening Server Mod for Wurm Unlimited
+# Accelerated Forestry & Gardening (& Farming) Server Mod for Wurm Unlimited
 
 This mod allows to speed up the growth of trees, bushes, fruit (and
-other harvestables), hedges, grass, kelp, reed, flowers, trellises,
-herb planters and to refresh foraging and botanizing for tiles that
+other harvestables), hedges, grass, kelp, reed, flowers, trellises, herb
+planters, fields and to refresh foraging and botanizing for tiles that
 allow it. The default items for watering and fertilizing are water and
 ash, respectively.
 
@@ -37,6 +37,8 @@ them. *(gardening)*
 which they can be harvested. *(gardening)*
 * Make herb planters harvestable by fertilizing them when at the right
 age. *(gardening)*
+* Make fields grow by watering them. *(farming)*
+* Make underwater fields grow by fertilizing them. *(farming)*
 
 Almost every aspect can be modified via the configuration file.
 
@@ -62,6 +64,7 @@ finished.
 objects.
 * Use the original growth functions with all related effects and
 chances.
+* Optional deactivation of the vanilla timer-based field growth mechanics.
 
 Task time can be defined by a base time and several multipliers for
 task type, object/tile type, species, age, modifier (normal, enchanted,
