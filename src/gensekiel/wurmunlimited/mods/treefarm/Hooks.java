@@ -20,7 +20,8 @@ import com.wurmonline.server.structures.Fence;
 public class Hooks
 {
 	private static Logger logger = Logger.getLogger(Hooks.class.getName());
-//======================================================================	
+	public static boolean preventVanillaFarmGrowth = true;
+//======================================================================
 	private static String tree_wrapper_code = ""
 	+ "public static void wrap_checkForTreeGrowth("
 	+ "   int tile, int tilex, int tiley, byte type, byte aData)"
@@ -157,6 +158,57 @@ public class Hooks
 		}
 	}
 //======================================================================
+//	private static String farm_wrapper_code = ""
+//	+ "public static void wrap_checkForFarmGrowth("
+//	+ "   int tile, int tilex, int tiley, byte type, byte aData, boolean onSurface)"
+//	+ "{"
+//	+ "   logger.log(Level.INFO, \"Injected method entered.\");"
+//	+ "   boolean pollingSurface_old = pollingSurface;"
+//	+ "   MeshIO currentMesh_old = currentMesh;"
+//	+ "   pollingSurface = onSurface;"
+//	+ "   if(onSurface) currentMesh = Server.surfaceMesh;"
+//	+ "   else currentMesh = Server.caveMesh;"
+//	+ ""
+//	+ "   checkForFarmGrowth(tile, tilex, tiley, type, aData);"
+//	+ ""
+//	+ "   pollingSurface = pollingSurface_old;"
+//	+ "   currentMesh = currentMesh_old;"
+//	+ "   logger.log(Level.INFO, \"Injected method left.\");"
+//	+ "}";
+	private static String farm_wrapper_code = ""
+	+ "public static void wrap_checkForFarmGrowth("
+	+ "   int tile, int tilex, int tiley, byte type, byte aData)"
+	+ "{"
+	+ "   logger.log(Level.INFO, \"Injected method entered.\");"
+	+ "   boolean pollingSurface_old = pollingSurface;"
+	+ "   MeshIO currentMesh_old = currentMesh;"
+	+ "   pollingSurface = true;"
+	+ "   currentMesh = Server.surfaceMesh;"
+	+ ""
+	+ "   checkForFarmGrowth(tile, tilex, tiley, type, aData);"
+	+ ""
+	+ "   pollingSurface = pollingSurface_old;"
+	+ "   currentMesh = currentMesh_old;"
+	+ "   logger.log(Level.INFO, \"Injected method left.\");"
+	+ "}";
+//======================================================================
+	public static void injectFarmGrowthWrapper()
+	{
+		try{
+			ClassPool pool = ClassPool.getDefault();
+			pool.importPackage("java.util.logging");
+			pool.importPackage("com.wurmonline.mesh");
+			pool.importPackage("com.wurmonline.server");
+			CtClass ctclass = pool.get("com.wurmonline.server.zones.TilePoller");
+			CtMethod wrapper_method = CtNewMethod.make(farm_wrapper_code, ctclass);
+			ctclass.addMethod(wrapper_method);
+			logger.log(Level.INFO, "Farm growth wrapper method injected.");
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Farm growth wrapper injection failed. Falling back to builtin growth function. Exception: " + e);
+			FarmGrowTask.setUseOriginalGrowthFunction(false);
+		}
+	}
+//======================================================================
 	public static void registerListLoadingHook()
 	{
 		// We need the server paths to be set properly before initializing
@@ -190,7 +242,11 @@ public class Hooks
 						@Override
 						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
 							TaskPoller.poll();
-							return method.invoke(object, args);
+							if(!preventVanillaFarmGrowth){
+								return method.invoke(object, args);
+							}else{
+								return null;
+							}
 						}
 					};
 				}
@@ -228,9 +284,9 @@ public class Hooks
 	{
 		try{
 			String desc = Descriptor.ofMethod(CtPrimitiveType.voidType, new CtClass[]{
-				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType, 
+				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType,
 				CtPrimitiveType.byteType, CtPrimitiveType.byteType});
-			
+
 			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForTreeGrowth", desc, new InvocationHandlerFactory(){
 				@Override
 				public InvocationHandler createInvocationHandler(){
@@ -256,9 +312,9 @@ public class Hooks
 	{
 		try{
 			String desc = Descriptor.ofMethod(CtPrimitiveType.booleanType, new CtClass[]{
-				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType, 
+				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType,
 				CtPrimitiveType.byteType, CtPrimitiveType.byteType, CtPrimitiveType.booleanType});
-			
+
 			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForGrassGrowth", desc, new InvocationHandlerFactory(){
 				@Override
 				public InvocationHandler createInvocationHandler(){
@@ -284,9 +340,9 @@ public class Hooks
 	{
 		try{
 			String desc = Descriptor.ofMethod(CtPrimitiveType.booleanType, new CtClass[]{
-				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType, 
+				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType,
 				CtPrimitiveType.byteType, CtPrimitiveType.byteType});
-			
+
 			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForTreeGrassGrowth", desc, new InvocationHandlerFactory(){
 				@Override
 				public InvocationHandler createInvocationHandler(){
@@ -313,7 +369,7 @@ public class Hooks
 		try{
 			String desc = Descriptor.ofMethod(CtPrimitiveType.booleanType, new CtClass[]{
 				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType});
-			
+
 			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForSeedGrowth", desc, new InvocationHandlerFactory(){
 				@Override
 				public InvocationHandler createInvocationHandler(){
@@ -339,7 +395,7 @@ public class Hooks
 	{
 		try{
 			String desc = Descriptor.ofMethod(CtPrimitiveType.voidType, new CtClass[]{CtPrimitiveType.longType});
-			
+
 			HookManager.getInstance().registerHook("com.wurmonline.server.structures.Fence", "poll", desc, new InvocationHandlerFactory(){
 				@Override
 				public InvocationHandler createInvocationHandler(){
@@ -358,6 +414,34 @@ public class Hooks
 			});
 		}catch(Exception e){
 			logger.log(Level.WARNING, "Hedge protection hook failed. Exception: " + e);
+		}
+	}
+//======================================================================
+	public static void registerFarmProtectionHook()
+	{
+		try{
+			String desc = Descriptor.ofMethod(CtPrimitiveType.booleanType, new CtClass[]{
+				CtPrimitiveType.intType, CtPrimitiveType.intType, CtPrimitiveType.intType,
+				CtPrimitiveType.byteType, CtPrimitiveType.byteType});
+
+			HookManager.getInstance().registerHook("com.wurmonline.server.zones.TilePoller", "checkForFarmGrowth", desc, new InvocationHandlerFactory(){
+				@Override
+				public InvocationHandler createInvocationHandler(){
+					return new InvocationHandler(){
+						@Override
+						public Object invoke(Object object, Method method, Object[] args) throws Throwable {
+							AbstractTask task = TaskPoller.containsTaskFor(TileTask.getTaskKey((int)args[1], (int)args[2]));
+							if(task != null){
+								logger.log(Level.WARNING, "Server poll prevented: checkForFarmGrowth");
+								return false;
+							}
+							return method.invoke(object, args);
+						}
+					};
+				}
+			});
+		}catch(Exception e){
+			logger.log(Level.WARNING, "Farm protection hook failed. Exception: " + e);
 		}
 	}
 //======================================================================

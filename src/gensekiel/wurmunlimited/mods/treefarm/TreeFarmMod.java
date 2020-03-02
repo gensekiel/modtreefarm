@@ -28,6 +28,8 @@ public class TreeFarmMod implements
 	private static TrellisAgeAction itemageaction = new TrellisAgeAction();
 	private static PlanterAction planteraction = new PlanterAction();
 	private static PlanterAgeAction planterageaction = new PlanterAgeAction();
+	private static FarmGrowAction farmgrowaction = new FarmGrowAction();
+	private static FarmFertAction farmfertaction = new FarmFertAction();
 
 	private static boolean allowGrow = true;
 	private static boolean allowFert = true;
@@ -36,6 +38,7 @@ public class TreeFarmMod implements
 	private static boolean allowFandB = true;
 	private static boolean allowTrell = true;
 	private static boolean allowPlant = true;
+	private static boolean allowFarms = true;
 	private static boolean augmentExamine = true;
 	private static boolean debug = false;
 	private static boolean useOriginalGrowthFunction = false;
@@ -56,6 +59,8 @@ public class TreeFarmMod implements
 		if(allowGrow && allowTrell)  itemageaction.register();
 		if(allowFert && allowPlant)  planteraction.register();
 		if(allowGrow && allowPlant)  planterageaction.register();
+		if(allowGrow && allowFarms)  farmgrowaction.register();
+		if(allowFert && allowFarms)  farmfertaction.register();
 		if(augmentExamine)           ModActions.registerAction(new ExamineAction());
 
 		if(debug){
@@ -70,6 +75,8 @@ public class TreeFarmMod implements
 			TrellisAgeAction ia3 = new TrellisAgeAction("Water (debug)");
 			PlanterAction pa2 = new PlanterAction("Fertilize (debug)");
 			PlanterAgeAction pl2 = new PlanterAgeAction("Water (debug)");
+			FarmGrowAction fg2 = new FarmGrowAction("Water (debug)");
+			FarmFertAction ff2 = new FarmFertAction("Fertilize (debug)");
 
 			wa2.setCost(0); wa2.setTime(0); wa2.setItem(0);
 			fa2.setCost(0); fa2.setTime(0); fa2.setItem(0);
@@ -82,6 +89,8 @@ public class TreeFarmMod implements
 			ia3.setCost(0); ia3.setTime(0); ia3.setItem(0);
 			pa2.setCost(0); pa2.setTime(0); pa2.setItem(0);
 			pl2.setCost(0); pl2.setTime(0); pl2.setItem(0);
+			fg2.setCost(0); fg2.setTime(0); fg2.setItem(0);
+			ff2.setCost(0); ff2.setTime(0); ff2.setItem(0);
 
 			wa2.register();
 			fa2.register();
@@ -94,6 +103,8 @@ public class TreeFarmMod implements
 			ia3.register();
 			pa2.register();
 			pl2.register();
+			fg2.register();
+			ff2.register();
 
 			new HedgePollAction().register();
 			new SkillAction("-> Max skills!").register();
@@ -113,6 +124,7 @@ public class TreeFarmMod implements
 			Hooks.injectGrassGrowthWrapper();
 			Hooks.injectTreeGrassGrowthWrapper();
 			Hooks.injectSeedGrowthWrapper();
+			Hooks.injectFarmGrowthWrapper();
 		}
 
 		Hooks.registerListLoadingHook();
@@ -125,6 +137,7 @@ public class TreeFarmMod implements
 			Hooks.registerGrassProtectionHook();
 			Hooks.registerTreeGrassProtectionHook();
 			Hooks.registerSeedProtectionHook();
+			Hooks.registerFarmProtectionHook();
 		}
 	}
 //======================================================================
@@ -152,6 +165,7 @@ public class TreeFarmMod implements
 		allowFandB = getOption("AllowForageBotanize", allowFandB, properties);
 		allowTrell = getOption("AllowTrellises", allowTrell, properties);
 		allowPlant = getOption("AllowPlanters", allowPlant, properties);
+		allowFarms = getOption("AllowFarms", allowFarms, properties);
 		augmentExamine = getOption("StatusOnExamine", augmentExamine, properties);
 
 		AbstractAction.setObeyProtection(getOption("ObeyProtection", AbstractAction.getObeyProtection(), properties));
@@ -206,11 +220,22 @@ public class TreeFarmMod implements
 		planterageaction.setTime(getOption("WateringTime", planterageaction.getTime(), properties));
 		planterageaction.setItem(getOption("WateringItem", planterageaction.getItem(), properties));
 
+		farmgrowaction.setCost(getOption("WateringCost", farmgrowaction.getCost(), properties));
+		farmgrowaction.setTime(getOption("WateringTime", farmgrowaction.getTime(), properties));
+		farmgrowaction.setItem(getOption("WateringItem", farmgrowaction.getItem(), properties));
+
+		farmfertaction.setCost(getOption("FertilizingCost", farmfertaction.getCost(), properties));
+		farmfertaction.setTime(getOption("FertilizingTime", farmfertaction.getTime(), properties));
+		farmfertaction.setItem(getOption("FertilizingItem", farmfertaction.getItem(), properties));
+
 		useOriginalGrowthFunction = getOption("UseOriginalGrowthFunction", useOriginalGrowthFunction, properties);
+		Hooks.preventVanillaFarmGrowth = getOption("PreventVanillaFarmGrowth", Hooks.preventVanillaFarmGrowth, properties);
 		TreeGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
 		GrassGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
 		TreeGrassTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
 		ForageBotanizeTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
+		FarmGrowTask.setUseOriginalGrowthFunction(useOriginalGrowthFunction);
+		FarmGrowTask.setStateLock(getOption("RetainFarmState", FarmGrowTask.getStateLock(), properties));
 
 		AbstractAction.setCostSkillMultiplier(getOption("CostSkillMultiplier", AbstractAction.getCostSkillMultiplier(), properties));
 		AbstractAction.setCostAgeMultiplier(getOption("CostAgeMultiplier", AbstractAction.getCostAgeMultiplier(), properties));
@@ -237,6 +262,7 @@ public class TreeFarmMod implements
 		TreeGrassTask.setAgeLimit(getOption("GrassAgeLimit", TreeGrassTask.getAgeLimit(), properties));
 		TrellisAgeTask.setAgeLimit(getOption("TrellisAgeLimit", TrellisAgeTask.getAgeLimit(), properties));
 		PlanterAgeTask.setAgeLimit(getOption("PlanterAgeLimit", PlanterAgeTask.getAgeLimit(), properties));
+		FarmGrowTask.setAgeLimit(getOption("FarmAgeLimit", FarmGrowTask.getAgeLimit(), properties));
 
 		double growthMultiplierGrow = getOption("TimeMultiplierGrow", 1.0, properties);
 		TreeGrowTask .setGrowthMultiplier(growthMultiplierGrow);
@@ -254,6 +280,7 @@ public class TreeFarmMod implements
 		TrellisAgeTask.setGrowthMultiplier(getOption("TimeMultiplierTrellises", TrellisAgeTask.getGrowthMultiplier(), properties));
 		PlanterTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterTask.getGrowthMultiplier(), properties));
 		PlanterAgeTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterAgeTask.getGrowthMultiplier(), properties));
+		FarmGrowTask.setGrowthMultiplier(getOption("TimeMultiplierFarms", FarmGrowTask.getGrowthMultiplier(), properties));
 
 		PlanterAgeTask.setPlanterAgeStep(getOption("PlanterAgeStep", PlanterAgeTask.getPlanterAgeStep(), properties));
 		PlanterAction.setCostMultiplier(getOption("CostMultiplierPlanters", PlanterAction.getCostMultiplier(), properties));
@@ -294,6 +321,9 @@ public class TreeFarmMod implements
 		}
 		for(int i = 0; i < 3; i++){
 			GrassGrowTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, GrassGrowTask.getGrowthMultiplierAge(i), properties));
+		}
+		for(int i = 0; i < 7; i++){
+			FarmGrowTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, FarmGrowTask.getGrowthMultiplierAge(i), properties));
 		}
 	}
 //======================================================================

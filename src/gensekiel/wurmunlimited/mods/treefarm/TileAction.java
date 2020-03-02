@@ -24,6 +24,7 @@ public abstract class TileAction extends AbstractAction
 //======================================================================
 	protected TileAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
+//	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier, boolean onSurface);
 	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier);
 	protected abstract boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley);
 	protected abstract boolean checkTileType(int rawtile);

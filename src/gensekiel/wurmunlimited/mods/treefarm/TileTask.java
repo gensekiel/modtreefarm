@@ -17,6 +17,9 @@ public abstract class TileTask extends AbstractTask
 	protected int y;
 	public final int getY(){ return y; }
 //----------------------------------------------------------------------
+//	protected boolean onSurface;
+//	public final boolean getOnSurface(){ return onSurface; }
+//----------------------------------------------------------------------
 	protected static double GrowthMultiplierNormal = 1.0;
 	protected static double GrowthMultiplierEnchanted = 1.0;
 	protected static double GrowthMultiplierMycelium = 1.0;
