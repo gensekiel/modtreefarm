@@ -8,16 +8,18 @@ import com.wurmonline.server.Server;
 
 public class FruitTask extends TreeTileTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //======================================================================
-	public FruitTask(int rawtile, int tilex, int tiley, double multiplier)
+	public FruitTask(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		super(rawtile, tilex, tiley, multiplier);
-		tasktime *= growthMultiplier;
+		super(rawtile, tilex, tiley, onSurface);
+		tasktime *= growthMultiplier * multiplier;
+		fail_chance *= chance;
+		random_factor *= rnd;
 	}
 //======================================================================
 	@Override
@@ -47,7 +49,7 @@ public class FruitTask extends TreeTileTask
 		int rawtile = Server.surfaceMesh.getTile(x, y);
 
 		if(!checkTileType(rawtile)) return true;
-		
+
 		if(getTile(rawtile).isMycelium()) return true;
 
 		if(!TileTask.compareTileTypes(tile, rawtile)) return true;
@@ -80,11 +82,11 @@ public class FruitTask extends TreeTileTask
 		// and the status seems to be checked every 125 milliseconds.
 		byte new_data = (byte)(data | 0x8);
 		byte new_type = convertTile(type, data);
-		
+
 		if(type != new_type) Server.modifyFlagsByTileType(tilex, tiley, new_type);
 		Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), new_type, new_data));
 		Players.getInstance().sendChangedTile(tilex, tiley, true, false);
-		
+
 		return true;
 	}
 //======================================================================

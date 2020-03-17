@@ -1,5 +1,8 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.gotti.wurmunlimited.modsupport.actions.ActionPerformer;
 import org.gotti.wurmunlimited.modsupport.actions.ModAction;
 
@@ -31,9 +34,13 @@ public class ExamineAction implements ModAction, ActionPerformer
 			if(at != null){
 				long tasktime = at.getTaskTime();
 				long timestamp = at.getTimeStamp();
-				performer.getCommunicator().sendNormalServerMessage("Task timestamp : " + timestamp);
-				performer.getCommunicator().sendNormalServerMessage("Task time total: " + (tasktime / 1000.0) + " seconds.");
-				performer.getCommunicator().sendNormalServerMessage("Task time left : " + (tasktime - now + timestamp) / 1000.0 + " seconds.");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss.SSS");
+				performer.getCommunicator().sendNormalServerMessage("Task timestamp: " + sdf.format(new Date(timestamp)));
+				performer.getCommunicator().sendNormalServerMessage("Task time total: " + (tasktime / 1000.0) + " seconds");
+				performer.getCommunicator().sendNormalServerMessage("Task time left: " + (tasktime - now + timestamp) / 1000.0 + " seconds");
+				performer.getCommunicator().sendNormalServerMessage("Chance of failure: " + at.getFailChance());
+				performer.getCommunicator().sendNormalServerMessage("Random time: " + (at.getRandomTime() / 1000.0) + " seconds");
+				performer.getCommunicator().sendNormalServerMessage("Random factor: " + at.getRandomFactor());
 			}else{
 				performer.getCommunicator().sendNormalServerMessage("No task pending.");
 			}

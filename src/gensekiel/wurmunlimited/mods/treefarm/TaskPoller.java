@@ -1,18 +1,18 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
-import com.wurmonline.server.ServerDirInfo;
-
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+
+import com.wurmonline.server.ServerDirInfo;
 
 public class TaskPoller
 {
@@ -40,6 +40,7 @@ public class TaskPoller
 //======================================================================
 	public static void addTask(AbstractTask task)
 	{
+		task.randomizeTaskTime();
 		synchronized(tiles){
 			tiles.put(task.getTaskKey(), task);
 		}
@@ -71,29 +72,36 @@ public class TaskPoller
 
 		List<AbstractTask> toRemove = new ArrayList<AbstractTask>();
 		List<AbstractTask> toCoolDown = new ArrayList<AbstractTask>();
-		
+
 		synchronized(tiles){
 			lastPolled = System.currentTimeMillis();
-			
+
 			for(AbstractTask task : tiles.values()){
 				// Check task relevant stuff
 				if(task.performCheck()){
 					toRemove.add(task);
 					continue;
 				}
-				
+
 				// Growth time not yet reached
 				if(now - task.getTimeStamp() < task.getTaskTime()) continue;
 
 				// Perform task
-				if(task.performTask()){
-					if(CoolDownTask.getCoolDownMultiplier() > 0.0 && !(task instanceof CoolDownTask))
-						toCoolDown.add(task);
-					else
-						toRemove.add(task);
+				if(task.shouldFail()){
+					toRemove.add(task);
+				}else{
+					if(task.performTask()){
+						if(CoolDownTask.getCoolDownMultiplier() > 0.0 && !(task instanceof CoolDownTask))
+							toCoolDown.add(task);
+						else
+							toRemove.add(task);
+					}else{
+						task.resetTimestamp();
+						task.randomizeTaskTime();
+					}
 				}
 			}
-			
+
 			for(AbstractTask t : toRemove) tiles.remove(t.getTaskKey());
 
 			for(AbstractTask t : toCoolDown)
@@ -104,21 +112,21 @@ public class TaskPoller
 	public static void dumpTreeList()
 	{
 		if(!preserveList) return;
-		
+
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
-		
+
 		try{
 			fos = new FileOutputStream(ServerDirInfo.getFileDBPath() + fileName);
 			oos = new ObjectOutputStream(fos);
 
 			oos.writeObject(System.currentTimeMillis());
 			oos.writeObject(tiles.size());
-			
+
 			synchronized(tiles){
 				for(AbstractTask task : tiles.values()) oos.writeObject(task);
 			}
-			
+
 			logger.log(Level.INFO, "Saved " + tiles.size() + " tasks.");
 		}catch(Exception e){
 			logger.log(Level.WARNING, "Failed saving task list: " + e);
@@ -133,10 +141,10 @@ public class TaskPoller
 	public static void loadTreeList()
 	{
 		if(!preserveList) return;
-		
+
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
-		
+
 		try{
 			fis = new FileInputStream(ServerDirInfo.getFileDBPath() + fileName);
 			ois = new ObjectInputStream(fis);
@@ -146,7 +154,7 @@ public class TaskPoller
 			if(diff < 0) throw new Exception("Invalid timestamp.");
 
 			int length = (int)ois.readObject();
-			
+
 			synchronized(tiles){
 				for(int i = 0; i < length; i++){
 					AbstractTask task = (AbstractTask)ois.readObject();
@@ -154,11 +162,11 @@ public class TaskPoller
 					tiles.put(task.getTaskKey(), task);
 				}
 			}
-			
+
 			logger.log(Level.INFO, "" + tiles.size() + " tasks loaded.");
 		}catch(Exception e){
 			logger.log(Level.WARNING, "Failed loading task list: " + e);
-			logger.log(Level.INFO, "That's okay if it is the first time using that option.");
+			logger.log(Level.INFO, "That's okay if it is the first time using that option or the mod was recently updated.");
 		}finally{
 			try{
 				if(ois != null) ois.close();

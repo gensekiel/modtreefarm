@@ -4,7 +4,7 @@ import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.items.ItemList;
 
-public class TrellisAgeAction extends TrellisAction
+public class TrellisAgeAction extends TrellisFruitAction
 {
 //======================================================================
 	public TrellisAgeAction(){ this("Water"); }
@@ -19,6 +19,7 @@ public class TrellisAgeAction extends TrellisAction
 		skill = 10045;
 	}
 //======================================================================
+	@Override
 	protected boolean checkItemConditions(Creature performer, Item item)
 	{
 		if(!TrellisAgeTask.canGrow(item)){
@@ -31,9 +32,9 @@ public class TrellisAgeAction extends TrellisAction
 //======================================================================
 	@Override protected boolean checkItemType(Item item){ return TrellisAgeTask.checkItemType(item); }
 //======================================================================
-	@Override protected void performItemAction(Item item, double multiplier)
+	@Override protected void performItemAction(Item item, double multiplier, double chance, double rnd)
 	{
-		TaskPoller.addTask(new TrellisAgeTask(item, multiplier));
+		TaskPoller.addTask(new TrellisAgeTask(item, multiplier, chance, rnd));
 	}
 //======================================================================
 }

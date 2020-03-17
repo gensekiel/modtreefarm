@@ -1,5 +1,10 @@
 package gensekiel.wurmunlimited.mods.treefarm;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.gotti.wurmunlimited.modloader.interfaces.Configurable;
@@ -24,9 +29,9 @@ public class TreeFarmMod implements
 	private static TreeGrassAction treegrassaction = new TreeGrassAction();
 	private static KelpReedGrowAction kelpreedaction = new KelpReedGrowAction();
 	private static ForageBotanizeAction foragebotanizeaction = new ForageBotanizeAction();
-	private static TrellisAction itemaction = new TrellisAction();
-	private static TrellisAgeAction itemageaction = new TrellisAgeAction();
-	private static PlanterAction planteraction = new PlanterAction();
+	private static TrellisFruitAction trellisfruitaction = new TrellisFruitAction();
+	private static TrellisAgeAction trellisageaction = new TrellisAgeAction();
+	private static PlanterFruitAction planterfruitaction = new PlanterFruitAction();
 	private static PlanterAgeAction planterageaction = new PlanterAgeAction();
 	private static FarmGrowAction farmgrowaction = new FarmGrowAction();
 	private static FarmFertAction farmfertaction = new FarmFertAction();
@@ -55,9 +60,9 @@ public class TreeFarmMod implements
 		if(allowGrow && allowGrass)  treegrassaction.register();
 		if(allowGrow && kelpreed)    kelpreedaction.register();
 		if(allowFert && allowFandB)  foragebotanizeaction.register();
-		if(allowFert && allowTrell)  itemaction.register();
-		if(allowGrow && allowTrell)  itemageaction.register();
-		if(allowFert && allowPlant)  planteraction.register();
+		if(allowFert && allowTrell)  trellisfruitaction.register();
+		if(allowGrow && allowTrell)  trellisageaction.register();
+		if(allowFert && allowPlant)  planterfruitaction.register();
 		if(allowGrow && allowPlant)  planterageaction.register();
 		if(allowGrow && allowFarms)  farmgrowaction.register();
 		if(allowFert && allowFarms)  farmfertaction.register();
@@ -71,9 +76,9 @@ public class TreeFarmMod implements
 			TreeGrassAction tg2 = new TreeGrassAction("Water ground (debug)");
 			KelpReedGrowAction kr2 = new KelpReedGrowAction("Fertilize (debug)");
 			ForageBotanizeAction fb2 = new ForageBotanizeAction("Fertilize ground (debug)");
-			TrellisAction ia2 = new TrellisAction("Fertilize (debug)");
+			TrellisFruitAction ia2 = new TrellisFruitAction("Fertilize (debug)");
 			TrellisAgeAction ia3 = new TrellisAgeAction("Water (debug)");
-			PlanterAction pa2 = new PlanterAction("Fertilize (debug)");
+			PlanterFruitAction pa2 = new PlanterFruitAction("Fertilize (debug)");
 			PlanterAgeAction pl2 = new PlanterAgeAction("Water (debug)");
 			FarmGrowAction fg2 = new FarmGrowAction("Water (debug)");
 			FarmFertAction ff2 = new FarmFertAction("Fertilize (debug)");
@@ -115,6 +120,8 @@ public class TreeFarmMod implements
 			new WipeSomeSkillAction("-> Wipe relevant skills!").register();
 			new SproutAction("-> Sprouts! Now!").register();
 			new NoSproutAction("-> Delete sprouts!").register();
+			new FeedAction("-> Feed me").register();
+			new ReconfigureAction("-> Reconfigure").register();
 		}
 	}
 //======================================================================
@@ -149,14 +156,28 @@ public class TreeFarmMod implements
 		ModActions.init();
 	}
 //======================================================================
-	private Integer getOption(String option, Integer default_value, Properties properties){ return Integer.valueOf(properties.getProperty(option, Integer.toString(default_value))); }
-	private Double getOption(String option, Double default_value, Properties properties){ return Double.valueOf(properties.getProperty(option, Double.toString(default_value))); }
-	private Long getOption(String option, Long default_value, Properties properties){ return Long.valueOf(properties.getProperty(option, Long.toString(default_value))); }
-	private Boolean getOption(String option, Boolean default_value, Properties properties){ return Boolean.valueOf(properties.getProperty(option, Boolean.toString(default_value))); }
-	private Byte getOption(String option, Byte default_value, Properties properties){ return Byte.valueOf(properties.getProperty(option, Byte.toString(default_value))); }
+	private static Integer getOption(String option, Integer default_value, Properties properties){ return Integer.valueOf(properties.getProperty(option, Integer.toString(default_value))); }
+	private static Double getOption(String option, Double default_value, Properties properties){ return Double.valueOf(properties.getProperty(option, Double.toString(default_value))); }
+	private static Long getOption(String option, Long default_value, Properties properties){ return Long.valueOf(properties.getProperty(option, Long.toString(default_value))); }
+	private static Boolean getOption(String option, Boolean default_value, Properties properties){ return Boolean.valueOf(properties.getProperty(option, Boolean.toString(default_value))); }
+	private static Byte getOption(String option, Byte default_value, Properties properties){ return Byte.valueOf(properties.getProperty(option, Byte.toString(default_value))); }
 //======================================================================
-	@Override
-	public void configure(Properties properties)
+	public static boolean reconfigure()
+	{
+		Path propfile = Paths.get("mods", "modtreefarm.properties");
+		Properties properties = new Properties();
+		if(Files.exists(propfile)){
+			try(InputStream is = Files.newInputStream(propfile)){
+				properties.load(is);
+				reconfigure(properties);
+			}catch(IOException e){
+				return false;
+			}
+		}else return false;
+		return true;
+	}
+//======================================================================
+	public static void reconfigure(Properties properties)
 	{
 		debug = getOption("Debug", debug, properties);
 		ExamineAction.setDebug(debug);
@@ -206,17 +227,17 @@ public class TreeFarmMod implements
 		foragebotanizeaction.setTime(getOption("FertilizingTime", foragebotanizeaction.getTime(), properties));
 		foragebotanizeaction.setItem(getOption("FertilizingItem", foragebotanizeaction.getItem(), properties));
 
-		itemaction.setCost(getOption("FertilizingCost", itemaction.getCost(), properties));
-		itemaction.setTime(getOption("FertilizingTime", itemaction.getTime(), properties));
-		itemaction.setItem(getOption("FertilizingItem", itemaction.getItem(), properties));
+		trellisfruitaction.setCost(getOption("FertilizingCost", trellisfruitaction.getCost(), properties));
+		trellisfruitaction.setTime(getOption("FertilizingTime", trellisfruitaction.getTime(), properties));
+		trellisfruitaction.setItem(getOption("FertilizingItem", trellisfruitaction.getItem(), properties));
 
-		itemageaction.setCost(getOption("WateringCost", itemageaction.getCost(), properties));
-		itemageaction.setTime(getOption("WateringTime", itemageaction.getTime(), properties));
-		itemageaction.setItem(getOption("WateringItem", itemageaction.getItem(), properties));
+		trellisageaction.setCost(getOption("WateringCost", trellisageaction.getCost(), properties));
+		trellisageaction.setTime(getOption("WateringTime", trellisageaction.getTime(), properties));
+		trellisageaction.setItem(getOption("WateringItem", trellisageaction.getItem(), properties));
 
-		planteraction.setCost(getOption("FertilizingCost", planteraction.getCost(), properties));
-		planteraction.setTime(getOption("FertilizingTime", planteraction.getTime(), properties));
-		planteraction.setItem(getOption("FertilizingItem", planteraction.getItem(), properties));
+		planterfruitaction.setCost(getOption("FertilizingCost", planterfruitaction.getCost(), properties));
+		planterfruitaction.setTime(getOption("FertilizingTime", planterfruitaction.getTime(), properties));
+		planterfruitaction.setItem(getOption("FertilizingItem", planterfruitaction.getItem(), properties));
 
 		planterageaction.setCost(getOption("WateringCost", planterageaction.getCost(), properties));
 		planterageaction.setTime(getOption("WateringTime", planterageaction.getTime(), properties));
@@ -270,22 +291,23 @@ public class TreeFarmMod implements
 		TreeGrowTask .setGrowthMultiplier(growthMultiplierGrow);
 		GrassGrowTask.setGrowthMultiplier(growthMultiplierGrow);
 		TreeGrassTask.setGrowthMultiplier(growthMultiplierGrow);
-
 		HedgeTask.setGrowthMultiplier(growthMultiplierGrow * getOption("TimeMultiplierHedge", HedgeTask.getGrowthMultiplier(), properties));
 		FruitTask.setGrowthMultiplier(getOption("TimeMultiplierFruit", FruitTask.getGrowthMultiplier(), properties));
 		TreeTileTask.setGrowthMultiplierTree(getOption("TimeMultiplierTree", TreeTileTask.getGrowthMultiplierTree(), properties));
 		TreeTileTask.setGrowthMultiplierBush(getOption("TimeMultiplierBush", TreeTileTask.getGrowthMultiplierBush(), properties));
 		GrassTileTask.setGrowthMultiplier(getOption("TimeMultiplierGrass", GrassTileTask.getGrowthMultiplier(), properties));
 		ForageBotanizeTask.setGrowthMultiplier(getOption("TimeMultiplierForageBotanize", ForageBotanizeTask.getGrowthMultiplier(), properties));
-		FlowerGrowTask.setGrowthMultiplier(getOption("TimeMultiplierFlowers", FlowerGrowTask.getGrowthMultiplier(), properties));
+		FlowerGrowTask.setGrowthMultiplier(growthMultiplierGrow * getOption("TimeMultiplierFlowers", FlowerGrowTask.getGrowthMultiplier(), properties));
 		TrellisTask.setGrowthMultiplier(getOption("TimeMultiplierTrellises", TrellisTask.getGrowthMultiplier(), properties));
-		TrellisAgeTask.setGrowthMultiplier(getOption("TimeMultiplierTrellises", TrellisAgeTask.getGrowthMultiplier(), properties));
+		TrellisFruitTask.setGrowthMultiplier(getOption("TimeMultiplierFruit", TrellisFruitTask.getGrowthMultiplier(), properties));
+		TrellisAgeTask.setGrowthMultiplier(getOption("TimeMultiplierGrow", TrellisAgeTask.getGrowthMultiplier(), properties));
 		PlanterTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterTask.getGrowthMultiplier(), properties));
-		PlanterAgeTask.setGrowthMultiplier(getOption("TimeMultiplierPlanters", PlanterAgeTask.getGrowthMultiplier(), properties));
-		FarmGrowTask.setGrowthMultiplier(getOption("TimeMultiplierFarms", FarmGrowTask.getGrowthMultiplier(), properties));
+		PlanterFruitTask.setGrowthMultiplier(getOption("TimeMultiplierFruit", PlanterFruitTask.getGrowthMultiplier(), properties));
+		PlanterAgeTask.setGrowthMultiplier(getOption("TimeMultiplierGrow", PlanterAgeTask.getGrowthMultiplier(), properties));
+		FarmGrowTask.setGrowthMultiplier(growthMultiplierGrow * getOption("TimeMultiplierFarms", FarmGrowTask.getGrowthMultiplier(), properties));
 
 		PlanterAgeTask.setPlanterAgeStep(getOption("PlanterAgeStep", PlanterAgeTask.getPlanterAgeStep(), properties));
-		PlanterAction.setCostMultiplier(getOption("CostMultiplierPlanters", PlanterAction.getCostMultiplier(), properties));
+		PlanterFruitAction.setCostMultiplier(getOption("CostMultiplierPlanters", PlanterFruitAction.getCostMultiplier(), properties));
 		PlanterAgeAction.setCostMultiplier(getOption("CostMultiplierPlanters", PlanterAgeAction.getCostMultiplier(), properties));
 
 		TreeTileTask.setGrowthMultiplierBirch   (getOption("TimeMultiplierBirch",    TreeTileTask.getGrowthMultiplierBirch(),    properties));
@@ -327,6 +349,37 @@ public class TreeFarmMod implements
 		for(int i = 0; i < 7; i++){
 			FarmGrowTask.setGrowthMultiplierAge( i, getOption("TimeMultiplierAge" + i, FarmGrowTask.getGrowthMultiplierAge(i), properties));
 		}
+
+		AbstractAction.setChanceSkillMultiplier(getOption("ChanceSkillMultiplier", AbstractAction.getChanceSkillMultiplier(), properties));
+		AbstractAction.setChanceQualityMultiplier(getOption("ChanceQualityMultiplier", AbstractAction.getChanceQualityMultiplier(), properties));
+		AbstractAction.setRndSkillMultiplier(getOption("RandomSkillMultiplier", AbstractAction.getRndSkillMultiplier(), properties));
+		AbstractAction.setRndQualityMultiplier(getOption("RandomQualityMultiplier", AbstractAction.getRndQualityMultiplier(), properties));
+
+		TreeTileTask.setChanceTrees(getOption("ChanceTrees", TreeTileTask.getChanceTrees(), properties));
+		TreeTileTask.setChanceBushes(getOption("ChanceBushes", TreeTileTask.getChanceBushes(), properties));
+		HedgeTask.setChanceMultiplier(getOption("ChanceHedges", HedgeTask.getChanceMultiplier(), properties));
+		GrassTileTask.setChanceMultiplier(getOption("ChanceGrass", GrassTileTask.getChanceMultiplier(), properties));
+		FlowerGrowTask.setChanceMultiplier(getOption("ChanceFlowers", FlowerGrowTask.getChanceMultiplier(), properties));
+		TrellisTask.setChanceMultiplier(getOption("ChanceTrellises", TrellisTask.getChanceMultiplier(), properties));
+		PlanterTask.setChanceMultiplier(getOption("ChancePlanters", PlanterTask.getChanceMultiplier(), properties));
+		FarmGrowTask.setChanceMultiplier(getOption("ChanceFarms", FarmGrowTask.getChanceMultiplier(), properties));
+		ForageBotanizeTask.setChanceMultiplier(getOption("ChanceForageBotanize", ForageBotanizeTask.getChanceMultiplier(), properties));
+
+		TreeTileTask.setRndTrees(getOption("RandomTimeTrees", TreeTileTask.getRndTrees(), properties));
+		TreeTileTask.setRndBushes(getOption("RandomTimeBushes", TreeTileTask.getRndBushes(), properties));
+		HedgeTask.setRndMultiplier(getOption("RandomTimeHedges", HedgeTask.getRndMultiplier(), properties));
+		GrassTileTask.setRndMultiplier(getOption("RandomTimeGrass", GrassTileTask.getRndMultiplier(), properties));
+		FlowerGrowTask.setRndMultiplier(getOption("RandomTimeFlowers", FlowerGrowTask.getRndMultiplier(), properties));
+		TrellisTask.setRndMultiplier(getOption("RandomTimeTrellises", TrellisTask.getRndMultiplier(), properties));
+		PlanterTask.setRndMultiplier(getOption("RandomTimePlanters", PlanterTask.getRndMultiplier(), properties));
+		FarmGrowTask.setRndMultiplier(getOption("RandomTimeFarms", FarmGrowTask.getRndMultiplier(), properties));
+		ForageBotanizeTask.setRndMultiplier(getOption("RandomTimeForageBotanize", ForageBotanizeTask.getRndMultiplier(), properties));
+	}
+//======================================================================
+	@Override
+	public void configure(Properties properties)
+	{
+		reconfigure(properties);
 	}
 //======================================================================
 }

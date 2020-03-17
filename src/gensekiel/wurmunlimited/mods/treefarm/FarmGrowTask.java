@@ -10,7 +10,7 @@ import com.wurmonline.server.zones.TilePoller;
 
 public class FarmGrowTask extends TileTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	private static double GrowthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ GrowthMultiplier = d; }
@@ -31,12 +31,22 @@ public class FarmGrowTask extends TileTask
 	private static boolean retainState = false;
 	public static void setStateLock(boolean b){ retainState = b; }
 	public static boolean getStateLock(){ return retainState; }
+//----------------------------------------------------------------------
+	private static double ChanceMultiplier = 0.0;
+	public static void setChanceMultiplier(double d){ ChanceMultiplier = d; }
+	public static double getChanceMultiplier(){ return ChanceMultiplier; }
+//----------------------------------------------------------------------
+	private static double RndMultiplier = 0.0;
+	public static void setRndMultiplier(double d){ RndMultiplier = d; }
+	public static double getRndMultiplier(){ return RndMultiplier; }
 //======================================================================
-	public FarmGrowTask(int rawtile, int tilex, int tiley, double multiplier)
+	public FarmGrowTask(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		super(rawtile, tilex, tiley, multiplier);
+		super(rawtile, tilex, tiley, onSurface);
 
-		tasktime *= GrowthMultiplier;
+		tasktime *= GrowthMultiplier * multiplier;
+		fail_chance *= ChanceMultiplier * chance;
+		random_factor *= RndMultiplier * rnd;
 
 		byte tage = getAge();
 		if(tage < getMaxAge()) tasktime *= GrowthMultiplierAge[tage];
@@ -111,37 +121,38 @@ public class FarmGrowTask extends TileTask
 	@Override
 	public boolean performTask()
 	{
-		int rawtile = Server.surfaceMesh.getTile(x, y);
+		int rawtile = onSurface ? Server.surfaceMesh.getTile(x, y) : Server.caveMesh.getTile(x, y);
 
 		if(useOriginalGrowthFunction)
-			callFarmGrowthWrapper(rawtile, x, y, getType(rawtile), getData(rawtile));
+			callFarmGrowthWrapper(rawtile);
 		else
-			forceFarmGrowth(rawtile, x, y, getType(rawtile), getData(rawtile));
+			forceFarmGrowth(rawtile);
 
 		if(getAge(getData(rawtile)) + 1 < ageLimit){
-			resetTimestamp();
 			return false;
 		}
 		return true;
 	}
 //======================================================================
-	private static void callFarmGrowthWrapper(int rawtile, int tilex, int tiley, byte type, byte data)
+	private void callFarmGrowthWrapper(int rawtile)
 	{
 		// If the protection is active, calling the growth function
 		// will also check for tasks and prevent the execution on
 		// tracked objects --> allow execution once.
 		if(TaskPoller.getProtectTasks()) TaskPoller.ignoreNextMatch();
 		try{
-			Method method = TilePoller.class.getMethod("wrap_checkForTreeGrowth", int.class, int.class, int.class, byte.class, byte.class);
-			method.invoke(null, rawtile, tilex, tiley, type, data);
+			Method method = TilePoller.class.getMethod("wrap_checkForFarmGrowth", int.class, int.class, int.class, byte.class, byte.class, boolean.class);
+			method.invoke(null, rawtile, x, y, getType(rawtile), getData(rawtile), onSurface);
 		}catch(Exception e){
 			System.out.println(e);
 			e.printStackTrace();
 		}
 	}
 //======================================================================
-	private static void forceFarmGrowth(int rawtile, int tilex, int tiley, byte type, byte data)
+	private void forceFarmGrowth(int rawtile)
 	{
+		byte type = getType(rawtile);
+		byte data = getData(rawtile);
 		byte age = getAge(data);
 		byte new_data = 0;
 		if(retainState){
@@ -149,14 +160,13 @@ public class FarmGrowTask extends TileTask
 		}else{
 			new_data = (byte)((((age+1) & 0x7) << 4) | (data & 0x0F));
 		}
-//		if(onSurface){
-			Server.surfaceMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, new_data));
-//		}else{
-//			Server.caveMesh.setTile(tilex, tiley, Tiles.encode(Tiles.decodeHeight(rawtile), type, new_data));
-//		}
-		Server.modifyFlagsByTileType(tilex, tiley, type);
-//		Players.getInstance().sendChangedTile(tilex, tiley, onSurface, false);
-		Players.getInstance().sendChangedTile(tilex, tiley, true, false);
+		if(onSurface){
+			Server.surfaceMesh.setTile(x, y, Tiles.encode(Tiles.decodeHeight(rawtile), type, new_data));
+		}else{
+			Server.caveMesh.setTile(x, y, Tiles.encode(Tiles.decodeHeight(rawtile), type, new_data));
+		}
+		Server.modifyFlagsByTileType(x, y, type);
+		Players.getInstance().sendChangedTile(x, y, onSurface, false);
 	}
 //======================================================================
 }

@@ -5,7 +5,7 @@ import com.wurmonline.server.Server;
 
 public abstract class TileTask extends AbstractTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	protected int tile;
 	public final int getTile(){ return tile; }
@@ -17,8 +17,8 @@ public abstract class TileTask extends AbstractTask
 	protected int y;
 	public final int getY(){ return y; }
 //----------------------------------------------------------------------
-//	protected boolean onSurface;
-//	public final boolean getOnSurface(){ return onSurface; }
+	protected boolean onSurface;
+	public final boolean getOnSurface(){ return onSurface; }
 //----------------------------------------------------------------------
 	protected static double GrowthMultiplierNormal = 1.0;
 	protected static double GrowthMultiplierEnchanted = 1.0;
@@ -30,13 +30,14 @@ public abstract class TileTask extends AbstractTask
 	public static double getGrowthMultiplierEnchanted(){ return GrowthMultiplierEnchanted; }
 	public static double getGrowthMultiplierMycelium(){ return GrowthMultiplierMycelium; }
 //======================================================================
-	protected TileTask(int rawtile, int tilex, int tiley, double multiplier)
+	protected TileTask(int rawtile, int tilex, int tiley, boolean surf)
 	{
-		super(multiplier);
+		super();
 
 		tile = rawtile;
 		x = tilex;
 		y = tiley;
+		onSurface = surf;
 
 		Tiles.Tile tiletype = getTile(tile);
 

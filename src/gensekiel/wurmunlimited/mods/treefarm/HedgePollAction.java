@@ -16,7 +16,7 @@ public class HedgePollAction extends ActionTemplate
 {
 	private static Logger logger = Logger.getLogger(HedgePollAction.class.getName());
 //======================================================================
-	public HedgePollAction(){ menuEntry = "Poll"; }
+	public HedgePollAction(){ menuEntry = "-> Poll"; }
 //======================================================================
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Fence fence)

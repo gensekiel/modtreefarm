@@ -60,13 +60,13 @@ public class GrassGrowAction extends TileAction
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
+	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
 		GrassData.GrowthStage gs = GrassData.GrowthStage.decodeTileData(Tiles.decodeData(rawtile));
 		if(gs.isMax()){
-			TaskPoller.addTask(new FlowerGrowTask(rawtile, tilex, tiley, multiplier));
+			TaskPoller.addTask(new FlowerGrowTask(rawtile, tilex, tiley, multiplier, chance, rnd, onSurface));
 		}else{
-			TaskPoller.addTask(new GrassGrowTask(rawtile, tilex, tiley, multiplier));
+			TaskPoller.addTask(new GrassGrowTask(rawtile, tilex, tiley, multiplier, chance, rnd, onSurface));
 		}
 	}
 //======================================================================

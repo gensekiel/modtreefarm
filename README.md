@@ -46,6 +46,8 @@ Almost every aspect can be modified via the configuration file.
 * Cost, time and item required for actions.
 * Influence of skill, item quality and age on task time, action
 time and action cost.
+* Failure chances and random time variations, optionally influenced by
+skill level and item quality.
 
 Other options are:
 

@@ -6,7 +6,7 @@ import com.wurmonline.mesh.TreeData;
 
 public abstract class TreeTileTask extends TileTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 	// In the upper 16 bytes the tile integer encodes tile type
 	// and data, data being age (4 bit), fruit (1 bit),
 	// center (1 bit) and grass height (2 bit).
@@ -42,10 +42,24 @@ public abstract class TreeTileTask extends TileTask
 	private static double GrowthMultiplierRaspberry = 1.0;
 //----------------------------------------------------------------------
 	private static double[] GrowthMultiplierAge = {1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5, 1.6, 1.6, 1.7};
+//----------------------------------------------------------------------
+	private static double ChanceTrees = 0.0;
+	private static double ChanceBushes = 0.0;
+	public static void setChanceTrees(double d){ ChanceTrees = d; }
+	public static double getChanceTrees(){ return ChanceTrees; }
+	public static void setChanceBushes(double d){ ChanceBushes = d; }
+	public static double getChanceBushes(){ return ChanceBushes; }
+//----------------------------------------------------------------------
+	private static double RndTrees = 0.0;
+	private static double RndBushes = 0.0;
+	public static void setRndTrees(double d){ RndTrees = d; }
+	public static double getRndTrees(){ return RndTrees; }
+	public static void setRndBushes(double d){ RndBushes = d; }
+	public static double getRndBushes(){ return RndBushes; }
 //======================================================================
-	public TreeTileTask(int rawtile, int tilex, int tiley, double multiplier)
+	public TreeTileTask(int rawtile, int tilex, int tiley, boolean onSurface)
 	{
-		super(rawtile, tilex, tiley, multiplier);
+		super(rawtile, tilex, tiley, onSurface);
 
 		byte tdata = getData();
 		Tiles.Tile tiletype = getTile(tile);
@@ -68,6 +82,9 @@ public abstract class TreeTileTask extends TileTask
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.FIR)      tasktime *= GrowthMultiplierFir;
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.LINDEN)   tasktime *= GrowthMultiplierLinden;
 			else if(tiletype.getTreeType(tdata) == TreeData.TreeType.ORANGE)   tasktime *= GrowthMultiplierOrange;
+
+			fail_chance *= ChanceTrees;
+			random_factor *= RndTrees;
 		}
 
 		if(tiletype.isBush()){
@@ -82,6 +99,9 @@ public abstract class TreeTileTask extends TileTask
 			else if(tiletype.getBushType(tdata) == BushData.BushType.HAZELNUT)  tasktime *= GrowthMultiplierHazelnut;
 			else if(tiletype.getBushType(tdata) == BushData.BushType.BLUEBERRY) tasktime *= GrowthMultiplierBlueberry;
 			else if(tiletype.getBushType(tdata) == BushData.BushType.RASPBERRY) tasktime *= GrowthMultiplierRaspberry;
+
+			fail_chance *= ChanceBushes;
+			random_factor *= RndBushes;
 		}
 
 		byte tage = getAge();

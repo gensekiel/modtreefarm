@@ -46,9 +46,9 @@ public class WateringAction extends TileAction
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
+	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		TaskPoller.addTask(new TreeGrowTask(rawtile, tilex, tiley, multiplier));
+		TaskPoller.addTask(new TreeGrowTask(rawtile, tilex, tiley, multiplier, chance, rnd, onSurface));
 	}
 //======================================================================
 	@Override

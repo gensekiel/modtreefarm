@@ -3,25 +3,19 @@ package gensekiel.wurmunlimited.mods.treefarm;
 import com.wurmonline.mesh.FoliageAge;
 import com.wurmonline.server.items.Item;
 
-public class TrellisAgeTask extends TrellisTask
+public class TrellisFruitTask extends TrellisTask
 {
 	private static final long serialVersionUID = 5L;
 //======================================================================
-	private static int allowed_ids[] = {919, 920, 1018, 1274};
-	private int age;
+	private static int allowed_ids[] = {920, 1018, 1274};
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
-//----------------------------------------------------------------------
-	protected static byte ageLimit = 1;
-	public static void setAgeLimit(byte b){ ageLimit = b; }
-	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
-	public TrellisAgeTask(Item item, double multiplier, double chance, double rnd)
+	public TrellisFruitTask(Item item, double multiplier, double chance, double rnd)
 	{
 		super(item);
-		age = getAge(item);
 		tasktime *= growthMultiplier * multiplier;
 		fail_chance *= chance;
 		random_factor *= rnd;
@@ -32,16 +26,11 @@ public class TrellisAgeTask extends TrellisTask
 		return checkItemType(allowed_ids, item);
 	}
 //======================================================================
-	public static int getAge(Item item)
+	public static boolean isFertilizable(Item item)
 	{
-		return item.getLeftAuxData();
-	}
-//======================================================================
-	public static boolean canGrow(Item item)
-	{
-		int age = getAge(item);
-		if(age < FoliageAge.SHRIVELLED.getAgeId()) return true;
-		else return false;
+		int age = item.getLeftAuxData();
+		if(age > FoliageAge.YOUNG_FOUR.getAgeId() && age < FoliageAge.OVERAGED.getAgeId()) return true;
+		return false;
 	}
 //======================================================================
 	@Override
@@ -51,16 +40,7 @@ public class TrellisAgeTask extends TrellisTask
 		if(item == null) return true;
 
 		if(!checkItemType(item)) return true;
-
-		int newage = getAge(item);
-
-		if(checkForWUPoll && newage > ageLimit){
-			if(newage != age) return true;
-		}
-
-		if(age < ageLimit && newage == ageLimit) return true;
-
-		if(!canGrow(item)) return true;
+		if(!isFertilizable(item)) return true;
 
 		return false;
 	}
@@ -70,16 +50,11 @@ public class TrellisAgeTask extends TrellisTask
 	{
 		Item item = getItem();
 		if(item != null){
-			item.setLeftAuxData(item.getLeftAuxData() + 1);
-			item.updateName();
-
-			if(getAge(item) < ageLimit){
-				return false;
-			}
+			item.setHarvestable(true);
 		}
 		return true;
 	}
 //======================================================================
-	@Override public String getDescription(){ return getDescription("watered"); }
+	@Override public String getDescription(){ return getDescription("fertilized"); }
 //======================================================================
 }

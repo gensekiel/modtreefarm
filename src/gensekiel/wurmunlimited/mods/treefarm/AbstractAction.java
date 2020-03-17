@@ -23,6 +23,10 @@ public abstract class AbstractAction extends ActionTemplate
 	protected static double timeSkillMultiplier = 1.0;
 	protected static double growthTimeQualityMultiplier = 1.0;
 	protected static double growthTimeSkillMultiplier = 1.0;
+	protected static double chanceSkillMultiplier = 1.0;
+	protected static double chanceQualityMultiplier = 1.0;
+	protected static double rndSkillMultiplier = 1.0;
+	protected static double rndQualityMultiplier = 1.0;
 	protected static boolean gainSkill = true;
 	protected static boolean obeyProtection = true;
 //======================================================================
@@ -39,6 +43,10 @@ public abstract class AbstractAction extends ActionTemplate
 	public static void setTimeSkillMultiplier(double d){ timeSkillMultiplier = d; }
 	public static void setGrowthTimeQualityMultiplier(double d){ growthTimeQualityMultiplier = d; }
 	public static void setGrowthTimeSkillMultiplier(double d){ growthTimeSkillMultiplier = d; }
+	public static void setChanceSkillMultiplier(double d){ chanceSkillMultiplier = d; }
+	public static void setChanceQualityMultiplier(double d){ chanceQualityMultiplier = d; }
+	public static void setRndSkillMultiplier(double d){ rndSkillMultiplier = d; }
+	public static void setRndQualityMultiplier(double d){ rndQualityMultiplier = d; }
 	public static void setGainSkill(boolean b){ gainSkill = b; }
 	public static void setObeyProtection(boolean b){ obeyProtection = b; }
 //======================================================================
@@ -52,6 +60,10 @@ public abstract class AbstractAction extends ActionTemplate
 	public static double getTimeSkillMultiplier(){ return timeSkillMultiplier; }
 	public static double getGrowthTimeQualityMultiplier(){ return growthTimeQualityMultiplier; }
 	public static double getGrowthTimeSkillMultiplier(){ return growthTimeSkillMultiplier; }
+	public static double getChanceSkillMultiplier(){ return chanceSkillMultiplier; }
+	public static double getChanceQualityMultiplier(){ return chanceQualityMultiplier; }
+	public static double getRndSkillMultiplier(){ return rndSkillMultiplier; }
+	public static double getRndQualityMultiplier(){ return rndQualityMultiplier; }
 	public static boolean getGainSkill(){ return gainSkill; }
 	public static boolean getObeyProtection(){ return obeyProtection; }
 //======================================================================
@@ -107,6 +119,22 @@ public abstract class AbstractAction extends ActionTemplate
 		return Math.max(0.0,
 		          interpolate(growthTimeQualityMultiplier, quality, 100.0)
 		        * interpolate(growthTimeSkillMultiplier, knowledge, 100.0)
+		);
+	}
+//======================================================================
+	public double getRandomChanceMultiplier(double quality, double knowledge)
+	{
+		return Math.max(0.0,
+		          interpolate(chanceQualityMultiplier, quality, 100.0)
+		        * interpolate(chanceSkillMultiplier, knowledge, 100.0)
+		);
+	}
+//======================================================================
+	public double getRandomTimeMultiplier(double quality, double knowledge)
+	{
+		return Math.max(0.0,
+		          interpolate(rndQualityMultiplier, quality, 100.0)
+		        * interpolate(rndSkillMultiplier, knowledge, 100.0)
 		);
 	}
 //======================================================================

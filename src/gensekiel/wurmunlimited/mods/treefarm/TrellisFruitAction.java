@@ -5,12 +5,12 @@ import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.items.ItemList;
 
-public class TrellisAction extends ItemAction
+public class TrellisFruitAction extends ItemAction
 {
 //======================================================================
-	public TrellisAction(){ this("Fertilize"); }
+	public TrellisFruitAction(){ this("Fertilize"); }
 //======================================================================
-	public TrellisAction(String s)
+	public TrellisFruitAction(String s)
 	{
 		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
 
@@ -20,11 +20,12 @@ public class TrellisAction extends ItemAction
 		skill = 10045;
 	}
 //======================================================================
-	protected TrellisAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
+	protected TrellisFruitAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
 	@Override protected int getAge(Item target){ return target.getLeftAuxData(); }
 	@Override protected int getMaxAge(){ return FoliageAge.OVERAGED.getAgeId(); }
 //======================================================================
+	@Override
 	protected boolean checkItemConditions(Creature performer, Item item)
 	{
 		int age = getAge(item);
@@ -44,11 +45,12 @@ public class TrellisAction extends ItemAction
 		return false;
 	}
 //======================================================================
-	protected boolean checkItemType(Item item){ return TrellisTask.checkItemType(item); }
+	@Override protected boolean checkItemType(Item item){ return TrellisFruitTask.checkItemType(item); }
 //======================================================================
-	protected void performItemAction(Item item, double multiplier)
+	@Override
+	protected void performItemAction(Item item, double multiplier, double chance, double rnd)
 	{
-		TaskPoller.addTask(new TrellisTask(item, multiplier));
+		TaskPoller.addTask(new TrellisFruitTask(item, multiplier, chance, rnd));
 	}
 //======================================================================
 }

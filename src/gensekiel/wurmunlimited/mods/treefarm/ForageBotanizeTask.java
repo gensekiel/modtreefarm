@@ -6,22 +6,32 @@ import com.wurmonline.mesh.Tiles;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.zones.TilePoller;
 
-public class ForageBotanizeTask extends GrassTileTask
+public class ForageBotanizeTask extends TileTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
 //----------------------------------------------------------------------
+	private static double ChanceMultiplier = 0.0;
+	public static void setChanceMultiplier(double d){ ChanceMultiplier = d; }
+	public static double getChanceMultiplier(){ return ChanceMultiplier; }
+//----------------------------------------------------------------------
+	private static double RndMultiplier = 0.0;
+	public static void setRndMultiplier(double d){ RndMultiplier = d; }
+	public static double getRndMultiplier(){ return RndMultiplier; }
+//----------------------------------------------------------------------
 	protected static boolean useOriginalGrowthFunction = false;
 	public static void setUseOriginalGrowthFunction(boolean b){ useOriginalGrowthFunction = b; }
 	public static boolean getUseOriginalGrowthFunction(){ return useOriginalGrowthFunction; }
 //======================================================================
-	protected ForageBotanizeTask(int rawtile, int tilex, int tiley, double multiplier)
+	protected ForageBotanizeTask(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		super(rawtile, tilex, tiley, multiplier);
-		tasktime *= growthMultiplier;
+		super(rawtile, tilex, tiley, onSurface);
+		tasktime *= growthMultiplier * multiplier;
+		fail_chance *= ChanceMultiplier * chance;
+		random_factor *= RndMultiplier * rnd;
 	}
 //======================================================================
 	public static boolean checkTileType(int rawtile)

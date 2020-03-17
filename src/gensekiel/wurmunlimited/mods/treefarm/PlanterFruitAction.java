@@ -4,16 +4,16 @@ import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.items.ItemList;
 
-public class PlanterAction extends ItemAction
+public class PlanterFruitAction extends ItemAction
 {
 //======================================================================
 	private static double costMultiplier = 0.5;
 	public static void setCostMultiplier(double d){ costMultiplier = d; }
 	public static double getCostMultiplier(){ return costMultiplier; }
 //======================================================================
-	public PlanterAction(){ this("Fertilize"); }
+	public PlanterFruitAction(){ this("Fertilize"); }
 //======================================================================
-	public PlanterAction(String s)
+	public PlanterFruitAction(String s)
 	{
 		super(s, AbstractAction.ActionFlavor.FERTILIZE_ACTION);
 
@@ -23,17 +23,17 @@ public class PlanterAction extends ItemAction
 		skill = 10045;
 	}
 //======================================================================
-	protected PlanterAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
+	protected PlanterFruitAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
 	@Override
 	protected boolean checkItemConditions(Creature performer, Item item)
 	{
-		if(!PlanterTask.isFertilizable(item)){
+		if(!PlanterFruitTask.isFertilizable(item)){
 			performer.getCommunicator().sendNormalServerMessage("This " + item.getName() + " is not at the right age.", (byte)1);
 			return true;
 		}
 
-		if(PlanterTask.isPickable(item)){
+		if(PlanterFruitTask.isPickable(item)){
 			performer.getCommunicator().sendNormalServerMessage("This " + item.getName() + " can already be picked.", (byte)1);
 			return true;
 		}
@@ -41,13 +41,13 @@ public class PlanterAction extends ItemAction
 		return false;
 	}
 //======================================================================
-	@Override protected boolean checkItemType(Item item){ return PlanterTask.checkItemType(item); }
+	@Override protected boolean checkItemType(Item item){ return PlanterFruitTask.checkItemType(item); }
 	@Override protected int getMaxAge(){ return 127; }
-	@Override protected int getAge(Item target){ return PlanterTask.getPlanterAge(target); }
+	@Override protected int getAge(Item target){ return PlanterFruitTask.getPlanterAge(target); }
 //======================================================================
-	@Override protected void performItemAction(Item item, double multiplier)
+	@Override protected void performItemAction(Item item, double multiplier, double chance, double rnd)
 	{
-		TaskPoller.addTask(new PlanterTask(item, multiplier));
+		TaskPoller.addTask(new PlanterFruitTask(item, multiplier, chance, rnd));
 	}
 //======================================================================
 	@Override public int getActionCost(double knowledge, int age, int maxage)

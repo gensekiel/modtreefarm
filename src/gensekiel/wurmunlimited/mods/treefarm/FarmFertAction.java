@@ -49,9 +49,9 @@ public class FarmFertAction extends TileAction
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
+	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		TaskPoller.addTask(new FarmGrowTask(rawtile, tilex, tiley, multiplier));
+		TaskPoller.addTask(new FarmGrowTask(rawtile, tilex, tiley, multiplier, chance, rnd, onSurface));
 	}
 //======================================================================
 	@Override

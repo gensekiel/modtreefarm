@@ -11,7 +11,7 @@ public class GainSomeSkillAction extends DebugAction
 	@Override
 	protected void action(Creature performer)
 	{
-		int skills[] = {10045, 10048};
+		int skills[] = {10045, 10048, 10049};
 		for(int i : skills){
 			Skill s = performer.getSkills().getSkillOrLearn(i);
 			s.setKnowledge(99.0, false);

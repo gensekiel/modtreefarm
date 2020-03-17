@@ -2,7 +2,7 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 public class CoolDownTask extends AbstractTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	private long key;
 	private static double coolDownMultiplier = 0.25;
@@ -11,7 +11,7 @@ public class CoolDownTask extends AbstractTask
 //======================================================================
 	public CoolDownTask(long k, long time)
 	{
-		super(1.0);
+		super();
 		key = k;
 		tasktime = (long)(time * coolDownMultiplier);
 	}

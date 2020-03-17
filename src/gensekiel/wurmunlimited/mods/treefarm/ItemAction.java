@@ -21,7 +21,7 @@ public abstract class ItemAction extends AbstractAction
 //======================================================================
 	protected abstract boolean checkItemType(Item item);
 	protected abstract boolean checkItemConditions(Creature performer, Item item);
-	protected abstract void performItemAction(Item item, double multiplier);
+	protected abstract void performItemAction(Item item, double multiplier, double chance, double rnd);
 //======================================================================
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Item target)
@@ -65,7 +65,9 @@ public abstract class ItemAction extends AbstractAction
 				if(item != 0) quality = source.getCurrentQualityLevel();
 
 				double multiplier = getTaskTimeMultiplier(quality, skl.getKnowledge());
-				performItemAction(target, multiplier);
+				double chance = getRandomChanceMultiplier(quality, skl.getKnowledge());
+				double rnd = getRandomTimeMultiplier(quality, skl.getKnowledge());
+				performItemAction(target, multiplier, chance, rnd);
 
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
 				if(gainSkill) gainSkill(skl);

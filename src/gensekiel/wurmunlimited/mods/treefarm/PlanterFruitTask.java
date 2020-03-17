@@ -2,38 +2,32 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import com.wurmonline.server.items.Item;
 
-public class PlanterAgeTask extends PlanterTask
+public class PlanterFruitTask extends PlanterTask
 {
 	private static final long serialVersionUID = 5L;
 //======================================================================
-	private int age;
-//======================================================================
-	private static int planterAgeStep = 1;
-	public static void setPlanterAgeStep(int i){ planterAgeStep = i; }
-	public static int getPlanterAgeStep(){ return planterAgeStep; }
-//----------------------------------------------------------------------
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
-//----------------------------------------------------------------------
-	protected static byte ageLimit = 1;
-	public static void setAgeLimit(byte b){ ageLimit = b; }
-	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
-	public PlanterAgeTask(Item item, double multiplier, double chance, double rnd)
+	public PlanterFruitTask(Item item, double multiplier, double chance, double rnd)
 	{
 		super(item);
-		age = getPlanterAge(item);
 		tasktime *= growthMultiplier * multiplier;
 		fail_chance *= chance;
 		random_factor *= rnd;
 	}
 //======================================================================
-	public static boolean canGrow(Item item)
+	public static boolean isFertilizable(Item item)
 	{
 		int age = getPlanterAge(item);
-		if(age < 127) return true;
+		if(age > 5 && age < 95) return true;
 		else return false;
+	}
+//======================================================================
+	public static boolean isPickable(Item item)
+	{
+		return ((item.getAuxData() & 0x80) != 0);
 	}
 //======================================================================
 	@Override
@@ -43,16 +37,7 @@ public class PlanterAgeTask extends PlanterTask
 		if(item == null) return true;
 
 		if(!checkItemType(item)) return true;
-
-		int newage = getPlanterAge(item);
-
-		if(checkForWUPoll && newage > ageLimit){
-			if(newage != age) return true;
-		}
-
-		if(age < ageLimit && newage == ageLimit) return true;
-
-		if(!canGrow(item)) return true;
+		if(!isFertilizable(item)) return true;
 
 		return false;
 	}
@@ -62,16 +47,11 @@ public class PlanterAgeTask extends PlanterTask
 	{
 		Item item = getItem();
 		if(item != null){
-			byte aux = item.getAuxData();
-			item.setAuxData((byte)( (aux & 0x80) | ((aux & 0x7F) + planterAgeStep) ));
-
-			if(getPlanterAge(item) < ageLimit){
-				return false;
-			}
+			item.setAuxData((byte)(item.getAuxData() | 0x80));
 		}
 		return true;
 	}
 //======================================================================
-	@Override public String getDescription(){ return getDescription("watered"); }
+	@Override public String getDescription(){ return getDescription("fertilized"); }
 //======================================================================
 }

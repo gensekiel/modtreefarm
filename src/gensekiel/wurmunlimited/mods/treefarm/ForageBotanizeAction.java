@@ -45,9 +45,9 @@ public class ForageBotanizeAction extends TileAction
 	}
 //======================================================================
 	@Override
-	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier)
+	public void performTileAction(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		TaskPoller.addTask(new ForageBotanizeTask(rawtile, tilex, tiley, multiplier));
+		TaskPoller.addTask(new ForageBotanizeTask(rawtile, tilex, tiley, multiplier, chance, rnd, onSurface));
 	}
 //======================================================================
 	@Override

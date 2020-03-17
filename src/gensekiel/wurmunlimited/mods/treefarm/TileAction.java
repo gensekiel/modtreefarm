@@ -24,8 +24,7 @@ public abstract class TileAction extends AbstractAction
 //======================================================================
 	protected TileAction(String s, AbstractAction.ActionFlavor f){ super(s, f); }
 //======================================================================
-//	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier, boolean onSurface);
-	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier);
+	protected abstract void performTileAction(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface);
 	protected abstract boolean checkTileConditions(Creature performer, int rawtile, int tilex, int tiley);
 	protected abstract boolean checkTileType(int rawtile);
 //======================================================================
@@ -79,7 +78,9 @@ public abstract class TileAction extends AbstractAction
 				// Can the tile change while action is performed?
 				// There seems to be a flag that could lock a tile.
 				double multiplier = getTaskTimeMultiplier(quality, skl.getKnowledge());
-				performTileAction(rawtile, tilex, tiley, multiplier);
+				double chance = getRandomChanceMultiplier(quality, skl.getKnowledge());
+				double rnd = getRandomTimeMultiplier(quality, skl.getKnowledge());
+				performTileAction(rawtile, tilex, tiley, multiplier, chance, rnd, onSurface);
 
 				// Source item can not change.
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);

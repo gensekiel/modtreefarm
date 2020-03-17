@@ -22,7 +22,7 @@ import com.wurmonline.shared.constants.StructureConstantsEnum;
 public class ResetAction extends ActionTemplate
 {
 //======================================================================
-	protected ResetAction(){ menuEntry = "Reset growth"; }
+	protected ResetAction(){ menuEntry = "-> Reset growth"; }
 //======================================================================
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item object, int tilex, int tiley, boolean onSurface, int rawtile)

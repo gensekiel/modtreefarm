@@ -10,7 +10,7 @@ import com.wurmonline.server.zones.TilePoller;
 
 public class GrassGrowTask extends GrassTileTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
@@ -28,14 +28,16 @@ public class GrassGrowTask extends GrassTileTask
 	public static void setAgeLimit(byte b){ ageLimit = b; }
 	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
-	public GrassGrowTask(int rawtile, int tilex, int tiley, double multiplier)
+	public GrassGrowTask(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		super(rawtile, tilex, tiley, multiplier);
+		super(rawtile, tilex, tiley, onSurface);
 
 		byte tage = getGrowthStage();
 		if(tage < 3) tasktime *= GrowthMultiplierAge[tage];
 
-		tasktime *= growthMultiplier;
+		tasktime *= growthMultiplier * multiplier;
+		fail_chance *= chance;
+		random_factor *= rnd;
 	}
 //======================================================================
 	@Override
@@ -105,7 +107,6 @@ public class GrassGrowTask extends GrassTileTask
 			forceGrassGrowth(rawtile, x, y, getType(rawtile), getData(rawtile));
 
 		if(getGrowthStage(getData(rawtile)) + 1 < ageLimit){
-			resetTimestamp();
 			return false;
 		}
 		return true;

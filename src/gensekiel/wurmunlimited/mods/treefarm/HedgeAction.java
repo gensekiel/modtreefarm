@@ -27,9 +27,9 @@ public class HedgeAction extends AbstractAction
 		skill = 10045;
 	}
 //======================================================================
-	protected void performFenceAction(Fence fence, double multiplier)
+	protected void performFenceAction(Fence fence, double multiplier, double chance, double rnd)
 	{
-		TaskPoller.addTask(new HedgeTask(fence, multiplier));
+		TaskPoller.addTask(new HedgeTask(fence, multiplier, chance, rnd));
 	}
 //======================================================================
 	protected boolean checkFenceConditions(Creature performer, Fence fence)
@@ -94,7 +94,9 @@ public class HedgeAction extends AbstractAction
 				if(item != 0) quality = source.getCurrentQualityLevel();
 
 				double multiplier = getTaskTimeMultiplier(quality, skl.getKnowledge());
-				performFenceAction(target, multiplier);
+				double chance = getRandomChanceMultiplier(quality, skl.getKnowledge());
+				double rnd = getRandomTimeMultiplier(quality, skl.getKnowledge());
+				performFenceAction(target, multiplier, chance, rnd);
 
 				if(item != 0) source.setWeight(source.getWeightGrams() - actioncost, true);
 				if(gainSkill) gainSkill(skl);

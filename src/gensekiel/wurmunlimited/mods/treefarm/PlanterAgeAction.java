@@ -4,7 +4,7 @@ import com.wurmonline.server.creatures.Creature;
 import com.wurmonline.server.items.Item;
 import com.wurmonline.server.items.ItemList;
 
-public class PlanterAgeAction extends PlanterAction
+public class PlanterAgeAction extends PlanterFruitAction
 {
 //======================================================================
 	public PlanterAgeAction(){ this("Water"); }
@@ -29,9 +29,9 @@ public class PlanterAgeAction extends PlanterAction
 		return false;
 	}
 //======================================================================
-	@Override protected void performItemAction(Item item, double multiplier)
+	@Override protected void performItemAction(Item item, double multiplier, double chance, double rnd)
 	{
-		TaskPoller.addTask(new PlanterAgeTask(item, multiplier));
+		TaskPoller.addTask(new PlanterAgeTask(item, multiplier, chance, rnd));
 	}
 //======================================================================
 }

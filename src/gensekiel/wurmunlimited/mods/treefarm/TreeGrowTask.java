@@ -9,7 +9,7 @@ import com.wurmonline.server.zones.TilePoller;
 
 public class TreeGrowTask extends TreeTileTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
@@ -23,10 +23,12 @@ public class TreeGrowTask extends TreeTileTask
 	public static void setAgeLimit(byte b){ ageLimit = b; }
 	public static byte getAgeLimit(){ return ageLimit; }
 //======================================================================
-	public TreeGrowTask(int rawtile, int tilex, int tiley, double multiplier)
+	public TreeGrowTask(int rawtile, int tilex, int tiley, double multiplier, double chance, double rnd, boolean onSurface)
 	{
-		super(rawtile, tilex, tiley, multiplier);
-		tasktime *= growthMultiplier;
+		super(rawtile, tilex, tiley, onSurface);
+		tasktime *= growthMultiplier * multiplier;
+		fail_chance *= chance;
+		random_factor *= rnd;
 	}
 //======================================================================
 	@Override
@@ -80,7 +82,6 @@ public class TreeGrowTask extends TreeTileTask
 			forceTreeGrowth(rawtile, x, y, getType(rawtile), getData(rawtile));
 
 		if(getAge(getData(rawtile)) + 1 < ageLimit){
-			resetTimestamp();
 			return false;
 		}
 		return true;

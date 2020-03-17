@@ -12,7 +12,7 @@ import com.wurmonline.server.players.Player;
 public class BlessAction extends ActionTemplate
 {
 //======================================================================
-	protected BlessAction(){ menuEntry = "Bless"; }
+	protected BlessAction(){ menuEntry = "-> Bless"; }
 //======================================================================
 	@Override
 	public List<ActionEntry> getBehavioursFor(Creature performer, Item subject, Item target)

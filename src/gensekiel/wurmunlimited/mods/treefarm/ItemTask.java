@@ -6,13 +6,13 @@ import com.wurmonline.server.items.Item;
 
 public abstract class ItemTask extends AbstractTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	protected long id;
 //======================================================================
-	public ItemTask(Item item, double multiplier)
+	public ItemTask(Item item)
 	{
-		super(multiplier);
+		super();
 		id = item.getWurmId();
 	}
 //======================================================================

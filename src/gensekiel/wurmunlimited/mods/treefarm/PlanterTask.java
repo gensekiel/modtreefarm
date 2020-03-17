@@ -2,20 +2,30 @@ package gensekiel.wurmunlimited.mods.treefarm;
 
 import com.wurmonline.server.items.Item;
 
-public class PlanterTask extends ItemTask
+public abstract class PlanterTask extends ItemTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
-	private static int planter_id = 1162;
+	protected static int planter_id = 1162;
 //======================================================================
 	private static double growthMultiplier = 1.0;
 	public static void setGrowthMultiplier(double d){ growthMultiplier = d; }
 	public static double getGrowthMultiplier(){ return growthMultiplier; }
+//----------------------------------------------------------------------
+	private static double ChanceMultiplier = 0.0;
+	public static void setChanceMultiplier(double d){ ChanceMultiplier = d; }
+	public static double getChanceMultiplier(){ return ChanceMultiplier; }
+//----------------------------------------------------------------------
+	private static double RndMultiplier = 0.0;
+	public static void setRndMultiplier(double d){ RndMultiplier = d; }
+	public static double getRndMultiplier(){ return RndMultiplier; }
 //======================================================================
-	public PlanterTask(Item item, double multiplier)
+	public PlanterTask(Item item)
 	{
-		super(item, multiplier);
+		super(item);
 		tasktime *= growthMultiplier;
+		fail_chance *= ChanceMultiplier;
+		random_factor *= RndMultiplier;
 	}
 //======================================================================
 	public static boolean checkItemType(Item item)
@@ -28,41 +38,5 @@ public class PlanterTask extends ItemTask
 	{
 		return item.getAuxData() & 0x7F;
 	}
-//======================================================================
-	public static boolean isFertilizable(Item item)
-	{
-		int age = getPlanterAge(item);
-		if(age > 5 && age < 95) return true;
-		else return false;
-	}
-//======================================================================
-	public static boolean isPickable(Item item)
-	{
-		return ((item.getAuxData() & 0x80) != 0);
-	}
-//======================================================================
-	@Override
-	public boolean performCheck()
-	{
-		Item item = getItem();
-		if(item == null) return true;
-
-		if(!checkItemType(item)) return true;
-		if(!isFertilizable(item)) return true;
-
-		return false;
-	}
-//======================================================================
-	@Override
-	public boolean performTask()
-	{
-		Item item = getItem();
-		if(item != null){
-			item.setAuxData((byte)(item.getAuxData() | 0x80));
-		}
-		return true;
-	}
-//======================================================================
-	@Override public String getDescription(){ return getDescription("fertilized"); }
 //======================================================================
 }

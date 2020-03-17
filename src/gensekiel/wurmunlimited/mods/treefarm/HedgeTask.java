@@ -8,7 +8,7 @@ import com.wurmonline.shared.constants.StructureConstantsEnum;
 
 public class HedgeTask extends AbstractTask
 {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 5L;
 //======================================================================
 	private long key;
 	private int zoneID;
@@ -24,12 +24,22 @@ public class HedgeTask extends AbstractTask
 	protected static byte ageLimit = 1;
 	public static void setAgeLimit(byte b){ ageLimit = b; }
 	public static byte getAgeLimit(){ return ageLimit; }
+//----------------------------------------------------------------------
+	private static double chanceMultiplier = 0.0;
+	public static void setChanceMultiplier(double d){ chanceMultiplier = d; }
+	public static double getChanceMultiplier(){ return chanceMultiplier; }
+//----------------------------------------------------------------------
+	private static double rndMultiplier = 0.0;
+	public static void setRndMultiplier(double d){ rndMultiplier = d; }
+	public static double getRndMultiplier(){ return rndMultiplier; }
 //======================================================================
-	public HedgeTask(Fence fence, double multiplier)
+	public HedgeTask(Fence fence, double multiplier, double chance, double rnd)
 	{
-		super(multiplier);
+		super();
 
-		tasktime *= growthMultiplier;
+		tasktime *= growthMultiplier * multiplier;
+		fail_chance *= chanceMultiplier * chance;
+		random_factor *= rndMultiplier * rnd;
 
 		key = fence.getId();
 		zoneID = fence.getZoneId();
@@ -77,7 +87,6 @@ public class HedgeTask extends AbstractTask
 			forceHedgeGrowth(fence, vtile);
 
 			if(getHedgeAge(fence) < ageLimit){
-				resetTimestamp();
 				return false;
 			}
 		}
